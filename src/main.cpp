@@ -1,18 +1,29 @@
-#include <Arduino.h>
+//#include <Arduino.h> //uncomment pour esp32
+#include <iostream>
+#include "func.hpp"
 
-// put function declarations here:
-int myFunction(int, int);
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+  int result = Func::myFunction(2, 3);
+  std::cout << "hi from set up " << result << std::endl;
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  std::cout << "hi from loop" << std::endl;
 }
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+
+
+
+
+// Mimics the arduino ide process
+int main() 
+{
+  setup();
+  while (true)
+  {
+    loop();
+    break;
+  }
+  return 0;
 }
