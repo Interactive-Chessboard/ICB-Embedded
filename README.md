@@ -50,3 +50,7 @@ Now you can:
 - Build the project → `PlatformIO: Build`  
 - Upload firmware → `PlatformIO: Upload`  
 - Monitor serial output → `PlatformIO: Serial Monitor`  
+
+
+## Extras
+Install Markdown Preview Mermaid Support to view the design graphs in docs/
