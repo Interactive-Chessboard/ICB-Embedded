@@ -1,7 +1,26 @@
+//#include "func.hpp"
 #include <Arduino.h>
-#include "func.hpp"
+#include "bluetooth.hpp"
 
 
+
+
+void setup() {
+  Serial.begin(115200);
+
+  Bluetooth::init();
+
+  Serial.println("BLE device is ready and advertising.");
+}
+
+void loop() {
+  // Nothing needed here for now
+}
+
+
+
+
+/*
 void setup() {
   Serial.begin(115200);  // USB CDC
   delay(2000);            // wait for host to be ready
@@ -17,3 +36,4 @@ void loop() {
   delay(500);
   Serial.println("Tick" + String(result));
 }
+*/
