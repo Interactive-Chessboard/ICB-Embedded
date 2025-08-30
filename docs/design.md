@@ -4,9 +4,9 @@ config:
   layout: dagre
 ---
 flowchart TD
- subgraph sgSelector["Selects all game option"]
+ subgraph sggetGameSettings["Selects all game option"]
         Screen[\"ScreenAPI"\]
-        Selector["Selector"]
+        getGameSettings["getGameSettings"]
         ButtonSignal[\"ButtonAPI"\]
   end
  subgraph sgBluetooth[" "]
@@ -22,16 +22,16 @@ flowchart TD
         BluetoothAPI2[\"BluetoothAPI"\]
         WebAppSetting["WebAppSetting"]
   end
-    Selector -- Display --> Screen
-    Selector <-- button state --> ButtonSignal
+    getGameSettings -- Display --> Screen
+    getGameSettings <-- button state --> ButtonSignal
     BluetoothConnect <-- Confirm connection --> BluetoothAPI
     Init -- Display Lights --> Lights
     Init <-- View piece state --> Pieces
     WebAppSetting <-- GetSettings --> BluetoothAPI2
     Setup["Setup"] --> InitBluetoothAndSerial["InitBluetoothAndSerial"]
     InitBluetoothAndSerial --> LoopStart["LoopStart"]
-    LoopStart --> Selector
-    Selector --> Gamemode{"Gamemode?"}
+    LoopStart --> getGameSettings
+    getGameSettings --> Gamemode{"Gamemode?"}
     Gamemode -- Offline --> Init
     Gamemode -- Online --> BluetoothConnect
     BluetoothConnect -- success --> Init
@@ -39,12 +39,8 @@ flowchart TD
     Gamemode2 -- online --> WebAppSetting
     Gamemode2 -- offline --> StartGame["StartGame"]
     WebAppSetting -- Settings Received --> StartGame
-    StartGame -- PlayerTurn --> GameLoop["GameLoop"]
-    StartGame -- ExternalTurn --> GameLoop
-    StartGame --> ClockThread["ClockThread"]
-    GameLoop <-- Control --> ClockThread
-    ClockThread --> GameEnd["GameEnd"]
-    GameLoop --> GameEnd
+
+    
 
 
 ```
