@@ -1,48 +1,49 @@
 //gameloop.cpp
 #include "gameloop.hpp"
 
-struct ChessGame
+std::vector<Moves> generateLegalMoves(ChessGame chess_game) 
 {
-    char player_turn;
-    char board[64];
-    char castle[4];
-    int enPassant;
-};
-
-void playerTurn()
+    std::vector<Moves> legal_moves;
+    return legal_moves;
+}
+void playerTurnDetectMoves(ClockSetting &clock_settings, std::vector<Moves> legal_moves)
 {
-    char temp = ' ';
+    
 }
 
-void OpponentTurn()
+void OpponentTurnReceiveMoves(ClockSetting &clock_setting)
 {
-    char temp = ' ';
+    
 }
 
-bool calculateEndGame(ChessGame chess_game)
+char calculateEndGame(ChessGame chess_game, std::vector<Moves> legal_moves)
 {
-    char temp = ' ';
-    return true;
+    return ' ';
 }
 
-char gameLoop(Settings game_settings, std::atomic<bool>& active)
+char gameLoop(Settings game_settings, ClockSetting &clock_settings)
 {
     ChessGame chess_game;
-    while (active)
+    char winner;
+    while (clock_settings.active)
     {
+        std::vector<Moves> legal_moves = generateLegalMoves(chess_game);
+        winner = calculateEndGame(chess_game, legal_moves);
+        if (winner != ' ')
+        {
+            clock_settings.active.store(false);
+            break;
+        }
         if (game_settings.game_mode == 2 || (game_settings.player_color == chess_game.player_turn))
         {
-            playerTurn();
+            playerTurnDetectMoves(clock_settings, legal_moves);
         }
         else
         {
-            OpponentTurn();
+            OpponentTurnReceiveMoves(clock_settings);
         }
-        if (calculateEndGame(chess_game))
-        {
-            active.store(false);
-        }
+        
     }
-    return 'w';
+    return winner;
 }
 

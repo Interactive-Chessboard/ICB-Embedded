@@ -5,13 +5,13 @@ config:
 ---
 flowchart TD
  subgraph GameLoop["GameLoop"]
+        CalculateLegalMoves["CalculateLegalMoves"]
         PlayerTurn["PlayerTurn"]
         OpponentTurn["OpponentTurn"]
         CalculateEndGame["CalculateEndGame"]
   end
  subgraph PlayerTurn["Player Turn"]
         DetectMoves["DetectMoves"]
-        CalculateLegalMoves["CalculateLegalMoves"]
         Pieces[\"PiecesAPI"\]
         Lights[\"ScreenAPI"\]
         Bluetooth[\"BluetoothAPI"\]
@@ -24,15 +24,14 @@ flowchart TD
         Bluetooth2[\"BluetoothAPI"\]
         Bot["Bot"]
   end
-    CalculateLegalMoves --> DetectMoves
     DetectMoves --> Pieces & Lights & Bluetooth
-    PlayerMakesMove --> ReceiveMoves
     ReceiveMoves --> Pieces2 & Lights2 & Bluetooth2 & Bot
-    GameStart["GameStart"] -- Player Turn --> PlayerTurn
+    ReceiveMoves --> PlayerMakesMove
     GameStart --> ClockThread["ClockThread"]
-    GameStart -- OpponentTurn --> OpponentTurn
-    PlayerTurn --> CalculateEndGame
-    OpponentTurn --> CalculateEndGame
+    GameStart["GameStart"] --> CalculateLegalMoves
+    CalculateLegalMoves --> CalculateEndGame
+    CalculateEndGame -- Player Turn --> PlayerTurn  
+    CalculateEndGame -- OpponentTurn --> OpponentTurn 
     CalculateEndGame --> EndGameQ{"EndGame?"}
     EndGameQ -- yes --> EndGame["EndGame"]
     EndGameQ -- no --> GameLoop

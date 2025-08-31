@@ -24,7 +24,7 @@ void loop()
   }
 
   // ---Bluetooth Connect---
-  if (game_settings.game_mode == 'o') // Online
+  if (game_settings.game_mode == 'o')
   {
     std::string msg = Bluetooth::getBluetoothMessage();
     if (msg != "Connection Confirmed")

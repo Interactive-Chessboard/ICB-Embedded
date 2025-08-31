@@ -1,4 +1,4 @@
-// settings.hpp
+// setting_struct.hpp
 #pragma once
 struct Settings
 {

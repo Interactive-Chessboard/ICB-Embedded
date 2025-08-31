@@ -1,7 +1,10 @@
 // clock.cpp
 #include "clock.hpp"
 
-void clock(Settings game_settings, std::atomic<bool>& active)
+void chess_clock(Settings game_settings, ClockSetting &clock_settings)
 {
-    int s = 1;
+    while(clock_settings.active)
+    {
+        // IMPLEMENT LATER
+    }
 }

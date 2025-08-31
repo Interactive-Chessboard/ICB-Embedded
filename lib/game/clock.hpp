@@ -2,10 +2,11 @@
 #pragma once
 #include <atomic>
 #include <thread>
-#include "settings.hpp"
+#include "setting_struct.hpp"
+#include "clock_struct.hpp"
 
 
-void chess_clock(Settings game_settings, std::atomic<bool>& active);
+void chess_clock(Settings, ClockSetting&);
 
 // To set the bool to false do this
 // active.store(false);
