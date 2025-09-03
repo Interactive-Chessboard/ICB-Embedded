@@ -1,11 +1,8 @@
 // main.cpp
 #include <Arduino.h>
-#include <thread>
-#include <atomic>
 #include "bluetooth.hpp"
-#include "gamesettings.hpp"
-#include "board.hpp"
 #include "game.hpp"
+#include "setting_struct.hpp"
 
 void setup() 
 {
