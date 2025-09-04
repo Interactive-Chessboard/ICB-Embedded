@@ -1,6 +1,6 @@
 // gamesettings.hpp
 #pragma once
-#include "setting_struct.hpp"
+#include "structs.hpp"
 
 
 namespace GameSettings

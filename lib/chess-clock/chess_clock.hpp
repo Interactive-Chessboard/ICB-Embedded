@@ -2,8 +2,7 @@
 #pragma once
 #include <atomic>
 #include <thread>
-#include "setting_struct.hpp"
-#include "clock_struct.hpp"
+#include "structs.hpp"
 
 namespace ChessClock
 {

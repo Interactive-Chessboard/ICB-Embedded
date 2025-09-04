@@ -1,8 +1,7 @@
 // board.hpp
 #pragma once
 #include <vector>
-#include "clock_struct.hpp"
-#include "move_struct.hpp"
+#include "structs.hpp"
 namespace Board
 {
 bool waitForInitBoard(int);

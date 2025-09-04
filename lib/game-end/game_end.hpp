@@ -1,8 +1,7 @@
 // game_end.hpp
 #pragma once
 #include <vector>
-#include "chess_game_struct.hpp"
-#include "move_struct.hpp"
+#include "structs.hpp"
 namespace GameEnd
 {
 void gameEndAnimation(char);

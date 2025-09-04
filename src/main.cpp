@@ -2,7 +2,7 @@
 #include <Arduino.h>
 #include "bluetooth.hpp"
 #include "game.hpp"
-#include "setting_struct.hpp"
+#include "structs.hpp"
 
 void setup() 
 {
@@ -15,13 +15,9 @@ void loop()
 {
   // ---getGameSettings---
   Settings game_settings = GameSettings::getGameSettings(); //REMOVE COMMENT WHEN IMPLEMENTED
-  if (game_settings.game_mode != 'o' && game_settings.game_mode != 'm' && game_settings.game_mode != 'b')
-  {
-    return;
-  }
 
   // ---Bluetooth Connect---
-  if (game_settings.game_mode == 'o')
+  if (game_settings.game_mode == GameMode::Online)
   {
     std::string msg = Bluetooth::getBluetoothMessage();
     if (msg != "Connection Confirmed")
@@ -40,7 +36,7 @@ void loop()
   }
 
   // ---Web App Settings---
-  if (game_settings.game_mode == 'o')
+  if (game_settings.game_mode == GameMode::Online)
   {
     game_settings = GameSettings::getWebAppSettings(); //REMOVE COMMENT WHEN IMPLEMENTED
   }

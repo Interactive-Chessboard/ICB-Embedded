@@ -15,18 +15,18 @@ char gameLoop(Settings game_settings, ClockSetting &clock_settings)
             clock_settings.active.store(false);
             break;
         }
-        if (game_settings.game_mode == 'm' || (game_settings.player_color == chess_game.player_turn))
+        if (game_settings.game_mode == GameMode::MultiplayerOffline || (game_settings.player_color == chess_game.player_turn))
         {
             Board::playerTurnDetectMoves(clock_settings, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
         }
         else
         {
             Move move;
-            if (game_settings.game_mode == 'o')
+            if (game_settings.game_mode == GameMode::Online)
             {
                 move = Opponent::getOnlineMove(clock_settings); //REMOVE COMMENT WHEN IMPLEMENTED
             }
-            else
+            else if (game_settings.game_mode == GameMode::BotsOffline)
             {
                 move = Opponent::getBotMove(clock_settings); //REMOVE COMMENT WHEN IMPLEMENTED
             }
@@ -36,7 +36,6 @@ char gameLoop(Settings game_settings, ClockSetting &clock_settings)
     }
     return winner;
 }
-
 
 void Game::game(Settings game_settings)
 {

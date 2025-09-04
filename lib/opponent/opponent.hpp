@@ -1,7 +1,6 @@
 // opponent.hpp
 #pragma once
-#include "move_struct.hpp"
-#include "clock_struct.hpp"
+#include "structs.hpp"
 namespace Opponent
 {
 Move getOnlineMove(ClockSetting&);
