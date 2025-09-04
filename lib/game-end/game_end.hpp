@@ -2,8 +2,9 @@
 #pragma once
 #include <vector>
 #include "structs.hpp"
+#include "enums.hpp"
 namespace GameEnd
 {
-void gameEndAnimation(char);
-char calculateEndGame(ChessGame, std::vector<Move>);
+void gameEndAnimation(Winner);
+Winner calculateEndGame(ChessGame, std::vector<Move>);
 }

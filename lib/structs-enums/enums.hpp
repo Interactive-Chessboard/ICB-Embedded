@@ -1,4 +1,5 @@
-
+// enums.hpp
+#pragma once
 
 enum class GameMode {
     Online,
@@ -9,6 +10,13 @@ enum class GameMode {
 
 enum class Color {
     White,
+    Black
+};
+
+
+enum class Winner {
+    White,
     Black,
-    None
+    Draw,
+    Nil
 };

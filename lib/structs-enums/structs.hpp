@@ -24,7 +24,7 @@ struct ChessGame
 struct ClockSetting
 {
     std::atomic<Color> player_turn{Color::White}; // Players turn do determine the active clock
-    std::atomic<Color> winner{Color::None}; // Winner declared if a player has lost on time
+    std::atomic<Winner> winner{Winner::Nil}; // Winner declared if a player has lost on time
     std::atomic<int> time_white; // Time remaining on whites clock in 1/100th of a second
     std::atomic<int> time_black; // Same for black
     std::atomic<int> extra_time; // Extra time in 1/100th of a second to add after each move
