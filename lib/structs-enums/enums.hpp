@@ -14,6 +14,22 @@ enum class Color {
     Nil
 };
 
+enum class PieceType {
+    Pawn,
+    Rook,
+    Knight,
+    Bishop,
+    Queen,
+    King,
+    Nil
+};
+
+
+struct Piece {
+    Color color;
+    PieceType piece_type;
+};
+
 
 enum class Winner {
     White,
