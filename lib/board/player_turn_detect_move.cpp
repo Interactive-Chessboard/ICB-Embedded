@@ -1,7 +1,8 @@
 // player_turn_detect_move.cpp
 #include "board.hpp"
 
-void Board::playerTurnDetectMoves(ClockSetting& clock_settings, std::vector<Move> moves)
+Move Board::playerTurnDetectMoves(ClockSetting& clock_settings, std::vector<Move> moves)
 {
-    return;
+    Move move;
+    return move;
 }

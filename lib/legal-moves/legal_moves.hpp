@@ -5,4 +5,5 @@
 namespace LegalMoves
 {
 std::vector<Move> generateLegalMoves(ChessGame);
+ChessGame updateGame(ChessGame, Move);
 }

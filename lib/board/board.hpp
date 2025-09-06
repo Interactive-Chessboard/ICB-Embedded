@@ -5,6 +5,6 @@
 namespace Board
 {
 bool waitForInitBoard(int);
-void playerTurnDetectMoves(ClockSetting&, std::vector<Move>);
+Move playerTurnDetectMoves(ClockSetting&, std::vector<Move>);
 void playerMakeOpponentMove(ClockSetting&, Move);
 };

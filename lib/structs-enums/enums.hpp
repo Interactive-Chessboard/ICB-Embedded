@@ -10,7 +10,8 @@ enum class GameMode {
 
 enum class Color {
     White,
-    Black
+    Black,
+    Nil
 };
 
 

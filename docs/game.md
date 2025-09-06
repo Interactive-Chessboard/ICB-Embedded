@@ -9,6 +9,7 @@ flowchart TD
         PlayerTurn["PlayerTurn"]
         OpponentTurn["OpponentTurn"]
         CalculateEndGame["CalculateEndGame"]
+        UpdateGame["UpdateGame"]
   end
  subgraph PlayerTurn["Player Turn"]
         DetectMoves["DetectMoves"]
@@ -32,6 +33,8 @@ flowchart TD
     CalculateLegalMoves --> CalculateEndGame
     CalculateEndGame -- Player Turn --> PlayerTurn  
     CalculateEndGame -- OpponentTurn --> OpponentTurn 
+    PlayerTurn --> UpdateGame
+    OpponentTurn --> UpdateGame
     CalculateEndGame --> EndGameQ{"EndGame?"}
     EndGameQ -- yes --> EndGame["EndGame"]
     EndGameQ -- no --> GameLoop

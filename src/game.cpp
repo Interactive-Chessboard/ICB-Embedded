@@ -21,16 +21,16 @@ Winner gameLoop(Settings game_settings, ClockSetting &clock_settings)
             break;
         }
 
+        Move move;
         // Detect Move if it is the players turn
         if (game_settings.game_mode == GameMode::MultiplayerOffline || (game_settings.player_color == chess_game.player_turn))
         {
-            Board::playerTurnDetectMoves(clock_settings, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
+            move = Board::playerTurnDetectMoves(clock_settings, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
         }
 
         // Receive the move and wait for the player to play it on the ICB if it is the opponent's turn
         else
         {
-            Move move;
             if (game_settings.game_mode == GameMode::Online)
             {
                 move = Opponent::getOnlineMove(clock_settings); //REMOVE COMMENT WHEN IMPLEMENTED
@@ -41,6 +41,9 @@ Winner gameLoop(Settings game_settings, ClockSetting &clock_settings)
             }
             Board::playerMakeOpponentMove(clock_settings, move); //REMOVE COMMENT WHEN IMPLEMENTED
         }
+        
+        // Update the settings of the game to prepare for next move
+        chess_game = LegalMoves::updateGame(chess_game, move); //REMOVE COMMENT WHEN IMPLEMENTED
         
     }
     return winner;

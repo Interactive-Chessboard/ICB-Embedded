@@ -41,7 +41,6 @@ struct Move
 {
     int from_square;
     int to_square;
-    ChessGame chess_game;
 };
 
 struct Settings
