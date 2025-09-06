@@ -89,6 +89,7 @@ struct Move
 {
     int from_square;
     int to_square;
+    Piece promotion;
 };
 
 struct Settings
