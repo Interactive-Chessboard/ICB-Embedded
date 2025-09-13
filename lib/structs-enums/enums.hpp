@@ -25,12 +25,6 @@ enum class PieceType {
 };
 
 
-struct Piece {
-    Color color;
-    PieceType piece_type;
-};
-
-
 enum class Winner {
     White,
     Black,

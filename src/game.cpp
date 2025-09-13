@@ -43,7 +43,7 @@ Winner gameLoop(Settings game_settings, ClockSetting &clock_settings)
         }
         
         // Update the settings of the game to prepare for next move
-        chess_game = LegalMoves::updateGame(chess_game, move); //REMOVE COMMENT WHEN IMPLEMENTED
+        chess_game = move.chess_game;
         
     }
     return winner;
