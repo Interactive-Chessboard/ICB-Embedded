@@ -9,7 +9,7 @@ Winner gameLoop(Settings game_settings, ClockSetting &clock_settings)
     while (clock_settings.active)
     {
         // Generate a list of legal moves/positions
-        std::vector<Move> legal_moves = LegalMoves::generateLegalMoves(chess_game); //REMOVE COMMENT WHEN IMPLEMENTED
+        std::vector<Move> legal_moves = LegalMoves::generateLegalMoves(chess_game);
         
         // Calculates if the game is finished
         winner = GameEnd::calculateEndGame(chess_game, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
