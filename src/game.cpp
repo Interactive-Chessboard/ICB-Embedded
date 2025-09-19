@@ -8,25 +8,18 @@ Winner gameLoopMultiplayerOffline(Settings game_settings, ClockSetting &clock_se
     Winner winner = Winner::Nil;
     while (clock_settings.active)
     {
-        // Generate a list of legal moves/positions
+        // Generate a list of legal moves/positions and looks if the game has ended
         std::vector<Move> legal_moves = LegalMoves::generateLegalMoves(chess_game);
-        
-        // Calculates if the game is finished
-        if (game_settings.game_mode != GameMode::Online)
-        {
-            winner = GameEnd::calculateEndGame(chess_game, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
-        } 
-        
-        // Break if the game is finished
+        winner = GameEnd::calculateEndGame(chess_game, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
         if (winner != Winner::Nil)
         {
             clock_settings.active.store(false);
             break;
         }
 
+        // Make the move on the board
         Move move = Board::playerTurnDetectMoves(clock_settings, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
-        
-        // Update the settings of the game to prepare for next move
+
         chess_game = move.chess_game;
         
     }
@@ -40,17 +33,8 @@ Winner gameLoopBotsOffline(Settings game_settings, ClockSetting &clock_settings)
     Winner winner = Winner::Nil;
     while (clock_settings.active)
     {
-        // Generate a list of legal moves/positions
+        // Generate a list of legal moves/positions and looks if the game has ended
         std::vector<Move> legal_moves = LegalMoves::generateLegalMoves(chess_game);
-
-        Move move;
-        // Detect Move if it is the players turn
-        if (game_settings.player_color == chess_game.player_turn)
-        {
-            move = Board::playerTurnDetectMoves(clock_settings, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
-        }
-
-        // Break if the game is finished
         winner = GameEnd::calculateEndGame(chess_game, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
         if (winner != Winner::Nil)
         {
@@ -58,14 +42,17 @@ Winner gameLoopBotsOffline(Settings game_settings, ClockSetting &clock_settings)
             break;
         }
 
-        // Receive the move and wait for the player to play it on the ICB if it is the opponent's turn
+        Move move;
+        if (game_settings.player_color == chess_game.player_turn)
+        {
+            move = Board::playerTurnDetectMoves(clock_settings, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
+        }
         else
         {
-            move = Opponent::getBotMove(clock_settings); //REMOVE COMMENT WHEN IMPLEMENTED
+            move = Bots::getBotMove(clock_settings, chess_game); //REMOVE COMMENT WHEN IMPLEMENTED
             Board::playerMakeOpponentMove(clock_settings, move); //REMOVE COMMENT WHEN IMPLEMENTED
         }
-        
-        // Update the settings of the game to prepare for next move
+
         chess_game = move.chess_game;
         
     }
@@ -79,21 +66,16 @@ Winner gameLoopOnline(Settings game_settings, ClockSetting &clock_settings)
     Winner winner = Winner::Nil;
     while (clock_settings.active)
     {
-        // Generate a list of legal moves/positions
-        std::vector<Move> legal_moves = LegalMoves::generateLegalMoves(chess_game);
-
         Move move;
-        // Detect Move if it is the players turn
         if (game_settings.player_color == chess_game.player_turn)
         {
+            std::vector<Move> legal_moves = LegalMoves::generateLegalMoves(chess_game);
             move = Board::playerTurnDetectMoves(clock_settings, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
             Bluetooth::sendMove(move); //REMOVE COMMENT WHEN IMPLEMENTED
         }
-
-        // Receive the move and wait for the player to play it on the ICB if it is the opponent's turn
         else
         {
-            move = Opponent::getOnlineMove(clock_settings); //REMOVE COMMENT WHEN IMPLEMENTED
+            move = Bluetooth::getOnlineMove(clock_settings); //REMOVE COMMENT WHEN IMPLEMENTED
             Board::playerMakeOpponentMove(clock_settings, move); //REMOVE COMMENT WHEN IMPLEMENTED
         }
 
@@ -104,7 +86,6 @@ Winner gameLoopOnline(Settings game_settings, ClockSetting &clock_settings)
             break;
         }
         
-        // Update the settings of the game to prepare for next move
         chess_game = move.chess_game;
         
     }

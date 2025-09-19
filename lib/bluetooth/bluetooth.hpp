@@ -16,4 +16,5 @@ void init(void);
 Winner getOnlineWinner();
 void sendMove(Move);
 void confirmConnection(void);
+Move getOnlineMove(ClockSetting&);
 };
