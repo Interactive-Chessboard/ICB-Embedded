@@ -23,13 +23,7 @@ void loop()
   // Confirm the bluetooth connection if playing online
   if (game_settings.game_mode == GameMode::Online)
   {
-    std::string msg = Bluetooth::getBluetoothMessage();
-    if (msg != "Connection Confirmed")
-    {
-      Bluetooth::sendBluetoothMessage("ERROR");
-      return;
-    }
-    Bluetooth::sendBluetoothMessage("ACK");   
+    Bluetooth::confirmConnection();
   }
 
   // ---Init---
