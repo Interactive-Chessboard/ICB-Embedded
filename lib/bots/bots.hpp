@@ -3,5 +3,5 @@
 #include "structs.hpp"
 namespace Bots
 {
-Move getBotMove(ClockSetting&, ChessGame);
+Move getBotMove(ChessGame);
 };

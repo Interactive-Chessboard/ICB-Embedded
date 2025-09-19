@@ -6,5 +6,6 @@
 
 namespace ChessClock
 {
-void chess_clock(Settings, ClockSetting&);
+Winner chess_clock_offline(ClockSetting&);
+Winner chess_clock_online(ClockSetting&);
 };
