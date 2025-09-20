@@ -13,11 +13,11 @@ Winner gameLoopOnline(Color player_color, ClockSetting &clock_settings)
         if (player_color == chess_game.player_turn)
         {
             move = Board::playerTurnDetectMoves(clock_settings, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
-            winner = Bluetooth::sendMove(move); //REMOVE COMMENT WHEN IMPLEMENTED
+            winner = Bluetooth::sendMove(move);
         }
         else
         {
-            move = Bluetooth::getOnlineMove(clock_settings, winner, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
+            move = Bluetooth::getOnlineMove(clock_settings, winner, legal_moves);
             Board::playerMakeOpponentMove(clock_settings, move); //REMOVE COMMENT WHEN IMPLEMENTED
         }
 
