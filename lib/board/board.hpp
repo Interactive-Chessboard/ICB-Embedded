@@ -7,4 +7,5 @@ namespace Board
 bool waitForInitBoard(int);
 Move playerTurnDetectMoves(ClockSetting&, std::vector<Move>);
 void playerMakeOpponentMove(ClockSetting&, Move);
+void gameEndAnimation(Winner);
 };

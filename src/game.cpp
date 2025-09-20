@@ -129,5 +129,5 @@ void Game::game(Settings game_settings)
     {
         chess_game.winner = GameEnd::getClockWinner(clock_settings, chess_game);
     }
-    GameEnd::gameEndAnimation(chess_game.winner); //REMOVE COMMENT WHEN IMPLEMENTED
+    Board::gameEndAnimation(chess_game.winner); //REMOVE COMMENT WHEN IMPLEMENTED
 }
