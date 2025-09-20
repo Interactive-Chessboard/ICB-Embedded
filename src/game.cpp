@@ -9,15 +9,15 @@ Winner gameLoopOnline(Color player_color, ClockSetting &clock_settings)
     while (clock_settings.active)
     {
         Move move;
+        std::vector<Move> legal_moves = LegalMoves::generateLegalMoves(chess_game);
         if (player_color == chess_game.player_turn)
         {
-            std::vector<Move> legal_moves = LegalMoves::generateLegalMoves(chess_game);
             move = Board::playerTurnDetectMoves(clock_settings, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
             winner = Bluetooth::sendMove(move); //REMOVE COMMENT WHEN IMPLEMENTED
         }
         else
         {
-            move = Bluetooth::getOnlineMove(clock_settings, winner); //REMOVE COMMENT WHEN IMPLEMENTED
+            move = Bluetooth::getOnlineMove(clock_settings, winner, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
             Board::playerMakeOpponentMove(clock_settings, move); //REMOVE COMMENT WHEN IMPLEMENTED
         }
 

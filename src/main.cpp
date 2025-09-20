@@ -13,7 +13,7 @@ void setup()
   //delay(8000); //for debugging purposes
 }
 
-void loop() 
+void loop()
 {
   // ---getGameSettings---
   // Get game settings through the screen and buttons
@@ -21,9 +21,9 @@ void loop()
 
   // ---Bluetooth Connect---
   // Confirm the bluetooth connection if playing online
-  if (game_settings.game_mode == GameMode::Online)
+  if (game_settings.game_mode == GameMode::Online && !Bluetooth::confirmConnection())
   {
-    Bluetooth::confirmConnection();
+    return;
   }
 
   // ---Init---

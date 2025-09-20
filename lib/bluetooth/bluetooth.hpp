@@ -11,10 +11,11 @@
 
 namespace Bluetooth 
 {
+void init(void);
 std::string getBluetoothMessage(void);
 void sendBluetoothMessage(std::string);
-void init(void);
-void confirmConnection(void);
-Winner sendMove(Move);
-Move getOnlineMove(ClockSetting&, Winner&);
+std::string extractValue(const std::string&, const std::string&);
+bool confirmConnection(void);
+Winner sendMove(const Move&);
+Move getOnlineMove(ClockSetting&, Winner&, const std::vector<Move>&);
 };

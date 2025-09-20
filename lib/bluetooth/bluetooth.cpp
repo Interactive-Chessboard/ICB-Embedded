@@ -43,7 +43,31 @@ class MyCallbacks : public BLECharacteristicCallbacks {
     }
 };
 
+std::string extractValue(const std::string& input, const std::string& key) 
+{
+    size_t key_position = input.find(key + ": {");
+    if (key_position == std::string::npos) 
+    {
+        return "";
+    }
 
+    // Find start of '{'
+    size_t start = input.find('{', key_position);
+    if (start == std::string::npos) 
+    {
+        return "";
+    }
+
+    // Find closing '}'
+    size_t end = input.find('}', start);
+    if (end == std::string::npos) 
+    {
+        return "";
+    }
+
+    // Extract text inside {}
+    return input.substr(start + 1, end - start - 1);
+}
 
 void Bluetooth::sendBluetoothMessage(std::string msg)
 {
