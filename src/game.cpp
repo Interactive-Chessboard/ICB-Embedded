@@ -2,9 +2,8 @@
 #include "game.hpp"
 
 
-Winner gameLoopOnline(Color player_color, ClockSetting &clock_settings)
+Winner gameLoopOnline(Color player_color, ClockSetting &clock_settings, ChessGame &chess_game)
 {
-    ChessGame chess_game;
     Winner winner = Winner::Nil;
     while (clock_settings.active)
     {
@@ -34,9 +33,8 @@ Winner gameLoopOnline(Color player_color, ClockSetting &clock_settings)
 }
 
 
-Winner gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings)
+Winner gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings, ChessGame &chess_game)
 {
-    ChessGame chess_game;
     Winner winner = Winner::Nil;
     while (clock_settings.active)
     {
@@ -68,9 +66,8 @@ Winner gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings)
 
 
 
-Winner gameLoopMultiplayerOffline(ClockSetting &clock_settings)
+Winner gameLoopMultiplayerOffline(ClockSetting &clock_settings, ChessGame &chess_game)
 {
-    ChessGame chess_game;
     Winner winner = Winner::Nil;
     while (clock_settings.active)
     {
@@ -101,6 +98,7 @@ void Game::game(Settings game_settings)
     ClockSetting clock_settings(game_time_clock, game_time_extra_clock);
 
     // ---Start Loop---
+    ChessGame chess_game;
     Winner winner;
     std::thread clock_thread;
     switch (game_settings.game_mode)
@@ -108,19 +106,19 @@ void Game::game(Settings game_settings)
     case GameMode::Online:
     {
         clock_thread = std::thread(ChessClock::chess_clock_online, std::ref(clock_settings)); //REMOVE COMMENT WHEN IMPLEMENTED
-        winner = gameLoopOnline(game_settings.player_color, std::ref(clock_settings));
+        winner = gameLoopOnline(game_settings.player_color, std::ref(clock_settings), chess_game);
         break;
     }
     case GameMode::BotsOffline:
     {
         clock_thread = std::thread(ChessClock::chess_clock_offline, std::ref(clock_settings)); //REMOVE COMMENT WHEN IMPLEMENTED
-        winner = gameLoopBotsOffline(game_settings.player_color, std::ref(clock_settings));
+        winner = gameLoopBotsOffline(game_settings.player_color, std::ref(clock_settings), chess_game);
         break;
     }
     case GameMode::MultiplayerOffline:
     {
         clock_thread = std::thread(ChessClock::chess_clock_offline, std::ref(clock_settings)); //REMOVE COMMENT WHEN IMPLEMENTED
-        winner = gameLoopMultiplayerOffline(std::ref(clock_settings));
+        winner = gameLoopMultiplayerOffline(std::ref(clock_settings), chess_game);
         break;
     }
     default:
@@ -129,5 +127,9 @@ void Game::game(Settings game_settings)
 
     // ---Game End---
     clock_thread.join();
+    if (winner == Winner::Nil)
+    {
+        winner = GameEnd::getClockWinner(clock_settings, chess_game);
+    }
     GameEnd::gameEndAnimation(winner); //REMOVE COMMENT WHEN IMPLEMENTED
 }

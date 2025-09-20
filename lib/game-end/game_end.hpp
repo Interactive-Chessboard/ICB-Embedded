@@ -7,4 +7,6 @@ namespace GameEnd
 {
 void gameEndAnimation(Winner);
 Winner calculateEndGame(ChessGame, std::vector<Move>);
+Winner getClockWinner(const ClockSetting&, const ChessGame&);
+bool insufficientMaterials(ChessGame, Color);
 }
