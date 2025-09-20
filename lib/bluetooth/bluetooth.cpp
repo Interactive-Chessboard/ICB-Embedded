@@ -43,7 +43,7 @@ class MyCallbacks : public BLECharacteristicCallbacks {
     }
 };
 
-std::string extractValue(const std::string& input, const std::string& key) 
+std::string Bluetooth::extractValue(const std::string& input, const std::string& key) 
 {
     size_t key_position = input.find(key + ": {");
     if (key_position == std::string::npos) 
