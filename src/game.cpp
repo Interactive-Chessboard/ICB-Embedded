@@ -41,7 +41,7 @@ ChessGame gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings)
     {
         // Generate a list of legal moves/positions and looks if the game has ended
         std::vector<Move> legal_moves = LegalMoves::generateLegalMoves(chess_game);
-        chess_game.winner = GameEnd::calculateEndGame(chess_game, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
+        chess_game.winner = GameEnd::calculateEndGame(chess_game, legal_moves);
         if (chess_game.winner != Winner::Nil)
         {
             clock_settings.active.store(false);
@@ -73,7 +73,7 @@ ChessGame gameLoopMultiplayerOffline(ClockSetting &clock_settings)
     {
         // Generate a list of legal moves/positions and looks if the game has ended
         std::vector<Move> legal_moves = LegalMoves::generateLegalMoves(chess_game);
-        chess_game.winner = GameEnd::calculateEndGame(chess_game, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
+        chess_game.winner = GameEnd::calculateEndGame(chess_game, legal_moves);
         if (chess_game.winner != Winner::Nil)
         {
             clock_settings.active.store(false);

@@ -4,29 +4,27 @@
 // Insufficient materials is only king, knight + king, bishop + king or knight + bishop + king
 bool GameEnd::insufficientMaterials(const ChessGame &chess_game, Color color)
 {
-    int bishop_count;
-    int knight_count;
+    int bishop_count = 0;
+    int knight_count = 0;
     for (int i = 0; i < 64; i++)
     {
-        if (chess_game.board[i] == Piece(color, PieceType::Queen))
+        Piece piece = chess_game.board[i];
+        if (piece.color != color) continue;
+
+        switch (piece.piece_type)
         {
-            return false;
-        }
-        if (chess_game.board[i] == Piece(color, PieceType::Rook))
-        {
-            return false;
-        }
-        if (chess_game.board[i] == Piece(color, PieceType::Pawn))
-        {
-            return false;
-        }
-        if (chess_game.board[i] == Piece(color, PieceType::Knight))
-        {
-            knight_count++;
-        }
-        if (chess_game.board[i] == Piece(color, PieceType::Bishop))
-        {
-            knight_count++;
+            case PieceType::Queen:
+            case PieceType::Rook:
+            case PieceType::Pawn:
+                return false;
+            case PieceType::Knight:
+                knight_count++;
+                break;
+            case PieceType::Bishop:
+                bishop_count++;
+                break;
+            default:
+                break;
         }
     }
     if (knight_count >= 2 || bishop_count >= 2)

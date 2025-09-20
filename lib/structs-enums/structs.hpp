@@ -1,3 +1,4 @@
+// structs.hpp
 #pragma once
 #include "enums.hpp"
 #include <mutex>
