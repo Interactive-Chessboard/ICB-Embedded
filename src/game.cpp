@@ -2,9 +2,9 @@
 #include "game.hpp"
 
 
-Winner gameLoopOnline(Color player_color, ClockSetting &clock_settings, ChessGame &chess_game)
+ChessGame gameLoopOnline(Color player_color, ClockSetting &clock_settings)
 {
-    Winner winner = Winner::Nil;
+    ChessGame chess_game;
     while (clock_settings.active)
     {
         Move move;
@@ -12,36 +12,37 @@ Winner gameLoopOnline(Color player_color, ClockSetting &clock_settings, ChessGam
         if (player_color == chess_game.player_turn)
         {
             move = Board::playerTurnDetectMoves(clock_settings, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
-            winner = Bluetooth::sendMove(move);
+            chess_game.winner = Bluetooth::sendMove(move);
         }
         else
         {
-            move = Bluetooth::getOnlineMove(clock_settings, winner, legal_moves);
+            std::pair<Move, Winner> result = Bluetooth::getOnlineMove(clock_settings, legal_moves);
+            move = result.first;
+            chess_game.winner = result.second;
             Board::playerMakeOpponentMove(clock_settings, move); //REMOVE COMMENT WHEN IMPLEMENTED
         }
 
-        if (winner != Winner::Nil)
+        if (chess_game.winner != Winner::Nil)
         {
             clock_settings.active.store(false);
             break;
         }
         
         chess_game = move.chess_game;
-        
     }
-    return winner;
+    return chess_game;
 }
 
 
-Winner gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings, ChessGame &chess_game)
+ChessGame gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings)
 {
-    Winner winner = Winner::Nil;
+    ChessGame chess_game;
     while (clock_settings.active)
     {
         // Generate a list of legal moves/positions and looks if the game has ended
         std::vector<Move> legal_moves = LegalMoves::generateLegalMoves(chess_game);
-        winner = GameEnd::calculateEndGame(chess_game, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
-        if (winner != Winner::Nil)
+        chess_game.winner = GameEnd::calculateEndGame(chess_game, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
+        if (chess_game.winner != Winner::Nil)
         {
             clock_settings.active.store(false);
             break;
@@ -58,23 +59,22 @@ Winner gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings, Che
             Board::playerMakeOpponentMove(clock_settings, move); //REMOVE COMMENT WHEN IMPLEMENTED
         }
 
-        chess_game = move.chess_game;
-        
+        chess_game = move.chess_game;  
     }
-    return winner;
+    return chess_game;
 }
 
 
 
-Winner gameLoopMultiplayerOffline(ClockSetting &clock_settings, ChessGame &chess_game)
+ChessGame gameLoopMultiplayerOffline(ClockSetting &clock_settings)
 {
-    Winner winner = Winner::Nil;
+    ChessGame chess_game;
     while (clock_settings.active)
     {
         // Generate a list of legal moves/positions and looks if the game has ended
         std::vector<Move> legal_moves = LegalMoves::generateLegalMoves(chess_game);
-        winner = GameEnd::calculateEndGame(chess_game, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
-        if (winner != Winner::Nil)
+        chess_game.winner = GameEnd::calculateEndGame(chess_game, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
+        if (chess_game.winner != Winner::Nil)
         {
             clock_settings.active.store(false);
             break;
@@ -83,10 +83,9 @@ Winner gameLoopMultiplayerOffline(ClockSetting &clock_settings, ChessGame &chess
         // Make the move on the board
         Move move = Board::playerTurnDetectMoves(clock_settings, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
 
-        chess_game = move.chess_game;
-        
+        chess_game = move.chess_game;  
     }
-    return winner;
+    return chess_game;
 }
 
 
@@ -99,26 +98,25 @@ void Game::game(Settings game_settings)
 
     // ---Start Loop---
     ChessGame chess_game;
-    Winner winner;
     std::thread clock_thread;
     switch (game_settings.game_mode)
     {
     case GameMode::Online:
     {
         clock_thread = std::thread(ChessClock::chess_clock_online, std::ref(clock_settings)); //REMOVE COMMENT WHEN IMPLEMENTED
-        winner = gameLoopOnline(game_settings.player_color, std::ref(clock_settings), chess_game);
+        chess_game = gameLoopOnline(game_settings.player_color, std::ref(clock_settings));
         break;
     }
     case GameMode::BotsOffline:
     {
         clock_thread = std::thread(ChessClock::chess_clock_offline, std::ref(clock_settings)); //REMOVE COMMENT WHEN IMPLEMENTED
-        winner = gameLoopBotsOffline(game_settings.player_color, std::ref(clock_settings), chess_game);
+        chess_game = gameLoopBotsOffline(game_settings.player_color, std::ref(clock_settings));
         break;
     }
     case GameMode::MultiplayerOffline:
     {
         clock_thread = std::thread(ChessClock::chess_clock_offline, std::ref(clock_settings)); //REMOVE COMMENT WHEN IMPLEMENTED
-        winner = gameLoopMultiplayerOffline(std::ref(clock_settings), chess_game);
+        chess_game = gameLoopMultiplayerOffline(std::ref(clock_settings));
         break;
     }
     default:
@@ -127,9 +125,9 @@ void Game::game(Settings game_settings)
 
     // ---Game End---
     clock_thread.join();
-    if (winner == Winner::Nil)
+    if (chess_game.winner == Winner::Nil)
     {
-        winner = GameEnd::getClockWinner(clock_settings, chess_game);
+        chess_game.winner = GameEnd::getClockWinner(clock_settings, chess_game);
     }
-    GameEnd::gameEndAnimation(winner); //REMOVE COMMENT WHEN IMPLEMENTED
+    GameEnd::gameEndAnimation(chess_game.winner); //REMOVE COMMENT WHEN IMPLEMENTED
 }

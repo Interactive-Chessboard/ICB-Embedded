@@ -23,8 +23,9 @@ int string_to_int(std::string str, bool &err)
 
 // Sending format (SendMove: {})
 // Receiving format (FromSquare: {int}, ToSquare: {int}, WhiteTime: {int}, BlackTime: {int}, Winner: {String})
-Move Bluetooth::getOnlineMove(ClockSetting &clock_settings, Winner &winner, const std::vector<Move> &legal_moves)
+std::pair<Move, Winner> Bluetooth::getOnlineMove(ClockSetting &clock_settings, const std::vector<Move> &legal_moves)
 {
+    Winner winner;
     for (int i = 0; i < 5; i++)
     {
         Bluetooth::sendBluetoothMessage("SendMove: {}");
@@ -88,10 +89,10 @@ Move Bluetooth::getOnlineMove(ClockSetting &clock_settings, Winner &winner, cons
         {
             if (legal_moves[i].from_square == from_square && legal_moves[i].to_square == to_square)
             {
-                return legal_moves[i];
+                return {legal_moves[i], winner};
             }
         }
 
     }
-    return Move{};
+    return {Move{}, winner};
 }

@@ -17,5 +17,5 @@ void sendBluetoothMessage(std::string);
 std::string extractValue(const std::string&, const std::string&);
 bool confirmConnection(void);
 Winner sendMove(const Move&);
-Move getOnlineMove(ClockSetting&, Winner&, const std::vector<Move>&);
+std::pair<Move, Winner> getOnlineMove(ClockSetting&, const std::vector<Move>&);
 };

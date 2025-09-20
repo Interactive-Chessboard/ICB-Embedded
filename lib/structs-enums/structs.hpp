@@ -60,6 +60,7 @@ struct ChessGame
     };
     char castle[4]{'K', 'Q', 'k', 'q'};
     int en_passant {-1};
+    Winner winner = Winner::Nil;
 };
 
 
