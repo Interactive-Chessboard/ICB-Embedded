@@ -1,7 +1,5 @@
 // bluetooth.cpp
 #include "bluetooth.hpp"
-#include <queue>
-#include <thread>
 
 BLEServer *pServer = NULL;
 BLECharacteristic *pCharacteristic = NULL;

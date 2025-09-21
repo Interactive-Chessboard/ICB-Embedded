@@ -62,15 +62,15 @@ std::pair<Move, Winner> Bluetooth::getOnlineMove(ClockSetting &clock_settings, c
         {
             continue;
         }
-        clock_settings.time_white = time_white;
+        clock_settings.time_white.store(time_white);
 
-        std::string time_black_str = Bluetooth::extractValue(received_msg, "WhiteTime");
+        std::string time_black_str = Bluetooth::extractValue(received_msg, "BlackTime");
         int time_black = string_to_int(time_black_str, error);
         if (error)
         {
             continue;
         }
-        clock_settings.time_white = time_white;
+        clock_settings.time_black.store(time_black);
 
         // move
         std::string from_square_str = Bluetooth::extractValue(received_msg, "FromSquare");
@@ -79,7 +79,7 @@ std::pair<Move, Winner> Bluetooth::getOnlineMove(ClockSetting &clock_settings, c
         {
             continue;
         }
-        std::string to_square_str = Bluetooth::extractValue(received_msg, "FromSquare");
+        std::string to_square_str = Bluetooth::extractValue(received_msg, "ToSquare");
         int to_square = string_to_int(to_square_str, error);
         if (error)
         {

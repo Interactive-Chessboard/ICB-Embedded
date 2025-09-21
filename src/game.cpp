@@ -5,7 +5,7 @@
 ChessGame gameLoopOnline(Color player_color, ClockSetting &clock_settings)
 {
     ChessGame chess_game;
-    while (clock_settings.active)
+    while (clock_settings.active.load())
     {
         Move move;
         std::vector<Move> legal_moves = LegalMoves::generateLegalMoves(chess_game);
@@ -29,6 +29,7 @@ ChessGame gameLoopOnline(Color player_color, ClockSetting &clock_settings)
         }
         
         chess_game = move.chess_game;
+        clock_settings.player_turn.store(chess_game.player_turn);
     }
     return chess_game;
 }
@@ -37,7 +38,7 @@ ChessGame gameLoopOnline(Color player_color, ClockSetting &clock_settings)
 ChessGame gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings)
 {
     ChessGame chess_game;
-    while (clock_settings.active)
+    while (clock_settings.active.load())
     {
         // Generate a list of legal moves/positions and looks if the game has ended
         std::vector<Move> legal_moves = LegalMoves::generateLegalMoves(chess_game);
@@ -59,7 +60,8 @@ ChessGame gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings)
             Board::playerMakeOpponentMove(clock_settings, move); //REMOVE COMMENT WHEN IMPLEMENTED
         }
 
-        chess_game = move.chess_game;  
+        chess_game = move.chess_game;
+        clock_settings.player_turn.store(chess_game.player_turn); 
     }
     return chess_game;
 }
@@ -69,7 +71,7 @@ ChessGame gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings)
 ChessGame gameLoopMultiplayerOffline(ClockSetting &clock_settings)
 {
     ChessGame chess_game;
-    while (clock_settings.active)
+    while (clock_settings.active.load())
     {
         // Generate a list of legal moves/positions and looks if the game has ended
         std::vector<Move> legal_moves = LegalMoves::generateLegalMoves(chess_game);
@@ -83,7 +85,8 @@ ChessGame gameLoopMultiplayerOffline(ClockSetting &clock_settings)
         // Make the move on the board
         Move move = Board::playerTurnDetectMoves(clock_settings, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
 
-        chess_game = move.chess_game;  
+        chess_game = move.chess_game;
+        clock_settings.player_turn.store(chess_game.player_turn); 
     }
     return chess_game;
 }
@@ -99,26 +102,18 @@ void Game::game(Settings game_settings)
     // ---Start Loop---
     ChessGame chess_game;
     std::thread clock_thread;
+    clock_thread = std::thread(ChessClock::chess_clock, std::ref(clock_settings));
     switch (game_settings.game_mode)
     {
     case GameMode::Online:
-    {
-        clock_thread = std::thread(ChessClock::chess_clock_online, std::ref(clock_settings)); //REMOVE COMMENT WHEN IMPLEMENTED
         chess_game = gameLoopOnline(game_settings.player_color, std::ref(clock_settings));
         break;
-    }
     case GameMode::BotsOffline:
-    {
-        clock_thread = std::thread(ChessClock::chess_clock_offline, std::ref(clock_settings)); //REMOVE COMMENT WHEN IMPLEMENTED
         chess_game = gameLoopBotsOffline(game_settings.player_color, std::ref(clock_settings));
         break;
-    }
     case GameMode::MultiplayerOffline:
-    {
-        clock_thread = std::thread(ChessClock::chess_clock_offline, std::ref(clock_settings)); //REMOVE COMMENT WHEN IMPLEMENTED
         chess_game = gameLoopMultiplayerOffline(std::ref(clock_settings));
         break;
-    }
     default:
         return;
     }
