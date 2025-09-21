@@ -13,5 +13,5 @@ bool isInCheck(ChessGame, int = -1);
 Winner calculateEndGame(ChessGame, std::vector<Move>);
 Winner getClockWinner(const ClockSetting&, const ChessGame&);
 bool insufficientMaterials(const ChessGame&, Color);
-Winner chess_clock(ClockSetting&);
+void chess_clock(ClockSetting&);
 }
