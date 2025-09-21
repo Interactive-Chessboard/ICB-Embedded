@@ -1,7 +1,7 @@
 // chess_clock.cpp
-#include "chess_clock.hpp"
+#include "chess.hpp"
 
-Winner ChessClock::chess_clock(ClockSetting &clock_settings)
+Winner Chess::chess_clock(ClockSetting &clock_settings)
 {
     using clock = std::chrono::steady_clock;
     constexpr std::chrono::milliseconds interval(10);

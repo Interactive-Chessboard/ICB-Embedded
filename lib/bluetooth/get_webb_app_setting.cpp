@@ -1,7 +1,7 @@
 // get_web_app_settings.cpp
-#include "game_settings.hpp"
+#include "bluetooth.hpp"
 
-Settings GameSettings::getWebAppSettings()
+Settings Bluetooth::getWebAppSettings()
 {
     Settings game_settings;
     game_settings.player_color = Color::White;

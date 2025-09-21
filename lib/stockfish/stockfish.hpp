@@ -1,7 +1,7 @@
-// opponent.hpp
+// stockfish.hpp
 #pragma once
 #include "structs.hpp"
-namespace Bots
+namespace Stockfish
 {
 Move getBotMove(ChessGame);
 };

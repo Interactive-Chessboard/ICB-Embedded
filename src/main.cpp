@@ -1,6 +1,5 @@
 // main.cpp
 #include <Arduino.h>
-#include "bluetooth.hpp"
 #include "game.hpp"
 #include "structs.hpp"
 
@@ -17,7 +16,7 @@ void loop()
 {
   // ---getGameSettings---
   // Get game settings through the screen and buttons
-  Settings game_settings = GameSettings::getGameSettings(); //REMOVE COMMENT WHEN IMPLEMENTED
+  Settings game_settings = Board::getGameSettings(); //REMOVE COMMENT WHEN IMPLEMENTED
 
   // ---Bluetooth Connect---
   // Confirm the bluetooth connection if playing online
@@ -38,7 +37,7 @@ void loop()
   // Get game settings from the web app if playing online
   if (game_settings.game_mode == GameMode::Online)
   {
-    game_settings = GameSettings::getWebAppSettings(); //REMOVE COMMENT WHEN IMPLEMENTED
+    game_settings = Bluetooth::getWebAppSettings(); //REMOVE COMMENT WHEN IMPLEMENTED
   }
 
 

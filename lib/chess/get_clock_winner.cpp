@@ -1,8 +1,8 @@
 // get_clock_winner.cpp
-#include "game_end.hpp"
+#include "chess.hpp"
 
 
-Winner GameEnd::getClockWinner(const ClockSetting &clock_settings, const ChessGame &chess_game)
+Winner Chess::getClockWinner(const ClockSetting &clock_settings, const ChessGame &chess_game)
 {
     if (clock_settings.time_white <= 0 && !insufficientMaterials(chess_game, Color::Black))
     {

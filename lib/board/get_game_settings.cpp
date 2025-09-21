@@ -1,7 +1,7 @@
 // get_game_settings.cpp
-#include "game_settings.hpp"
+#include "board.hpp"
 
-Settings GameSettings::getGameSettings()
+Settings Board::getGameSettings()
 {
     Settings game_settings;
     game_settings.game_mode = GameMode::MultiplayerOffline;

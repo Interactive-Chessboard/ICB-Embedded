@@ -1,5 +1,5 @@
 // legal_moves.cpp
-#include "legal_moves.hpp"
+#include "chess.hpp"
 
 std::vector<Move> whitePawnMoves(const Piece board[64], int index)
 {
@@ -507,7 +507,7 @@ std::vector<Move> castleMoves(ChessGame chess_game)
     // King side castle white
     if (chess_game.player_turn == Color::White && chess_game.castle[0] == 'K' &&
         chess_game.board[5] == Piece() && chess_game.board[6] == Piece() &&
-        !LegalMoves::isInCheck(chess_game, 4) && !LegalMoves::isInCheck(chess_game, 5) && !LegalMoves::isInCheck(chess_game, 6))
+        !Chess::isInCheck(chess_game, 4) && !Chess::isInCheck(chess_game, 5) && !Chess::isInCheck(chess_game, 6))
         {
             Move move = Move(4, 6);
             move.chess_game = chess_game;
@@ -525,7 +525,7 @@ std::vector<Move> castleMoves(ChessGame chess_game)
     // Queen side castle black
     if (chess_game.player_turn == Color::White && chess_game.castle[1] == 'Q' &&
         chess_game.board[3] == Piece() && chess_game.board[2] == Piece() && chess_game.board[1] == Piece() &&
-        !LegalMoves::isInCheck(chess_game, 4) && !LegalMoves::isInCheck(chess_game, 3) && !LegalMoves::isInCheck(chess_game, 2))
+        !Chess::isInCheck(chess_game, 4) && !Chess::isInCheck(chess_game, 3) && !Chess::isInCheck(chess_game, 2))
         {
             Move move = Move(4, 2);
             move.chess_game = chess_game;
@@ -544,7 +544,7 @@ std::vector<Move> castleMoves(ChessGame chess_game)
     // King side castle black
     if (chess_game.player_turn == Color::Black && chess_game.castle[2] == 'k' &&
         chess_game.board[61] == Piece() && chess_game.board[62] == Piece() &&
-        !LegalMoves::isInCheck(chess_game, 60) && !LegalMoves::isInCheck(chess_game, 61) && !LegalMoves::isInCheck(chess_game, 62))
+        !Chess::isInCheck(chess_game, 60) && !Chess::isInCheck(chess_game, 61) && !Chess::isInCheck(chess_game, 62))
         {
             Move move = Move(60, 62);
             move.chess_game = chess_game;
@@ -562,7 +562,7 @@ std::vector<Move> castleMoves(ChessGame chess_game)
     // Queen side castle black
     if (chess_game.player_turn == Color::Black && chess_game.castle[3] == 'q' &&
         chess_game.board[57] == Piece() && chess_game.board[58] == Piece() && chess_game.board[59] == Piece() &&
-        !LegalMoves::isInCheck(chess_game, 58) && !LegalMoves::isInCheck(chess_game, 59) && !LegalMoves::isInCheck(chess_game, 60))
+        !Chess::isInCheck(chess_game, 58) && !Chess::isInCheck(chess_game, 59) && !Chess::isInCheck(chess_game, 60))
         {
            Move move = Move(60, 58);
             move.chess_game = chess_game;
@@ -581,7 +581,7 @@ std::vector<Move> castleMoves(ChessGame chess_game)
 }
 
 
-std::vector<Move> LegalMoves::generateLegalMoves(ChessGame chess_game)
+std::vector<Move> Chess::generateLegalMoves(ChessGame chess_game)
 {
 
     // Pseudo legal moves
@@ -601,7 +601,7 @@ std::vector<Move> LegalMoves::generateLegalMoves(ChessGame chess_game)
     // Verify move is legal
     for (auto move : pseudo_moves)
     {
-        if (!LegalMoves::isInCheck(move.chess_game))
+        if (!Chess::isInCheck(move.chess_game))
         {
             // Update player turn flag at the end
             move.chess_game.player_turn = (chess_game.player_turn == Color::White) ? Color::Black : Color::White;

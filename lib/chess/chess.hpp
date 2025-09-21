@@ -1,11 +1,17 @@
-// game_end.hpp
+// chess.hpp
 #pragma once
 #include <vector>
+#include <atomic>
+#include <thread>
+#include <chrono>
 #include "structs.hpp"
-#include "enums.hpp"
-namespace GameEnd
+
+namespace Chess
 {
+std::vector<Move> generateLegalMoves(ChessGame);
+bool isInCheck(ChessGame, int = -1);
 Winner calculateEndGame(ChessGame, std::vector<Move>);
 Winner getClockWinner(const ClockSetting&, const ChessGame&);
 bool insufficientMaterials(const ChessGame&, Color);
+Winner chess_clock(ClockSetting&);
 }

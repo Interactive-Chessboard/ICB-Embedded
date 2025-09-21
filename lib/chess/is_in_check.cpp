@@ -1,7 +1,7 @@
 // is_in_check.cpp
-#include "legal_moves.hpp"
+#include "chess.hpp"
 
-bool LegalMoves::isInCheck(ChessGame chess_game, int square)
+bool Chess::isInCheck(ChessGame chess_game, int square)
 {
     // Find the king
     if (square == -1)

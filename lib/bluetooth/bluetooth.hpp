@@ -20,4 +20,5 @@ std::string extractValue(const std::string&, const std::string&);
 bool confirmConnection(void);
 Winner sendMove(const Move&);
 std::pair<Move, Winner> getOnlineMove(ClockSetting&, const std::vector<Move>&);
+Settings getWebAppSettings();
 };
