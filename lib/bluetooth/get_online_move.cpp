@@ -1,25 +1,6 @@
 // get_online_move.cpp
 #include "bluetooth.hpp"
 
-int string_to_int(std::string str, bool &err)
-{
-    int value;
-    try
-    {
-        value = std::stoi(str);
-    } 
-    catch (const std::invalid_argument&) 
-    {
-        err = true;
-    } 
-    catch (const std::out_of_range&) 
-    {
-        err = true;
-    }
-    return value;
-}
-
-
 
 // Sending format (SendMove: {})
 // Receiving format (FromSquare: {int}, ToSquare: {int}, WhiteTime: {int}, BlackTime: {int}, Winner: {String})
@@ -57,7 +38,7 @@ std::pair<Move, Winner> Bluetooth::getOnlineMove(ClockSetting &clock_settings, c
 
         // clock
         std::string time_white_str = Bluetooth::extractValue(received_msg, "WhiteTime");
-        int time_white = string_to_int(time_white_str, error);
+        int time_white = Bluetooth::string_to_int(time_white_str, error);
         if (error)
         {
             continue;
@@ -65,7 +46,7 @@ std::pair<Move, Winner> Bluetooth::getOnlineMove(ClockSetting &clock_settings, c
         clock_settings.time_white.store(time_white);
 
         std::string time_black_str = Bluetooth::extractValue(received_msg, "BlackTime");
-        int time_black = string_to_int(time_black_str, error);
+        int time_black = Bluetooth::string_to_int(time_black_str, error);
         if (error)
         {
             continue;
@@ -74,13 +55,13 @@ std::pair<Move, Winner> Bluetooth::getOnlineMove(ClockSetting &clock_settings, c
 
         // move
         std::string from_square_str = Bluetooth::extractValue(received_msg, "FromSquare");
-        int from_square = string_to_int(from_square_str, error);
+        int from_square = Bluetooth::string_to_int(from_square_str, error);
         if (error)
         {
             continue;
         }
         std::string to_square_str = Bluetooth::extractValue(received_msg, "ToSquare");
-        int to_square = string_to_int(to_square_str, error);
+        int to_square = Bluetooth::string_to_int(to_square_str, error);
         if (error)
         {
             continue;

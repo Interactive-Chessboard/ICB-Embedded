@@ -41,6 +41,24 @@ class MyCallbacks : public BLECharacteristicCallbacks {
     }
 };
 
+int Bluetooth::string_to_int(std::string str, bool &err)
+{
+    int value;
+    try
+    {
+        value = std::stoi(str);
+    } 
+    catch (const std::invalid_argument&) 
+    {
+        err = true;
+    } 
+    catch (const std::out_of_range&) 
+    {
+        err = true;
+    }
+    return value;
+}
+
 std::string Bluetooth::extractValue(const std::string& input, const std::string& key) 
 {
     size_t key_position = input.find(key + ": {");

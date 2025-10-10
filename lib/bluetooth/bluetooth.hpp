@@ -16,6 +16,7 @@ namespace Bluetooth
 void init(void);
 std::string getBluetoothMessage(void);
 void sendBluetoothMessage(std::string);
+int string_to_int(std::string, bool&);
 std::string extractValue(const std::string&, const std::string&);
 bool confirmConnection(void);
 Winner sendMove(const Move&);
