@@ -31,7 +31,7 @@ void loop()
   // ---Web App Settings---
   if (game_settings.game_mode == GameMode::Online)
   {
-    game_settings = Bluetooth::getWebAppSettings(); //REMOVE COMMENT WHEN IMPLEMENTED
+    game_settings = Bluetooth::getWebAppSettings();
   }
 
   // ---Start Game---

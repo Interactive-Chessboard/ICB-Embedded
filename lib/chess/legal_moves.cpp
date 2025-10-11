@@ -354,12 +354,12 @@ Move updateBoard(ChessGame chess_game, Move move)
     }
 
     if (chess_game.player_turn == Color::Black && (move.to_square - move.from_square) == -16 && 
-            chess_game.board[move.to_square] == Piece(Color::Black, PieceType::Pawn) &&
-            ((chess_game.board[move.to_square - 1] == Piece(Color::White, PieceType::Pawn) && move.to_square - 1 >= 40) ||
-            (chess_game.board[move.to_square + 1] == Piece(Color::White, PieceType::Pawn) && move.to_square + 1 < 48)))
-        {
-            chess_game.en_passant = move.to_square + 8;
-        }
+        chess_game.board[move.to_square] == Piece(Color::Black, PieceType::Pawn) &&
+        ((chess_game.board[move.to_square - 1] == Piece(Color::White, PieceType::Pawn) && move.to_square - 1 >= 32) ||
+        (chess_game.board[move.to_square + 1] == Piece(Color::White, PieceType::Pawn) && move.to_square + 1 < 39)))
+    {
+        chess_game.en_passant = move.to_square + 8;
+    }
 
     // Castle flags
     if (chess_game.castle[0] == 'K' && 
