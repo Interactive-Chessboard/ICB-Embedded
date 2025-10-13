@@ -4,6 +4,9 @@
 #include <atomic>
 #include <thread>
 #include <chrono>
+#include <map>
+#include <array>
+#include <limits.h>
 #include "structs.hpp"
 
 namespace Chess
@@ -14,4 +17,5 @@ Winner calculateEndGame(ChessGame, std::vector<Move>);
 Winner getClockWinner(const ClockSetting&, const ChessGame&);
 bool insufficientMaterials(const ChessGame&, Color);
 void chess_clock(ClockSetting&);
+Move botMove(ChessGame, std::vector<Move>);
 }

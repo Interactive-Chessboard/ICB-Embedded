@@ -56,7 +56,7 @@ ChessGame gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings)
         }
         else
         {
-            move = Stockfish::getBotMove(chess_game); //REMOVE COMMENT WHEN IMPLEMENTED
+            move = Chess::botMove(chess_game, legal_moves);
             Board::playerMakeOpponentMove(clock_settings, move); //REMOVE COMMENT WHEN IMPLEMENTED
         }
 

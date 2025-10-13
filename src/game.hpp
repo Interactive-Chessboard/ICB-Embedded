@@ -5,7 +5,6 @@
 #include "bluetooth.hpp"
 #include "board.hpp"
 #include "chess.hpp"
-#include "stockfish.hpp"
 #include "structs.hpp"
 
 namespace Game
