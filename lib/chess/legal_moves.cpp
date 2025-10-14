@@ -4,6 +4,7 @@
 std::vector<Move> whitePawnMoves(const Piece board[64], int index)
 {
     std::vector<Move> moves;
+    moves.reserve(10);
     // Invalid
     if (index >= 56 && index <= 63)
     {
@@ -38,6 +39,7 @@ std::vector<Move> whitePawnMoves(const Piece board[64], int index)
     if (index >= 48 && index <= 55)
     {
         std::vector<Move> new_moves;
+        new_moves.reserve(4);
         for (auto move : moves)
         {
             new_moves.push_back(Move(move.from_square, move.to_square, Piece(Color::White, PieceType::Queen)));
@@ -53,6 +55,7 @@ std::vector<Move> whitePawnMoves(const Piece board[64], int index)
 std::vector<Move> blackPawnMoves(const Piece board[64], int index)
 {
     std::vector<Move> moves;
+    moves.reserve(10);
     // Invalid
     if (index >= 0 && index <= 7)
     {
@@ -87,6 +90,7 @@ std::vector<Move> blackPawnMoves(const Piece board[64], int index)
     if (index >= 8 && index <= 15)
     {
         std::vector<Move> new_moves;
+        moves.reserve(4);
         for (auto move : moves)
         {
             new_moves.push_back(Move(move.from_square, move.to_square, Piece(Color::Black, PieceType::Queen)));
@@ -102,6 +106,7 @@ std::vector<Move> blackPawnMoves(const Piece board[64], int index)
 std::vector<Move> knightMoves(const Piece board[64], int index)
 {
     std::vector<Move> moves;
+    moves.reserve(10);
     Color piece_color = board[index].color;
 
     int knight_moves_left[4] = {index - 17, index - 10, index + 6, index + 15}; // kight moves (not magic numbers)
@@ -126,6 +131,7 @@ std::vector<Move> knightMoves(const Piece board[64], int index)
 std::vector<Move> bishopMoves(const Piece board[64], int index)
 {
     std::vector<Move> moves;
+    moves.reserve(10);
     Color piece_color = board[index].color;
 
     // bottom left
@@ -214,6 +220,7 @@ std::vector<Move> bishopMoves(const Piece board[64], int index)
 std::vector<Move> rookMoves(const Piece board[64], int index)
 {
     std::vector<Move> moves;
+    moves.reserve(10);
     Color piece_color = board[index].color;
 
     // left
@@ -301,6 +308,7 @@ std::vector<Move> rookMoves(const Piece board[64], int index)
 std::vector<Move> kingMoves(const Piece board[64], int index)
 {
     std::vector<Move> moves;
+    moves.reserve(10);
     Color piece_color = board[index].color;
 
     int king_moves_left[3] = {index - 9, index - 1, index + 7}; // king moves (not magic numbers)
@@ -397,6 +405,7 @@ Move updateBoard(ChessGame chess_game, Move move)
 std::vector<Move> generatePseudoLegalMoves(ChessGame chess_game)
 {
     std::vector<Move> pseudo_moves;
+    pseudo_moves.reserve(50);
 
     // Normal moves
     for (int i = 0; i < 64; i++)
@@ -407,7 +416,9 @@ std::vector<Move> generatePseudoLegalMoves(ChessGame chess_game)
             continue;
         }
         std::vector<Move> new_moves;
+        new_moves.reserve(50);
         std::vector<Move> new_moves2;
+        new_moves2.reserve(10);
         switch (piece.piece_type) 
         {
         case PieceType::Pawn:
@@ -437,6 +448,7 @@ std::vector<Move> generatePseudoLegalMoves(ChessGame chess_game)
     }
 
     std::vector<Move> complete_pseudo_moves;
+    complete_pseudo_moves.reserve(50);
     for (auto move : pseudo_moves)
     {
         Move update_move = updateBoard(chess_game, move);
@@ -450,6 +462,7 @@ std::vector<Move> generatePseudoLegalMoves(ChessGame chess_game)
 std::vector<Move> enPassantMoves(ChessGame chess_game)
 {
     std::vector<Move> moves;
+    moves.reserve(1);
     if (chess_game.player_turn == Color::White)
     {
         if (chess_game.board[chess_game.en_passant - 7] == Piece(Color::White, PieceType::Pawn))
@@ -503,6 +516,7 @@ std::vector<Move> enPassantMoves(ChessGame chess_game)
 std::vector<Move> castleMoves(ChessGame chess_game)
 {
     std::vector<Move> moves;
+    moves.reserve(2);
 
     // King side castle white
     if (chess_game.player_turn == Color::White && chess_game.castle[0] == 'K' &&
@@ -586,9 +600,11 @@ std::vector<Move> Chess::generateLegalMoves(ChessGame chess_game)
 
     // Pseudo legal moves
     std::vector<Move> pseudo_moves = generatePseudoLegalMoves(chess_game);
+    pseudo_moves.reserve(50);
 
     // En passant
     std::vector<Move> en_passant_moves;
+    en_passant_moves.reserve(1);
     if (chess_game.en_passant != -1)
     {
         en_passant_moves = enPassantMoves(chess_game);
