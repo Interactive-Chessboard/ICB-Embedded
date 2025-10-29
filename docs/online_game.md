@@ -131,11 +131,11 @@ The animation request contains the following fields.
     "type": "animation",
     "animation": [
         {
-            "board": [[0, 0, 255], [0, 0, 255], ],
+            "board": [[0, 0, 255], [0, 0, 255], "..."],
             "time" : 10
         },
         {
-            "board": [[0, 0, 0], [0, 0, 255], ],
+            "board": [[0, 0, 0], [0, 0, 255], "..."],
             "time" : 10
         }
     ]
