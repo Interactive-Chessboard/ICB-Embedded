@@ -84,7 +84,8 @@ The timeout error will have this format: `"type": "error, timedout"`.
 
 
 ### Make move request
-This request is made to request the user of the board to play a legal move. Notice that this request is the same as the set game.
+This request is made to request the user of the board to play a legal move. Notice that this request is almost the same as the set game.
+The fields for castling and the field for en passant is added, since the those information are needed in chess to properly understand the state of the board.
 
 #### Request
 ```json
@@ -92,6 +93,8 @@ This request is made to request the user of the board to play a legal move. Noti
     "id": 1,
     "type": "make_move",
     "board": "RNBQKBNRPPPPPPPP................................pppppppprnbqkbr",
+    "castling": "KQ.q",
+    "en_passant": -1,
     "old_move": {
         "color": [0, 0, 255],
         "from": 12,
