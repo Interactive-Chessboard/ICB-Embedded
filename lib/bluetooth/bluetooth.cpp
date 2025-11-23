@@ -7,11 +7,18 @@ std::queue<std::string> receive_queue;
 std::queue<std::string> send_queue;
 
 
+/**
+ * @brief Blocks until a message is available, then returns and removes it.
+ *
+ * Used by both the send and receive queues. Sleeps briefly while waiting.
+ *
+ * @param queue Reference to the queue to read from.
+ * @return The next string from the queue.
+ */
 std::string getFromQueue(std::queue<std::string> &queue)
 {
-    std::string msg = "Error";
-    int time_out_iterations = 12000; // number of 10 miliseconds in 2 min
-    for(int i = 0; i < time_out_iterations; i++) 
+    std::string msg;
+    while(true)
     {
         if (!queue.empty()) 
         {
@@ -25,8 +32,14 @@ std::string getFromQueue(std::queue<std::string> &queue)
 }
 
 
-
-// Callback to handle writes from the BLE client
+/**
+ * @brief BLE callback handler invoked when a client writes to the characteristic.
+ *
+ * When data is written by the client:
+ *  - it is queued internally,
+ *  - the next message in the send queue is retrieved,
+ *  - the response is sent back via BLE notify().
+ */
 class MyCallbacks : public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic *pChar) 
     {
@@ -40,61 +53,6 @@ class MyCallbacks : public BLECharacteristicCallbacks {
         }
     }
 };
-
-int Bluetooth::string_to_int(std::string str, bool &err)
-{
-    int value;
-    try
-    {
-        value = std::stoi(str);
-    } 
-    catch (const std::invalid_argument&) 
-    {
-        err = true;
-    } 
-    catch (const std::out_of_range&) 
-    {
-        err = true;
-    }
-    return value;
-}
-
-std::string Bluetooth::extractValue(const std::string& input, const std::string& key) 
-{
-    size_t key_position = input.find(key + ": {");
-    if (key_position == std::string::npos) 
-    {
-        return "";
-    }
-
-    // Find start of '{'
-    size_t start = input.find('{', key_position);
-    if (start == std::string::npos) 
-    {
-        return "";
-    }
-
-    // Find closing '}'
-    size_t end = input.find('}', start);
-    if (end == std::string::npos) 
-    {
-        return "";
-    }
-
-    // Extract text inside {}
-    return input.substr(start + 1, end - start - 1);
-}
-
-void Bluetooth::sendBluetoothMessage(std::string msg)
-{
-    send_queue.push(msg);
-}
-
-
-std::string Bluetooth::getBluetoothMessage()
-{
-    return getFromQueue(receive_queue);
-}
 
 
 void Bluetooth::init()
@@ -118,3 +76,15 @@ void Bluetooth::init()
     pAdvertising->addServiceUUID(SERVICE_UUID);
     BLEDevice::startAdvertising();
 };
+
+
+std::string Bluetooth::getBluetoothMessage()
+{
+    return getFromQueue(receive_queue);
+}
+
+
+void Bluetooth::sendBluetoothMessage(std::string msg)
+{
+    send_queue.push(msg);
+}
