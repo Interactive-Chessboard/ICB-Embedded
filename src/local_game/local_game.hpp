@@ -1,4 +1,4 @@
-// game.hpp
+// local_game.hpp
 #pragma once
 #include <thread>
 #include <string>
@@ -7,7 +7,4 @@
 #include "chess.hpp"
 #include "structs.hpp"
 
-namespace Game
-{
-void game(Settings);
-};
+void localGame(Settings);

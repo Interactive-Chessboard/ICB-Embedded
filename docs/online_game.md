@@ -86,6 +86,7 @@ The timeout error will have this format: `"type": "error, timedout"`.
 ### Make move request
 This request is made to request the user of the board to play a legal move. Notice that this request is almost the same as the set game.
 The fields for castling and the field for en passant is added, since the those information are needed in chess to properly understand the state of the board.
+The extra time is also added to increase the players clock by that amount of seconds when the player finishes his move.
 
 #### Request
 ```json
@@ -102,6 +103,7 @@ The fields for castling and the field for en passant is added, since the those i
     },
     "white_clock" : 50,
     "black_clok": 60,
+    "extra_time": 5,
     "clock_run_down": "white",
     "timeout": 60
 }

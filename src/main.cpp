@@ -1,7 +1,10 @@
 // main.cpp
 #include <Arduino.h>
-#include "game.hpp"
+#include "online_game/online_game.hpp"
+#include "local_game/local_game.hpp"
 #include "structs.hpp"
+#include "bluetooth.hpp"
+#include "board.hpp"
 
 void setup() 
 {
@@ -15,27 +18,20 @@ void loop()
   // ---getGameSettings---
   Settings game_settings = Board::getGameSettings(); //REMOVE COMMENT WHEN IMPLEMENTED
 
-  // ---Bluetooth Connect---
-  if (game_settings.game_mode == GameMode::Online && !Bluetooth::confirmConnection())
+  // ---Start online game---
+  if (game_settings.game_mode == GameMode::Online)
   {
+    onlineGame();
     return;
   }
 
   // ---Init---
   int timeout_reached = Board::waitForInitBoard(6000); //REMOVE COMMENT WHEN IMPLEMENTED
   if (timeout_reached)
-  {
     return;
-  }
 
-  // ---Web App Settings---
-  if (game_settings.game_mode == GameMode::Online)
-  {
-    game_settings = Bluetooth::getWebAppSettings();
-  }
-
-  // ---Start Game---
-  Game::game(game_settings);
+  // ---Local Game---
+  localGame(game_settings);
 }
 
 // Note sur comment print in std::string
