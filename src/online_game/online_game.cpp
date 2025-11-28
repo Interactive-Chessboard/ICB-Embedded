@@ -79,5 +79,11 @@ std::string extract_value(std::string str, std::string key)
 
 void onlineGame()
 {
-    
+    while(true)
+    {
+        std::string request = Bluetooth::getBluetoothMessage();
+        std::string request_id = extract_value(request, "id");
+        std::string request_type = extract_value(request, "type");
+        int time_out = stoi(extract_value(request, "time_out"));
+    }
 }

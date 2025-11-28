@@ -66,7 +66,7 @@ Note an old move can be set to -1, -1 if there is no old move to display
         "to": 28
     },
     "white_clock" : 50,
-    "black_clok": 60,
+    "black_clock": 60,
     "clock_run_down": "white",
     "timeout": 60
 }
@@ -106,7 +106,7 @@ Colors are added to customize play
     "legal_move_color": [0, 255, 0],
     "illegal_move_color": [255, 0, 0],
     "white_clock" : 50,
-    "black_clok": 60,
+    "black_clock": 60,
     "extra_time": 5,
     "clock_run_down": "white",
     "timeout": 60
@@ -122,7 +122,8 @@ Notice how the move doesn't contain a promotion field. The promotions will be de
 {
     "id": 1,
     "type": "ok",
-    "move": [12, 28]
+    "move_from": 12,
+    "move_to": 28
 }
 ```
 

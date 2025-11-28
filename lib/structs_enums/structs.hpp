@@ -3,6 +3,7 @@
 #include "enums.hpp"
 #include <mutex>
 #include <atomic>
+#include <array>
 
 struct Piece {
     Color color;
@@ -98,4 +99,20 @@ struct Settings
   int game_time_min; // Game time in minutes
   int extra_time_sec; // Extra time per move in seconds
   int bot_strenght; // Bots strenght in elo
+};
+
+
+struct FullChessGame
+{
+    ChessGame chessgame;
+    std::array<u_int8_t, 3> old_color{0, 0, 0};
+    int old_move_from;
+    int old_move_to;
+    std::array<u_int8_t, 3> lifted_color{0, 0, 0};
+    std::array<u_int8_t, 3> legal_move_color{0, 0, 0};
+    std::array<u_int8_t, 3> illegal_move_color{0, 0, 0};
+    int white_clock;
+    int black_clock;
+    int extra_time;
+    Color clock_run_down;
 };
