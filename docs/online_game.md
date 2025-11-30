@@ -160,8 +160,28 @@ The animation request contains the following fields.
 ```
 
 
+### End task
+This request ends one of the tasks currently running. Since the server can only process a single task at a time, an end task request will end that task without needing to specify it.
+
+#### Request
+```json
+{
+    "id": 1,
+    "type": "end_task"
+}
+```
+#### Response:
+```json
+{
+    "id": 1,
+    "type": "ok"
+}
+```
+
+
 ### Close request
 To terminate the webapps control over the stateless embedded system, the web app can send a close request to allow the esp32 to return to the top of the main loop and decide a new game mode if it wishes.
+A termination works at any point, even if another task is in progress.
 
 #### Request
 ```json
