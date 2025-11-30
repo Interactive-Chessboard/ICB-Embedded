@@ -77,13 +77,65 @@ std::string extract_value(std::string str, std::string key)
 }
 
 
+std::string makeReturnMsg(std::string request_id, std::string status)
+{
+    return "{\"id\": " + request_id + ", \"type\": \"" + status + "\"}";
+}
+
+
+std::string setBoard(std::string request)
+{
+    return "ok";
+}
+
+
+std::string makeMove(std::string request)
+{
+    return "ok";
+}
+
+
+std::string animation(std::string request)
+{
+    return "ok";
+}
+
+
 void onlineGame()
 {
     while(true)
     {
         std::string request = Bluetooth::getBluetoothMessage();
         std::string request_id = extract_value(request, "id");
+
         std::string request_type = extract_value(request, "type");
-        int time_out = stoi(extract_value(request, "time_out"));
+        std::string status;
+        if (request_type == "available")
+        {
+            status = "ok"; 
+        }
+        else if (request_type == "close")
+        {
+            Bluetooth::sendBluetoothMessage(makeReturnMsg(request_id, "ok"));
+            return;
+        }
+        else if (request_type == "set_board")
+        {
+            status = setBoard(request);
+        }
+        else if (request_type == "make_move")
+        {
+            status = makeMove(request);
+        }
+        else if (request_type == "animation")
+        {
+            status = animation(request);
+        }
+        else
+        {
+            status = "Error, unkown request";
+        }
+
+        Bluetooth::sendBluetoothMessage(makeReturnMsg(request_id, status));
     }
 }
