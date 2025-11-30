@@ -5,6 +5,7 @@
 #include "online_game/online_game.hpp"
 #include "local_game/local_game.hpp"
 #include "game_settings/game_settings.hpp"
+#include "game_clock/game_clock.hpp"
 #include "structs.hpp"
 #include "bluetooth.hpp"
 #include "board.hpp"
@@ -18,8 +19,13 @@ void setup()
 
 void loop()
 {
-  // ---getGameSettings---
+  // ---Game Settings---
   Settings game_settings = getGameSettings(); //REMOVE COMMENT WHEN IMPLEMENTED
+
+  // ---Start Game Clock---
+    std::thread clock_thread;
+    ClockSetting clock_settings(game_settings.game_time_min, game_settings.extra_time_sec);
+    clock_thread = std::thread(game_clock, std::ref(clock_settings));
 
   // ---Start online game---
   if (game_settings.game_mode == GameMode::Online)

@@ -11,6 +11,9 @@ struct LedColor {
 };
 
 
+
+
+
 namespace Board
 {
 // board
@@ -19,5 +22,9 @@ u_int64_t getBoardArr();
 // lights
 void setLed(std::array<LedColor, 64>);
 void clearLed(void);
+
+
+// screen
+void setTime(int white_time_ms, int black_time_ms);
 
 };

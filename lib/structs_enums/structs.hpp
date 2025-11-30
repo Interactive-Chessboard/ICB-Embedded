@@ -78,34 +78,3 @@ struct Move
 };
 
 
-struct ClockSetting
-{
-    std::atomic<bool> active{true}; // True if a winner hasn't been declared
-    std::atomic<Color> player_turn{Color::White}; // Players turn do determine the active clock
-    std::atomic<int> time_white; // Time remaining on whites clock in 1/100th of a second
-    std::atomic<int> time_black; // Same for black
-    std::atomic<int> extra_time; // Extra time in 1/100th of a second to add after each move
-    std::atomic<bool> white_start_timer{false}; // Start the timer after whites first move
-    std::atomic<bool> black_start_timer{false}; // Same for black
-    std::mutex mtx; // Mutex to synchronize
-    ClockSetting(int game_time, int extra_time)
-                : time_white(game_time), time_black(game_time), extra_time(extra_time) {}
-};
-
-
-
-
-struct FullChessGame
-{
-    ChessGame chessgame;
-    std::array<u_int8_t, 3> old_color{0, 0, 0};
-    int old_move_from;
-    int old_move_to;
-    std::array<u_int8_t, 3> lifted_color{0, 0, 0};
-    std::array<u_int8_t, 3> legal_move_color{0, 0, 0};
-    std::array<u_int8_t, 3> illegal_move_color{0, 0, 0};
-    int white_clock;
-    int black_clock;
-    int extra_time;
-    Color clock_run_down;
-};
