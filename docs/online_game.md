@@ -66,6 +66,7 @@ Note an old move can be set to -1, -1 if there is no old move to display
         "to": 28
     },
     "clock": {
+        "started": true,
         "white": 50,
         "black": 60,
         "run_down": "w",
@@ -108,6 +109,7 @@ Colors are added to customize play
     "legal_move_color": [0, 255, 0],
     "illegal_move_color": [255, 0, 0],
     "clock": {
+        "started": true,
         "white": 50,
         "black": 60,
         "extra_time": 5,

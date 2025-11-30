@@ -92,14 +92,7 @@ struct ClockSetting
                 : time_white(game_time), time_black(game_time), extra_time(extra_time) {}
 };
 
-struct Settings
-{
-  GameMode game_mode;
-  Color player_color;
-  int game_time_min; // Game time in minutes
-  int extra_time_sec; // Extra time per move in seconds
-  int bot_strenght; // Bots strenght in elo
-};
+
 
 
 struct FullChessGame
