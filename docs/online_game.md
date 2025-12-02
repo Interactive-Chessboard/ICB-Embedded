@@ -148,11 +148,11 @@ The animation request contains the following fields.
     "animation": [
         {
             "board": [[0, 0, 255], [0, 0, 255], "..."],
-            "time" : 10
+            "time_ms" : 1000
         },
         {
             "board": [[0, 0, 0], [0, 0, 255], "..."],
-            "time" : 10
+            "time_ms" : 1000
         }
     ]
 }

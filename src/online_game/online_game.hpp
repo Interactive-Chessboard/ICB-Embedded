@@ -6,5 +6,7 @@
 #include <string>
 #include "structs.hpp"
 #include "bluetooth.hpp"
+#include "animations.hpp"
+#include "extract_value.hpp"
 
 void onlineGame(void);

@@ -1,6 +1,10 @@
 // board.hpp
 #pragma once
-#include "structs.hpp"
+#include <vector>
+#include <chrono>
+#include <thread>
+#include <string>
+#include <atomic>
 
 struct LedColor {
     u_int8_t red;
@@ -25,7 +29,7 @@ u_int64_t getBoardArr();
 // lights
 void setLed(std::array<LedColor, 64>);
 void clearLed(void);
-void playAnimation(std::atomic<bool>&, const std::vector<Animation>&);
+std::string playAnimation(std::atomic<bool>&, const std::vector<Animation>&);
 
 // screen
 void setTime(int white_time_ms, int black_time_ms);

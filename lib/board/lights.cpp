@@ -1,8 +1,4 @@
 // lights.cpp
-#include <vector>
-#include <chrono>
-#include <thread>
-#include <string>
 #include "board.hpp"
 
 
@@ -24,7 +20,7 @@ std::string playAnimations(std::atomic<bool>& stop, const std::vector<Animation>
     for (auto& animation : animations)
     {
         setLed(animation.leds);
-        for (int i = 0; i < animation.display_time_ms / 10; i++)
+        for (int _ = 0; _ < animation.display_time_ms / 10; _++)
         {
             if (stop.load())
             {

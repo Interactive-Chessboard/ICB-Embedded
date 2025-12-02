@@ -1,107 +1,22 @@
 #include "online_game.hpp"
 
 
-std::string extract_value(std::string str, std::string key)
-{
-    // ---- Find the key ----
-    std::string quotedKey;
-    quotedKey = "\"";
-    quotedKey += key;
-    quotedKey += "\"";
-
-    size_t pos = str.find(quotedKey);
-    if (pos == std::string::npos)
-        return {};
-
-    pos += quotedKey.size();
-
-    // ---- Skip whitespace ----
-    while (pos < str.size() && isspace(str[pos]))
-        pos++;
-
-    // ---- Expect ':' ----
-    if (pos >= str.size() || str[pos] != ':')
-        return {};
-    pos++;
-
-    // ---- Skip whitespace ----
-    while (pos < str.size() && isspace(str[pos]))
-        pos++;
-
-    // ---- Determine value type ----
-    char c = str[pos];
-
-    if (c == '"')
-    {
-        size_t start = pos + 1;
-        size_t end = str.find('"', start);
-        if (end == std::string::npos)
-            return {};
-        return str.substr(start, end - start);
-    }
-
-    if (c == '{' || c == '[')
-    {
-        char open = c;
-        char close = (c == '{') ? '}' : ']';
-        size_t depth = 0;
-        size_t i = pos;
-
-        for (; i < str.size(); i++)
-        {
-            if (str[i] == open)
-                depth++;
-            else if (str[i] == close)
-            {
-                depth--;
-                if (depth == 0)
-                    break;
-            }
-        }
-
-        if (i >= str.size())
-            return {};
-
-        return str.substr(pos, i - pos + 1);
-    }
-
-    size_t start = pos;
-    while (pos < str.size() &&
-           str[pos] != ',' &&
-           str[pos] != '}' &&
-           str[pos] != ']' &&
-           !isspace(str[pos]))
-        pos++;
-
-    return str.substr(start, pos - start);
-}
-
-
-std::string makeReturnMsg(std::string request_id, std::string status)
+std::string makeReturnMsg(const std::string& request_id, const std::string& status)
 {
     return "{\"id\": " + request_id + ", \"type\": \"" + status + "\"}";
 }
 
 
-std::string setBoard(std::string request, std::atomic<bool>& end_task_flag)
+std::string setBoard(const std::string& request, std::atomic<bool>& end_task_flag)
 {
     return "ok";
 }
 
 
-std::string makeMove(std::string request, std::atomic<bool>& end_task_flag)
+std::string makeMove(const std::string& request, std::atomic<bool>& end_task_flag)
 {
     return "ok";
 }
-
-
-std::string animation(std::string request, std::atomic<bool>& end_task_flag)
-{
-    return "ok";
-}
-
-
-
 
 
 void runTask(std::string request_type, std::string request, std::string request_id,
@@ -130,7 +45,6 @@ void onlineGame()
 {
     std::atomic<bool> end_task_flag{false};
     std::atomic<bool> task_running_flag{false};
-
     std::thread worker;
 
     while (true)
