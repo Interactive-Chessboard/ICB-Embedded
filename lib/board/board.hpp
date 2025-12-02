@@ -11,7 +11,10 @@ struct LedColor {
 };
 
 
-
+struct Animation {
+    std::array<LedColor, 64> leds;
+    int display_time_ms;
+};
 
 
 namespace Board
@@ -22,7 +25,7 @@ u_int64_t getBoardArr();
 // lights
 void setLed(std::array<LedColor, 64>);
 void clearLed(void);
-
+void playAnimation(std::atomic<bool>&, const std::vector<Animation>&);
 
 // screen
 void setTime(int white_time_ms, int black_time_ms);
