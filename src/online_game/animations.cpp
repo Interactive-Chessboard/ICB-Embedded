@@ -130,5 +130,5 @@ std::string animation(const std::string& request, std::atomic<bool>& end_task_fl
     {
         return e.what();
     }
-    return Board::playAnimation(std::ref(end_task_flag), animations);
+    return Board::playAnimations(std::ref(end_task_flag), animations);
 }

@@ -7,4 +7,4 @@
 #include "chess.hpp"
 #include "structs.hpp"
 
-void localGame(Settings);
+//void localGame(Settings);

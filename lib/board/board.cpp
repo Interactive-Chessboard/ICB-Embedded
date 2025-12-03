@@ -2,7 +2,7 @@
 #include "board.hpp"
 
 
-u_int64_t getBoardArr()
+u_int64_t Board::getBoardArr()
 {
     return 0;
 }

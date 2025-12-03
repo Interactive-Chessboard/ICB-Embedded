@@ -2,7 +2,9 @@
 #include <string>
 #include <array>
 #include <cctype>
+#include <stdexcept>
 #include "board.hpp"
 #include "extract_value.hpp"
 
-std::vector<Animation> parseAnimations(const std::string& text);
+std::vector<Animation> parseAnimations(const std::string&);
+std::string animation(const std::string&, std::atomic<bool>&);

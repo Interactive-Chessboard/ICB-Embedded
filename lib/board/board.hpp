@@ -5,6 +5,7 @@
 #include <thread>
 #include <string>
 #include <atomic>
+#include <array>
 
 struct LedColor {
     u_int8_t red;
@@ -29,7 +30,7 @@ u_int64_t getBoardArr();
 // lights
 void setLed(std::array<LedColor, 64>);
 void clearLed(void);
-std::string playAnimation(std::atomic<bool>&, const std::vector<Animation>&);
+std::string playAnimations(std::atomic<bool>&, const std::vector<Animation>&);
 
 // screen
 void setTime(int white_time_ms, int black_time_ms);

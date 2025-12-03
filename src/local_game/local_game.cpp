@@ -1,6 +1,6 @@
 //game.cpp
 #include "local_game.hpp"
-
+/*
 
 ChessGame gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings)
 {
@@ -90,3 +90,4 @@ void localGame(Settings game_settings)
     }
     Board::gameEndAnimation(chess_game.winner); //REMOVE COMMENT WHEN IMPLEMENTED
 }
+    */

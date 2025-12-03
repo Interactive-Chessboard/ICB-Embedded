@@ -1,7 +1,7 @@
 // get_clock_winner.cpp
 #include "chess.hpp"
 
-
+/*
 Winner Chess::getClockWinner(const ClockSetting &clock_settings, const ChessGame &chess_game)
 {
     if (clock_settings.time_white <= 0 && !insufficientMaterials(chess_game, Color::Black))
@@ -14,3 +14,4 @@ Winner Chess::getClockWinner(const ClockSetting &clock_settings, const ChessGame
     }
     return Winner::Draw;
 }
+*/

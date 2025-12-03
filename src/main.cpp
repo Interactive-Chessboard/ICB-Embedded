@@ -51,7 +51,7 @@ void loop()
     return;
 
   // ---Local Game---
-  localGame(game_settings); //REMOVE COMMENT WHEN IMPLEMENTED
+  //localGame(game_settings); //REMOVE COMMENT WHEN IMPLEMENTED
 }
 
 // Note sur comment print in std::string

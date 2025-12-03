@@ -1,6 +1,6 @@
 // chess_clock.cpp
 #include "chess.hpp"
-
+/*
 void Chess::chess_clock(ClockSetting &clock_settings)
 {
     using clock = std::chrono::steady_clock;
@@ -65,3 +65,4 @@ void Chess::chess_clock(ClockSetting &clock_settings)
         std::this_thread::sleep_until(iteration_start + interval);
     }
 }
+*/
