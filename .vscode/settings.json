@@ -51,6 +51,7 @@
         "condition_variable": "cpp",
         "iomanip": "cpp",
         "mutex": "cpp",
-        "cstring": "cpp"
+        "cstring": "cpp",
+        "iostream": "cpp"
     }
 }

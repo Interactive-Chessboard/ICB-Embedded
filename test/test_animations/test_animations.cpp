@@ -1,7 +1,8 @@
 #include <unity.h>
 #include <string>
-#include "online_game/animations.hpp"
+#include <stdexcept>
 #include "board.hpp"
+#include "online_game/animations.hpp"
 #include "online_game/extract_value.hpp"
 #include "online_game/animations.cpp"
 
@@ -74,9 +75,400 @@ void test_functional_animation()
     }
 }
 
-// Function you want to test
-int add(int a, int b) {
-    return a + b;
+
+void test_light_red_above_bounds()
+{
+    std::string input = R"(
+    [
+    {
+        "board": [
+            [256,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]
+        ],
+        "time_ms": 1000
+    }
+    ]
+    )";
+
+    try
+    {
+        auto animations = parseAnimations(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, colors must be lower than 256", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_light_green_above_bounds()
+{
+    std::string input = R"(
+    [
+    {
+        "board": [
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,256,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]
+        ],
+        "time_ms": 1000
+    }
+    ]
+    )";
+
+    try
+    {
+        auto animations = parseAnimations(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, colors must be lower than 256", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_light_blue_above_bounds()
+{
+    std::string input = R"(
+    [
+    {
+        "board": [
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,256], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]
+        ],
+        "time_ms": 1000
+    }
+    ]
+    )";
+
+    try
+    {
+        auto animations = parseAnimations(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, colors must be lower than 256", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_light_red_under_bounds()
+{
+    std::string input = R"(
+    [
+    {
+        "board": [
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [-1,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]
+        ],
+        "time_ms": 1000
+    }
+    ]
+    )";
+
+    try
+    {
+        auto animations = parseAnimations(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, colors or timeout must be positive", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_light_green_under_bounds()
+{
+    std::string input = R"(
+    [
+    {
+        "board": [
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,-1,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]
+        ],
+        "time_ms": 1000
+    }
+    ]
+    )";
+
+    try
+    {
+        auto animations = parseAnimations(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, colors or timeout must be positive", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_light_blue_under_bounds()
+{
+    std::string input = R"(
+    [
+    {
+        "board": [
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,-1], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]
+        ],
+        "time_ms": 1000
+    }
+    ]
+    )";
+
+    try
+    {
+        auto animations = parseAnimations(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, colors or timeout must be positive", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_timeout_under_bounds()
+{
+    std::string input = R"(
+    [
+    {
+        "board": [
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]
+        ],
+        "time_ms": -1000
+    }
+    ]
+    )";
+
+    try
+    {
+        auto animations = parseAnimations(input);
+        TEST_FAIL_MESSAGE("Expected exception.");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, colors or timeout must be positive", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_light_red_non_number()
+{
+    std::string input = R"(
+    [
+    {
+        "board": [
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [a,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]
+        ],
+        "time_ms": 1000
+    }
+    ]
+    )";
+
+    try
+    {
+        auto animations = parseAnimations(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, colors or timeout must be a number", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_light_green_non_number()
+{
+    std::string input = R"(
+    [
+    {
+        "board": [
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,dnjh&,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]
+        ],
+        "time_ms": 1000
+    }
+    ]
+    )";
+
+    try
+    {
+        auto animations = parseAnimations(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, colors or timeout must be a number", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_light_blue_non_number()
+{
+    std::string input = R"(
+    [
+    {
+        "board": [
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,;,0]
+        ],
+        "time_ms": 1000
+    }
+    ]
+    )";
+
+    try
+    {
+        auto animations = parseAnimations(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, colors or timeout must be a number", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_timeout_non_number()
+{
+    std::string input = R"(
+    [
+    {
+        "board": [
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]
+        ],
+        "time_ms": sjjdf
+    }
+    ]
+    )";
+
+    try
+    {
+        auto animations = parseAnimations(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, colors or timeout must be a number", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
 }
 
 
@@ -84,6 +476,17 @@ void setup() {
     UNITY_BEGIN();
     
     RUN_TEST(test_functional_animation);
+    RUN_TEST(test_light_red_above_bounds);
+    RUN_TEST(test_light_green_above_bounds);
+    RUN_TEST(test_light_blue_above_bounds);
+    RUN_TEST(test_light_red_under_bounds);
+    RUN_TEST(test_light_green_under_bounds);
+    RUN_TEST(test_light_blue_under_bounds);
+    RUN_TEST(test_timeout_under_bounds);
+    RUN_TEST(test_light_red_non_number);
+    RUN_TEST(test_light_green_non_number);
+    RUN_TEST(test_light_blue_non_number);
+    RUN_TEST(test_timeout_non_number);
 
     UNITY_END();
 }

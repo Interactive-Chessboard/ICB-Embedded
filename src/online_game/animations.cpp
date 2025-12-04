@@ -10,9 +10,14 @@ inline void skipSpaces(const std::string& s, int& i)
 int parseInt(const std::string& s, int& i)
 {
     skipSpaces(s, i);
-    if (s[i] == '-') throw("Error, value must be positive");
+    if (s[i] == '-') throw std::runtime_error("Error, colors or timeout must be positive");
     int val = 0;
-    while (i < s.size() && std::isdigit(s[i])) {
+    while (i < s.size()) {
+        if (!isdigit(s[i])) {
+            if (s[i] == ',' || s[i] == ']' || std::isspace(s[i]))
+                break;
+            throw std::runtime_error("Error, colors or timeout must be a number");
+        }
         val = val * 10 + (s[i] - '0');
         i++;
     }
@@ -27,16 +32,15 @@ LedColor parseColorTriplet(const std::string& s, int& i)
     i++;
 
     int r = parseInt(s, i);
-    if (r < 0 || r > 255) throw ("Error, Invalid red color");
     skipSpaces(s, i); if (s[i] == ',') i++;
 
     int g = parseInt(s, i);
-    if (r < 0 || r > 255) throw ("Error, Invalid green color");
     skipSpaces(s, i); if (s[i] == ',') i++;
 
     int b = parseInt(s, i);
-    if (r < 0 || r > 255) throw ("Error, Invalid blue color");
     skipSpaces(s, i);
+
+    if (r > 255 || g > 255 || b > 255) throw std::runtime_error("Error, colors must be lower than 256");
 
     if (s[i] == ']') i++;
 
@@ -49,11 +53,11 @@ void parseBoard(const std::string& s, int& i, std::array<LedColor,64>& leds)
     skipSpaces(s, i);
 
     int pos = s.find("\"board\"", i);
-    if (pos == std::string::npos) throw ("Error, 'board' key not found");
+    if (pos == std::string::npos) throw std::runtime_error("Error, board key not found");
     i = pos + 7;
 
     pos = s.find('[', i);
-    if (pos == std::string::npos) ("Error, Empty led array or invalid format");
+    if (pos == std::string::npos) throw std::runtime_error("Error, empty led array or invalid format");
     i = pos + 1;
 
     int idx = 0;
@@ -80,11 +84,11 @@ void parseBoard(const std::string& s, int& i, std::array<LedColor,64>& leds)
 int parseTimeMs(const std::string& s, int& i)
 {
     int pos = s.find("\"time_ms\"", i);
-    if (pos == std::string::npos) throw std::runtime_error("Error, time_ms: has invalid format");
+    if (pos == std::string::npos) throw std::runtime_error("Error, time_ms key not found");
     i = pos + 9;
 
     pos = s.find(':', i);
-    if (pos == std::string::npos) throw std::runtime_error("Error, time_ms: has invalid format");
+    if (pos == std::string::npos) throw std::runtime_error("Error, : not found after time_ms");
     i = pos + 1;
 
     return parseInt(s, i);
