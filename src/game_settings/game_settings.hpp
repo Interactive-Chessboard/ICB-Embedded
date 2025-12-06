@@ -1,4 +1,5 @@
 // game_settings.hpp
+#pragma once
 
 
 enum class GameMode {

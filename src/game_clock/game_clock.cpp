@@ -5,7 +5,7 @@
 #include "game_clock.hpp"
 
 
-void tick(ClockSetting& clock_settings, ClockColor& previous_iteration)
+void tick(ClockSetting& clock_settings, ClockColor previous_iteration)
 {
     if (!clock_settings.active.load()) return;
 
@@ -44,7 +44,7 @@ void tick(ClockSetting& clock_settings, ClockColor& previous_iteration)
 }
 
 
-void game_clock(ClockSetting &clock_settings, std::atomic<bool> stop_clock_loop)
+void game_clock(ClockSetting &clock_settings, std::atomic<bool> &stop_clock_loop)
 {
     using clock = std::chrono::steady_clock;
     constexpr std::chrono::milliseconds interval(10);

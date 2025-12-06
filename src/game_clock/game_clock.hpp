@@ -1,4 +1,5 @@
 // game_clock.hpp
+#pragma once
 #include <mutex>
 #include <atomic>
 #include "board.hpp"
@@ -24,4 +25,4 @@ struct ClockSetting
 };
 
 
-void game_clock(ClockSetting&, std::atomic<bool>);
+void game_clock(ClockSetting&, std::atomic<bool>&);
