@@ -57,11 +57,11 @@ void parseBoard(const std::string& s, int& i, std::array<LedColor,64>& leds)
     i = pos + 7;
 
     pos = s.find('[', i);
-    if (pos == std::string::npos) throw std::runtime_error("Error, empty led array or invalid format");
+    if (pos == std::string::npos) throw std::runtime_error("Error, invalid format");
     i = pos + 1;
 
     int idx = 0;
-    while (i < s.size() && idx < 64)
+    while (i < s.size())
     {
         skipSpaces(s, i);
         if (s[i] == '[')
@@ -78,6 +78,7 @@ void parseBoard(const std::string& s, int& i, std::array<LedColor,64>& leds)
         else
             i++;
     }
+    if (idx != 64) throw std::runtime_error("Error, number of squares must be 64");
 }
 
 

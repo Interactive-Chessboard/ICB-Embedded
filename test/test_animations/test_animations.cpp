@@ -39,7 +39,15 @@ void test_functional_animation()
     }
     ]
     )";
-    std::vector<Animation> animations = parseAnimations(input);
+    std::vector<Animation> animations;
+    try
+    {
+        animations = parseAnimations(input);
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("No exceptions were expected");
+    }
     TEST_ASSERT_EQUAL(2, animations.size());
 
     Animation anim0 = animations[0];
@@ -72,6 +80,37 @@ void test_functional_animation()
         TEST_ASSERT_EQUAL(0, led.red);
         TEST_ASSERT_EQUAL(0, led.green);
         TEST_ASSERT_EQUAL(255, led.blue);  
+    }
+}
+
+
+void test_white_space_tolerance()
+{
+    std::string input = R"(
+    [
+            {
+        "board":              [
+            [       0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0       ,0,0], [0,0,0         ], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]
+        ],
+        "time_ms":        1000
+    }
+    ]
+    )";
+
+    try
+    {
+        auto animations = parseAnimations(input);
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("No exceptions were expected");
     }
 }
 
@@ -472,10 +511,224 @@ void test_timeout_non_number()
 }
 
 
+void test_board_key_not_found()
+{
+    std::string input = R"(
+    [
+    {
+        "bord": [
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]
+        ],
+        "time_ms": 1000
+    }
+    ]
+    )";
+
+    try
+    {
+        auto animations = parseAnimations(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, board key not found", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_invalid_board()
+{
+    std::string input = R"(
+    [
+    {
+        "board": (
+            (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0),
+            (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0),
+            (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0),
+            (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0),
+            (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0),
+            (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0),
+            (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0),
+            (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0)
+        ),
+        "time_ms": 1000
+    }
+    )
+    )";
+
+    try
+    {
+        auto animations = parseAnimations(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, invalid format", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_too_many_square()
+{
+    std::string input = R"(
+    [
+    {
+        "board": (
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]
+        ],
+        "time_ms": 1000
+    }
+    ]
+    )";
+
+    try
+    {
+        auto animations = parseAnimations(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, number of squares must be 64", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_not_enough_square()
+{
+    std::string input = R"(
+    [
+    {
+        "board": (
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0]
+        ],
+        "time_ms": 1000
+    }
+    ]
+    )";
+
+    try
+    {
+        auto animations = parseAnimations(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, number of squares must be 64", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_time_ms_key_not_found()
+{
+    std::string input = R"(
+    [
+    {
+        "board": [
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]
+        ],
+        "tim_ms": 1000
+    }
+    ]
+    )";
+
+    try
+    {
+        auto animations = parseAnimations(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, time_ms key not found", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_time_ms_key_not_found2()
+{
+    std::string input = R"(
+    [
+    {
+        "board": [
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+            [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]
+        ],
+        "time_ms" 1000
+    }
+    ]
+    )";
+
+    try
+    {
+        auto animations = parseAnimations(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, : not found after time_ms", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
 void setup() {
     UNITY_BEGIN();
     
     RUN_TEST(test_functional_animation);
+    RUN_TEST(test_white_space_tolerance);
     RUN_TEST(test_light_red_above_bounds);
     RUN_TEST(test_light_green_above_bounds);
     RUN_TEST(test_light_blue_above_bounds);
@@ -487,7 +740,12 @@ void setup() {
     RUN_TEST(test_light_green_non_number);
     RUN_TEST(test_light_blue_non_number);
     RUN_TEST(test_timeout_non_number);
-
+    RUN_TEST(test_board_key_not_found);
+    RUN_TEST(test_invalid_board);
+    RUN_TEST(test_too_many_square);
+    RUN_TEST(test_not_enough_square);
+    RUN_TEST(test_time_ms_key_not_found);
+    RUN_TEST(test_time_ms_key_not_found2);
     UNITY_END();
 }
 
