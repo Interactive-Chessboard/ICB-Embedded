@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include <chrono>
 #include <thread>
+#include <atomic>
 #include "online_game/online_game.hpp"
 #include "local_game/local_game.hpp"
 #include "game_settings/game_settings.hpp"
@@ -23,9 +24,10 @@ void loop()
   Settings game_settings = getGameSettings(); //REMOVE COMMENT WHEN IMPLEMENTED
 
   // ---Start Game Clock---
-    std::thread clock_thread;
-    ClockSetting clock_settings(game_settings.game_time_min, game_settings.extra_time_sec);
-    clock_thread = std::thread(game_clock, std::ref(clock_settings));
+  std::thread clock_thread;
+  ClockSetting clock_settings(game_settings.game_time_min, game_settings.extra_time_sec);
+  std::atomic<bool> stop_clock_thread{false};
+  clock_thread = std::thread(game_clock, std::ref(clock_settings), std::ref(stop_clock_thread));
 
   // ---Start online game---
   if (game_settings.game_mode == GameMode::Online)
@@ -52,6 +54,10 @@ void loop()
 
   // ---Local Game---
   //localGame(game_settings); //REMOVE COMMENT WHEN IMPLEMENTED
+
+  
+  // ---Stop Clock Thread;
+  stop_clock_thread.store(true);
 }
 
 // Note sur comment print in std::string

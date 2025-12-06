@@ -16,11 +16,12 @@ enum class PlayerColor {
 
 struct Settings
 {
-  GameMode game_mode;
-  PlayerColor player_color;
+  GameMode game_mode; // Relevant for all gamemodes
+  bool play_with_clock; // Relevant for local play
   int game_time_min;
   int extra_time_sec;
   int bot_strength;
+  PlayerColor player_color; // Relevant for bots
 };
 
 
