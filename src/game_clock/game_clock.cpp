@@ -27,12 +27,12 @@ void tick(ClockSetting& clock_settings, ClockColor previous_iteration)
     if (clock_settings.player_turn.load() == ClockColor::White && 
         previous_iteration != clock_settings.player_turn.load())
     {
-        clock_settings.time_white.fetch_add(clock_settings.extra_time.load());
+        clock_settings.time_black.fetch_add(clock_settings.extra_time.load());
     }
     else if (clock_settings.player_turn.load() == ClockColor::Black && 
         previous_iteration != clock_settings.player_turn.load())
     {
-        clock_settings.time_black.fetch_add(clock_settings.extra_time.load());
+        clock_settings.time_white.fetch_add(clock_settings.extra_time.load());
     }
 
     // Verify clocks reached 0
