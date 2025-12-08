@@ -4,6 +4,7 @@
 
 void setClockSettings(ClockSetting &clock_settings, const std::string& request)
 {
+    std::string clock_settings = extract_value(request, "clock");
 
 }
 
