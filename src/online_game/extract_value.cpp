@@ -1,6 +1,7 @@
 // extract_value.cpp
 #include "extract_value.hpp"
 
+
 std::string extract_value(const std::string& str, const std::string& key)
 {
     // ---- Find the key ----
@@ -10,8 +11,7 @@ std::string extract_value(const std::string& str, const std::string& key)
     quotedKey += "\"";
 
     size_t pos = str.find(quotedKey);
-    if (pos == std::string::npos)
-        return {};
+    if (pos == std::string::npos) throw std::runtime_error("Error, key not found");
 
     pos += quotedKey.size();
 
@@ -20,8 +20,7 @@ std::string extract_value(const std::string& str, const std::string& key)
         pos++;
 
     // ---- Expect ':' ----
-    if (pos >= str.size() || str[pos] != ':')
-        return {};
+    if (pos >= str.size() || str[pos] != ':') throw std::runtime_error("Error, expecting semicolon after key");
     pos++;
 
     // ---- Skip whitespace ----
@@ -35,8 +34,7 @@ std::string extract_value(const std::string& str, const std::string& key)
     {
         size_t start = pos + 1;
         size_t end = str.find('"', start);
-        if (end == std::string::npos)
-            return {};
+        if (end == std::string::npos) throw std::runtime_error("Error, expecting closing quotes");
         return str.substr(start, end - start);
     }
 
@@ -59,8 +57,7 @@ std::string extract_value(const std::string& str, const std::string& key)
             }
         }
 
-        if (i >= str.size())
-            return {};
+        if (i >= str.size()) throw std::runtime_error("Error, expecting square bracket");
 
         return str.substr(pos, i - pos + 1);
     }

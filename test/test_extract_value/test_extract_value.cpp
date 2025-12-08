@@ -149,6 +149,120 @@ void test_extract_nested()
 }
 
 
+void test_extract_key_not_found()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "type": "set_board",
+        "board": 18446462598732906495,
+        "old_move": {
+            "color": [0, 0, 255],
+            "from": 12,
+            "to": 28
+        },
+        "clock": {
+            "started": "true",
+            "white": 50,
+            "black": 60,
+            "run_down": "w",
+        },
+        "timeout": 60
+    }
+    )";
+
+    try
+    {
+        auto _ = extract_value(input, "invalid_key");
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, key not found", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_extract_missing_semicolon()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "type" "set_board"
+    }
+    )";
+
+    try
+    {
+        auto _ = extract_value(input, "type");
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, expecting semicolon after key", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_extract_missing_closing_quotes()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "type": "set_board
+    }
+    )";
+
+    try
+    {
+        auto _ = extract_value(input, "type");
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, expecting closing quotes", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_extract_missing_closing_square_bracket()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "type": [1, 2, 3,
+        "key": "val"
+    }
+    )";
+
+    try
+    {
+        auto _ = extract_value(input, "type");
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, expecting square bracket", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
 void setup() {
     UNITY_BEGIN();
     
@@ -156,6 +270,10 @@ void setup() {
     RUN_TEST(test_extract_int);
     RUN_TEST(test_extract_json);
     RUN_TEST(test_extract_nested);
+    RUN_TEST(test_extract_key_not_found);
+    RUN_TEST(test_extract_missing_semicolon);
+    RUN_TEST(test_extract_missing_closing_quotes);
+    RUN_TEST(test_extract_missing_closing_square_bracket);
 
     UNITY_END();
 }
