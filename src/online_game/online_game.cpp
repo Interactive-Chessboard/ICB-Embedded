@@ -8,28 +8,22 @@ std::string makeReturnMsg(const std::string& request_id, const std::string& stat
 }
 
 
-std::string setBoard(const std::string& request, std::atomic<bool>& end_task_flag)
+std::string makeMove(ClockSetting &clock_settings, const std::string& request, std::atomic<bool>& end_task_flag)
 {
     return "ok";
 }
 
 
-std::string makeMove(const std::string& request, std::atomic<bool>& end_task_flag)
-{
-    return "ok";
-}
-
-
-void runTask(std::string request_type, std::string request, std::string request_id,
-             std::atomic<bool>& end_task_flag, std::atomic<bool>& task_running)
+void runTask(ClockSetting &clock_settings, std::string request_type, std::string request, 
+             std::string request_id, std::atomic<bool>& end_task_flag, std::atomic<bool>& task_running)
 {
     task_running = true;
     std::string status;
 
     if (request_type == "set_board")
-        status = setBoard(request, std::ref(end_task_flag));
+        status = setBoard(std::ref(clock_settings), request, std::ref(end_task_flag));
     else if (request_type == "make_move")
-        status = makeMove(request, std::ref(end_task_flag));
+        status = makeMove(std::ref(clock_settings), request, std::ref(end_task_flag));
     else if (request_type == "animation")
         status = animation(request, std::ref(end_task_flag));
     else
@@ -42,7 +36,7 @@ void runTask(std::string request_type, std::string request, std::string request_
 }
 
 
-void onlineGame()
+void onlineGame(ClockSetting &clock_settings)
 {
     std::atomic<bool> end_task_flag{false};
     std::atomic<bool> task_running_flag{false};
@@ -82,7 +76,7 @@ void onlineGame()
         if (request_type == "set_board" || request_type == "make_move" ||
             request_type == "animation")
         {
-            worker = std::thread(runTask, request_type, request, request_id, 
+            worker = std::thread(runTask, std::ref(clock_settings), request_type, request, request_id, 
                                  std::ref(end_task_flag), std::ref(task_running_flag));
         }
         else if (request_type == "available")

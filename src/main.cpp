@@ -32,7 +32,7 @@ void loop()
   // ---Start online game---
   if (game_settings.game_mode == GameMode::Online)
   {
-    onlineGame(); //REMOVE COMMENT WHEN IMPLEMENTED
+    onlineGame(std::ref(clock_settings)); //REMOVE COMMENT WHEN IMPLEMENTED
     return;
   }
 
