@@ -48,24 +48,80 @@ void setClockSettings(ClockSetting &clock_settings, const std::string& request)
     clock_settings.extra_time.store(extra_time * 100);
     clock_settings.player_turn.store(clock_color);
     }
+}
 
 
+LedColor getPastMoveColor(const std::string &request)
+{
+    std::string color_str = extract_value(extract_value(request, "old_move"), "color");
+    int r, g, b;
+    std::sscanf(color_str.c_str(), "[%d, %d, %d]", &r, &g, &b);
+    if (r > 255 || g > 255 || b > 255) throw std::runtime_error("Error, colors must be lower than 256");
+    if (r < 0 || g < 0 || b < 0) throw std::runtime_error("Error, colors must be positive");
+    return LedColor(r, g, b);
+}
+
+
+uint64_t to_uint64(const std::string &request)
+{
+    try
+    {
+        return std::stoull(extract_value(request, "board"));
+    }
+    catch (...)
+    {
+        throw std::runtime_error("Error, number must be a valid uint64");
+    }
+}
+
+
+std::array<LedColor, 64> lightUpDifference(uint64_t current, uint64_t desired, LedColor color)
+{
+    std::array<LedColor, 64> result{};
+    uint64_t diff = current ^ desired;
+
+    for (int i = 0; i < 64; ++i)
+    {
+        if (diff & (1ULL << i)) {
+            result[i] = color;
+        } else {
+            result[i] = LedColor();
+        }
+    }
+
+    return result;
 }
 
 
 std::string setBoard(ClockSetting &clock_settings, const std::string& request, std::atomic<bool>& end_task_flag)
 {
+    LedColor past_move_color;
+    uint64_t board;
+    int timeout;
     try
     {
         setClockSettings(std::ref(clock_settings), request);
+        past_move_color = getPastMoveColor(request);
+        board = to_uint64(request);
+        timeout = extractTimeOut(request) * 100;
     }
     catch (const std::runtime_error& e)
     {
         return e.what();
     }
 
-    while (!end_task_flag.load())
+    while (!end_task_flag.load() && timeout < 0)
     {
+        uint64_t current_board = Board::getBoardArr();
+        if (current_board == board)
+        {
+            return "ok";
+        }
+
+        std::array<LedColor, 64> lights = lightUpDifference(current_board, board, past_move_color);
+        Board::setLed(lights); 
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        timeout--;
     }
+    return "Error, timeout reached";
 }

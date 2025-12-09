@@ -11,9 +11,7 @@ void test_extract_string()
         "type": "set_board",
         "board": 18446462598732906495,
         "old_move": {
-            "color": [0, 0, 255],
-            "from": 12,
-            "to": 28
+            "color": [0, 0, 255]
         },
         "clock": {
             "started": "true",
@@ -46,9 +44,7 @@ void test_extract_int()
         "type": "set_board",
         "board": 18446462598732906495,
         "old_move": {
-            "color": [0, 0, 255],
-            "from": 12,
-            "to": 28
+            "color": [0, 0, 255]
         },
         "clock": {
             "started": "true",
@@ -81,9 +77,7 @@ void test_extract_json()
         "type": "set_board",
         "board": 18446462598732906495,
         "old_move": {
-            "color": [0, 0, 255],
-            "from": 12,
-            "to": 28
+            "color": [0, 0, 255]
         },
         "clock": {
             "started": "true",
@@ -122,9 +116,7 @@ void test_extract_nested()
         "type": "set_board",
         "board": 18446462598732906495,
         "old_move": {
-            "color": [0, 0, 255],
-            "from": 12,
-            "to": 28
+            "color": [0, 0, 255]
         },
         "clock": {
             "started": "true",
@@ -157,9 +149,7 @@ void test_extract_key_not_found()
         "type": "set_board",
         "board": 18446462598732906495,
         "old_move": {
-            "color": [0, 0, 255],
-            "from": 12,
-            "to": 28
+            "color": [0, 0, 255]
         },
         "clock": {
             "started": "true",

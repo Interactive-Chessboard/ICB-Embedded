@@ -72,3 +72,20 @@ std::string extract_value(const std::string& str, const std::string& key)
 
     return str.substr(start, pos - start);
 }
+
+
+int extractTimeOut(const std::string &str)
+{
+    int timeout;
+    try
+    {
+        timeout = stoi(extract_value(str, "timout"));
+    }
+    catch(const std::exception& e)
+    {
+        throw std::runtime_error("Error, timeout must be a number");
+    }
+    if (timeout <= 0) throw std::runtime_error("Error, timeout must be positive");
+    return timeout;
+}
+    

@@ -51,7 +51,7 @@ void onlineGame(ClockSetting &clock_settings)
         // Handle close and end task request regardless of if task is running
         if (request_type == "close" || request_type == "end_task")
         {
-            end_task_flag = true;
+            end_task_flag.store(true);
             if (worker.joinable())
                 worker.join();
 
@@ -59,7 +59,7 @@ void onlineGame(ClockSetting &clock_settings)
             if (request_type == "close")
                 return;
 
-            end_task_flag = false;
+            end_task_flag.store(false);
             continue;
         }
 

@@ -5,3 +5,4 @@
 
 
 std::string extract_value(const std::string& str, const std::string& key);
+int extractTimeOut(const std::string &str);

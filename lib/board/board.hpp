@@ -25,7 +25,7 @@ struct Animation {
 namespace Board
 {
 // board
-u_int64_t getBoardArr();
+uint64_t getBoardArr();
 
 // lights
 void setLed(std::array<LedColor, 64>);
