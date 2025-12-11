@@ -10,5 +10,6 @@
 #include "extract_value.hpp"
 #include "set_board.hpp"
 #include "game_clock/game_clock.hpp"
+#include "make_move.hpp"
 
 void onlineGame(ClockSetting &clock_settings);

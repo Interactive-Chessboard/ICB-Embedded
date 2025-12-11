@@ -1,6 +1,7 @@
 // set_board.hpp
 #pragma once
 #include <chrono>
+#include <stdexcept>
 #include "board.hpp"
 #include "extract_value.hpp"
 #include "game_clock/game_clock.hpp"

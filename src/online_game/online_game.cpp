@@ -8,12 +8,6 @@ std::string makeReturnMsg(const std::string& request_id, const std::string& stat
 }
 
 
-std::string makeMove(ClockSetting &clock_settings, const std::string& request, std::atomic<bool>& end_task_flag)
-{
-    return "ok";
-}
-
-
 void runTask(ClockSetting &clock_settings, std::string request_type, std::string request, 
              std::string request_id, std::atomic<bool>& end_task_flag, std::atomic<bool>& task_running)
 {

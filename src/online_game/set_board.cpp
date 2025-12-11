@@ -37,7 +37,7 @@ void setClockSettings(ClockSetting &clock_settings, const std::string& request)
     else if (run_down == "b")
         clock_color = ClockColor::Black;
     else
-        throw std::runtime_error("Error, expecting square bracket");
+        throw std::runtime_error("Error, invalid clock color");
 
     {
     std::lock_guard<std::mutex> lock(clock_settings.mtx);
@@ -51,9 +51,9 @@ void setClockSettings(ClockSetting &clock_settings, const std::string& request)
 }
 
 
-LedColor getPastMoveColor(const std::string &request)
+LedColor getColor(const std::string &request)
 {
-    std::string color_str = extract_value(extract_value(request, "old_move"), "color");
+    std::string color_str = extract_value(request, "color");
     int r, g, b;
     std::sscanf(color_str.c_str(), "[%d, %d, %d]", &r, &g, &b);
     if (r > 255 || g > 255 || b > 255) throw std::runtime_error("Error, colors must be lower than 256");
@@ -95,13 +95,13 @@ std::array<LedColor, 64> lightUpDifference(uint64_t current, uint64_t desired, L
 
 std::string setBoard(ClockSetting &clock_settings, const std::string& request, std::atomic<bool>& end_task_flag)
 {
-    LedColor past_move_color;
+    LedColor color;
     uint64_t board;
     int timeout;
     try
     {
         setClockSettings(std::ref(clock_settings), request);
-        past_move_color = getPastMoveColor(request);
+        color = getColor(request);
         board = to_uint64(request);
         timeout = extractTimeOut(request) * 100;
     }
@@ -118,7 +118,7 @@ std::string setBoard(ClockSetting &clock_settings, const std::string& request, s
             return "ok";
         }
 
-        std::array<LedColor, 64> lights = lightUpDifference(current_board, board, past_move_color);
+        std::array<LedColor, 64> lights = lightUpDifference(current_board, board, color);
         Board::setLed(lights); 
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         timeout--;

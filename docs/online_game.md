@@ -60,9 +60,7 @@ Note an old move can be set to -1, -1 if there is no old move to display
     "id": 1,
     "type": "set_board",
     "board": 18446462598732906495,
-    "old_move": {
-        "color": [0, 0, 255]
-    },
+    "color": [0, 0, 255],
     "clock": {
         "active": "true",
         "white": 50,
