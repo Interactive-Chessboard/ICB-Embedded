@@ -51,9 +51,8 @@ void setClockSettings(ClockSetting &clock_settings, const std::string& request)
 }
 
 
-LedColor getColor(const std::string &request)
+LedColor getColor(const std::string &color_str)
 {
-    std::string color_str = extract_value(request, "color");
     int r, g, b;
     std::sscanf(color_str.c_str(), "[%d, %d, %d]", &r, &g, &b);
     if (r > 255 || g > 255 || b > 255) throw std::runtime_error("Error, colors must be lower than 256");
@@ -101,7 +100,7 @@ std::string setBoard(ClockSetting &clock_settings, const std::string& request, s
     try
     {
         setClockSettings(std::ref(clock_settings), request);
-        color = getColor(request);
+        color = getColor(extract_value(request, "color"));
         board = to_uint64(request);
         timeout = extractTimeOut(request) * 100;
     }

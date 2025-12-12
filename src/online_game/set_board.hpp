@@ -8,3 +8,5 @@
 
 
 std::string setBoard(ClockSetting &clock_settings, const std::string& request, std::atomic<bool>& end_task_flag);
+void setClockSettings(ClockSetting &clock_settings, const std::string& request); //temp
+LedColor getColor(const std::string &color_str); //temp

@@ -90,17 +90,43 @@ ChessGame getChessGame(const std::string& request)
 }
 
 
+Move makeMove(std::atomic<bool>& end_task_flag, int timeout, ChessGame game, std::vector<Move> moves,
+              LedColor old_move_color, LedColor lifted_square_color, LedColor legal_moves_color,
+              LedColor illegal_moves_color, int past_move_from, int past_move_to)
+{
+
+}
+
+
 std::string makeMove(ClockSetting &clock_settings, const std::string& request, std::atomic<bool>& end_task_flag)
 {
+    ChessGame game;
+    LedColor old_move_color, lifted_square_color, legal_moves_color, illegal_moves_color;
+    int past_move_from, past_move_to, timeout;
     try
     {
-        getChessGame(request);
+        game = getChessGame(request);
+        setClockSettings(std::ref(clock_settings), request);
+
+        old_move_color = getColor(extract_value(extract_value(request, "old_move"), "color"));
+        lifted_square_color = getColor(extract_value(request, "lifted_square_color"));
+        legal_moves_color = getColor(extract_value(request, "legal_moves_color"));
+        illegal_moves_color = getColor(extract_value(request, "illegal_moves_color"));
+        past_move_from = stoi(extract_value(extract_value(request, "old_move"), "from"));
+        past_move_to = stoi(extract_value(extract_value(request, "old_move"), "to"));
+        timeout = extractTimeOut(request) * 100;
     }
     catch (const std::runtime_error& e)
     {
         return e.what();
     }
+    if (past_move_from < -1 || past_move_from >= 64) return "Error, Invalid past move from value";
+    if (past_move_to < -1 || past_move_to >= 64) return "Error, Invalid past move to value";
+
+    std::vector<Move> moves = Chess::generateLegalMoves(game);
     
+    Move move_made = makeMove(std::ref(end_task_flag), timeout, game, moves, old_move_color, lifted_square_color,
+                              legal_moves_color, illegal_moves_color, past_move_from, past_move_to);
 
     return "ok";
 }
