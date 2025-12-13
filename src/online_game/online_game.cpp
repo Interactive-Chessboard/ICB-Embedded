@@ -4,7 +4,7 @@
 
 std::string makeReturnMsg(const std::string& request_id, const std::string& status)
 {
-    return "{\"id\": " + request_id + ", \"type\": \"" + status + "\"}";
+    return "{\"id\": " + request_id + ", \"status\": \"" + status + "\"}";
 }
 
 
@@ -23,8 +23,7 @@ void runTask(ClockSetting &clock_settings, std::string request_type, std::string
     else
         status = "Error, unknown request";
 
-    if (!end_task_flag)
-        Bluetooth::sendBluetoothMessage(makeReturnMsg(request_id, status));
+    Bluetooth::sendBluetoothMessage(makeReturnMsg(request_id, status));
 
     task_running = false;
 }

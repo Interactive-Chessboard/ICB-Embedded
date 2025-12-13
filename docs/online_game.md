@@ -17,7 +17,7 @@ Note: To the ESP32. This stateless form only applies when in online mode. When p
 Here is a display of all available requests to allow our system to function with the required features. Requests will be made in a human readable json format.
 Elements will have a preditermined value that is either a string or an int. To keep communication simple we will only use these two data types.
 All request contain and ID and a request type for the embedded system to understand. A request will be answered by a response with the same ID.
-In the case of an invalid request for which ever reason, a type `"error, error_reason"` will be sent.
+In the case of an invalid request for which ever reason, a status `"error, error_reason"` will be sent.
 If the request type is unknown or the format makes it so the system doesn't even know who can answer this request, `"error, unknown"` will be sent
 
 ```mermaid
@@ -40,7 +40,7 @@ This request is used by the webapp to verify the board has an established commun
 ```json
 {
     "id": 1,
-    "type": "ok"
+    "status": "ok"
 }
 ```
 
@@ -72,12 +72,12 @@ Note an old move can be set to -1, -1 if there is no old move to display
 ```
 
 #### Response
-The board will return type ok the moment the board is in the proper state it wishes to be in. This following error is likely to happen
-The timeout error will have this format: `"type": "error, timedout"`.
+The board will return status ok the moment the board is in the proper state it wishes to be in. This following error is likely to happen
+The timeout error will have this format: `"status": "error, timedout"`.
 ```json
 {
     "id": 1,
-    "type": "ok",
+    "status": "ok",
 }
 ```
 
@@ -116,14 +116,14 @@ Colors are added to customize play
 ```
 
 #### Response
-The board will return type ok the moment the board is in the proper state it wishes to be in. These errors are likely to happen
-Proper position not set: `"type": "error, position not set"`.
-The timeout error will have this format: `"type": "error, timedout"`.
+The board will return status ok the moment the board is in the proper state it wishes to be in. These errors are likely to happen
+Proper position not set: `"status": "error, position not set"`.
+The timeout error will have this format: `"status": "error, timedout"`.
 Notice how the move doesn't contain a promotion field. The promotions will be determined on the web app.
 ```json
 {
     "id": 1,
-    "type": "ok",
+    "status": "ok",
     "move_from": 12,
     "move_to": 28
 }
@@ -157,7 +157,7 @@ The animation request contains the following fields.
 ```json
 {
     "id": 1,
-    "type": "ok"
+    "status": "ok"
 }
 ```
 
@@ -176,7 +176,7 @@ This request ends one of the tasks currently running. Since the server can only 
 ```json
 {
     "id": 1,
-    "type": "ok"
+    "status": "ok"
 }
 ```
 
@@ -196,6 +196,6 @@ A termination works at any point, even if another task is in progress.
 ```json
 {
     "id": 1,
-    "type": "ok"
+    "status": "ok"
 }
 ```

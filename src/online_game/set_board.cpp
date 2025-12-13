@@ -122,5 +122,5 @@ std::string setBoard(ClockSetting &clock_settings, const std::string& request, s
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         timeout--;
     }
-    return "Error, timeout reached";
+    return "Error, timeout reached or end task called";
 }
