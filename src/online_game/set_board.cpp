@@ -109,7 +109,7 @@ std::string setBoard(ClockSetting &clock_settings, const std::string& request, s
         return e.what();
     }
 
-    while (!end_task_flag.load() && timeout < 0)
+    while (!end_task_flag.load() && timeout > 0)
     {
         uint64_t current_board = Board::getBoardArr();
         if (current_board == board)

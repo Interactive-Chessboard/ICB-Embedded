@@ -102,33 +102,39 @@ uint64_t getGameBitBoard(ChessGame game)
 }
 
 
-int makeMoveTic(ChessGame game, std::vector<Move> moves,
+int makeMoveTic(ChessGame game, std::vector<Move> moves, std::vector<int>& lifted, std::vector<int>& placed,
                 LedColor old_move_color, LedColor lifted_square_color, LedColor legal_moves_color,
-                LedColor illegal_moves_color, int past_move_from, int past_move_to)
+                LedColor illegal_moves_color, int past_move_from, int past_move_to,
+                uint64_t original_bit_board, uint64_t previous_bit_board, uint64_t current_bit_board)
 {
+    // Step 1: Lift Piece 
 
 }
 
 
-Move makeMove(std::atomic<bool>& end_task_flag, int timeout, ChessGame game, std::vector<Move> moves,
+Move detectMakeMove(std::atomic<bool>& end_task_flag, int timeout, ChessGame game, std::vector<Move> moves,
               LedColor old_move_color, LedColor lifted_square_color, LedColor legal_moves_color,
               LedColor illegal_moves_color, int past_move_from, int past_move_to)
 {
     uint64_t original_bit_board = getGameBitBoard(game);
-    uint64_t current_bit_board = original_bit_board;
+    uint64_t previous_bit_board = original_bit_board;
 
-    while (!end_task_flag.load() && timeout < 0)
+    int index = -1;
+    std::vector<int> lifted;
+    std::vector<int> placed;
+    while (!end_task_flag.load() && timeout > 0)
     {
-        uint64_t before_tic = Board::getBoardArr();
-        int index = -1;
-        if (current_bit_board != before_tic)
+        uint64_t current_bit_board = Board::getBoardArr();
+        if (previous_bit_board != current_bit_board)
         {
-            index = makeMoveTic(game, moves, old_move_color, lifted_square_color,
-                        legal_moves_color, illegal_moves_color, past_move_from, past_move_to);
-            if (index >= 0)
-                return moves.at(index);
-            current_bit_board = before_tic;
+            index = makeMoveTic(game, moves, std::ref(lifted), std::ref(placed), old_move_color, lifted_square_color,
+                        legal_moves_color, illegal_moves_color, past_move_from, past_move_to,
+                        original_bit_board, previous_bit_board, current_bit_board);
+            previous_bit_board = current_bit_board;
         }
+        if (index >= 0)
+            return moves.at(index);
+
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         timeout--;
     }
@@ -165,7 +171,7 @@ std::string makeMove(ClockSetting &clock_settings, const std::string& request, s
     Move move_made;
     try
     {
-        move_made = makeMove(std::ref(end_task_flag), timeout, game, moves, old_move_color, lifted_square_color,
+        move_made = detectMakeMove(std::ref(end_task_flag), timeout, game, moves, old_move_color, lifted_square_color,
                               legal_moves_color, illegal_moves_color, past_move_from, past_move_to);
     }
     catch (const std::runtime_error& e)
