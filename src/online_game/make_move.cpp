@@ -90,6 +90,26 @@ ChessGame getChessGame(const std::string& request)
 }
 
 
+void MakeMove::construct()
+{
+    moves = Chess::generateLegalMoves(game);
+    original_bit_board = getGameBitBoard(game);
+    current_bit_board = original_bit_board;
+
+}
+
+uint64_t MakeMove::getGameBitBoard(ChessGame game)
+{
+    uint64_t bit_board = 0;
+    for (int i = 0; i < 64; i++)
+    {
+        if (game.board.at(i) != Piece())
+            bit_board |= (1ULL << i);
+    }
+    return bit_board;
+}
+
+// to remove
 uint64_t getGameBitBoard(ChessGame game)
 {
     uint64_t bit_board = 0;
@@ -102,12 +122,32 @@ uint64_t getGameBitBoard(ChessGame game)
 }
 
 
+std::vector<BitChange> findBitChanges(uint64_t oldValue, uint64_t newValue) {
+    std::vector<BitChange> changes;
+    uint64_t diff = oldValue ^ newValue;
+
+    while (diff) {
+        int bit = __builtin_ctzll(diff);
+        bool newBit = (newValue >> bit) & 1ULL;
+
+        changes.push_back({ bit, newBit });
+
+        diff &= diff - 1;
+    }
+
+    return changes;
+}
+
+
 int makeMoveTic(ChessGame game, std::vector<Move> moves, std::vector<int>& lifted, std::vector<int>& placed,
                 LedColor old_move_color, LedColor lifted_square_color, LedColor legal_moves_color,
                 LedColor illegal_moves_color, int past_move_from, int past_move_to,
                 uint64_t original_bit_board, uint64_t previous_bit_board, uint64_t current_bit_board)
 {
+    std::vector<BitChange> changes = findBitChanges(previous_bit_board, current_bit_board);
+
     // Step 1: Lift Piece 
+
 
 }
 
