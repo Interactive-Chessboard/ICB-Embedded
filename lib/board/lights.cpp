@@ -1,10 +1,19 @@
 // lights.cpp
 #include "board.hpp"
 
+std::array<LedColor, 64> current_global_light;
 
-void Board::setLed(std::array<LedColor, 64>)
+void Board::setLed(std::array<LedColor, 64> leds)
 {
+    if (leds == current_global_light)
+        return;
 
+    // Display lights on hardware
+
+
+
+
+    current_global_light = leds;
 }
 
 

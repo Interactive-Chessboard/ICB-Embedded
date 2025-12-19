@@ -7,6 +7,7 @@
 #include "game_clock/game_clock.hpp"
 #include "extract_value.hpp"
 #include "chess.hpp"
+#include "board.hpp"
 #include "set_board.hpp" //temp
 
 class MakeMove
@@ -34,21 +35,20 @@ private:
 public:
     // Full constructor
     MakeMove(ChessGame game,
+             int past_move_from,
+             int past_move_to,
              LedColor old_move_color,
              LedColor lifted_square_color,
              LedColor legal_moves_color,
-             LedColor illegal_moves_color,
-             int past_move_from,
-             int past_move_to)
+             LedColor illegal_moves_color
+             )
         : game(std::move(game)),
-          lifted(),
-          placed(),
+          past_move_from(past_move_from),
+          past_move_to(past_move_to),
           old_move_color(old_move_color),
           lifted_square_color(lifted_square_color),
           legal_moves_color(legal_moves_color),
-          illegal_moves_color(illegal_moves_color),
-          past_move_from(past_move_from),
-          past_move_to(past_move_to)
+          illegal_moves_color(illegal_moves_color)
     {
         construct();
     }
@@ -58,15 +58,18 @@ public:
              int past_move_from,
              int past_move_to)
         : MakeMove(std::move(game),
+                   past_move_from,
+                   past_move_to,
                    old_move_color,
                    lifted_square_color,
                    legal_moves_color,
-                   illegal_moves_color,
-                   past_move_from,
-                   past_move_to)
+                   illegal_moves_color)
     {
         construct();
     }
+
+    int makeMoveTic(uint64_t);
+    std::array<LedColor, 64> getBoardLights();
 };
 
 

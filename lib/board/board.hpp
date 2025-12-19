@@ -13,6 +13,12 @@ struct LedColor {
     u_int8_t blue;
     LedColor(int red = 0, int green = 0, int blue = 0) : 
              red(red), green(green), blue(blue) {}
+    
+    bool operator==(const LedColor& other) const {
+        return red == other.red &&
+               green == other.green &&
+               blue == other.blue;
+    }
 };
 
 
