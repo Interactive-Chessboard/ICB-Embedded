@@ -121,13 +121,25 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
 
         diff &= diff - 1;
     }
+    current_bit_board = tick_bit_board;
     return true;
 }
 
 
 int MakeMove::calculateMoveTick()
 {
+    // No current illegal moves
+    if (!illegal_lifted.empty() || !illegal_placed.empty())
+        return -1;
 
+    for (int i = 0; i < moves.size(); i++)
+    {
+        // Lifted and placed piece correspond to a move and the bit board corresponds to that moves result as well
+        if (moves[i].from_square == lifted && moves[i].to_square == placed &&
+            current_bit_board == getGameBitBoard(moves[i].chess_game))
+            return i;
+    }
+    return -1;
 }
 
 
