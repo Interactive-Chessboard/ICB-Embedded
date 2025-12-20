@@ -96,20 +96,12 @@ struct ChessGame
 };
 
 
-enum class MoveType {
-    Normal,
-    Promotion,
-    EnPassant,
-    Castle,
-};
-
-
 struct Move
 {
     int from_square;
     int to_square;
     Piece promotion;
-    MoveType move_type;
+    bool special_move;
     ChessGame chess_game;
 
     Move(int from = -1, int to = -1, Piece promo = Piece(), ChessGame cg = ChessGame())

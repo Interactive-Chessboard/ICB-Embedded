@@ -4,6 +4,7 @@
 #include <string>
 #include <stdexcept>
 #include <vector>
+#include <unordered_set>
 #include "game_clock/game_clock.hpp"
 #include "extract_value.hpp"
 #include "chess.hpp"
@@ -15,8 +16,13 @@ class MakeMove
 private:
     ChessGame game;
     std::vector<Move> moves;
-    std::vector<int> lifted;
-    std::vector<int> placed;
+    int lifted;
+    int lifted_opponent;
+    int lifted_special;
+    int placed;
+    int placed_special;
+    std::unordered_set<int> illegal_lifted;
+    std::unordered_set<int> illegal_placed;
 
     LedColor old_move_color = (0, 0, 255);
     LedColor lifted_square_color = (0, 230, 0);
@@ -68,7 +74,8 @@ public:
         construct();
     }
 
-    int makeMoveTic(uint64_t);
+    bool detectChangeTick(uint64_t);
+    int calculateMoveTick();
     std::array<LedColor, 64> getBoardLights();
 };
 

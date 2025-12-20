@@ -2,15 +2,93 @@
 #include "make_move.hpp"
 
 
-int makeMoveTic(uint64_t tick_bit_board)
+bool determineSpecialMoveLift(Move move, int lifted)
 {
 
 }
 
 
-std::array<LedColor, 64> getBoardLights()
+bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
 {
-    
+    uint64_t diff = current_bit_board ^ tick_bit_board;
+    if (diff == 0)
+        return false;
+
+    while (diff) {
+        int index = __builtin_ctzll(diff);
+        bool placed_bool = (tick_bit_board >> index) & 1ULL;
+
+        // Valid lifted player pieced
+        bool valid_player_lift = false;
+        bool valid_opponent_lift = false;
+        bool valid_placed_move = false;
+        bool special_move_lift = false;
+        for (Move move : moves)
+        {
+            if (!placed_bool && move.from_square == index)
+                valid_player_lift = true;
+            else if (!placed_bool && move.to_square == index)
+                valid_opponent_lift = true;
+            else if (placed_bool && move.to_square == index && move.to_square == lifted)
+                valid_placed_move;
+            else if (lifted == move.from_square && move.special_move)
+                special_move_lift = determineSpecialMoveLift(move, index);
+        }
+        
+        if (placed_bool)
+        {
+            // Place piece at a valid position
+            if (valid_placed_move)
+                placed = index;
+
+            // Place special move
+            // TO DO
+
+            // Placed illegally lifted
+            else if (illegal_lifted.find(index) != illegal_lifted.end())
+                illegal_lifted.erase(index);
+
+            // Else placed illegally
+            else
+                illegal_lifted.insert(index);
+        }
+        else
+        {
+            // Lift first piece if no pieces are lifted
+            if (lifted == -1 && valid_player_lift)
+                lifted = index;
+
+            // Lift opponent if a piece has been lifted
+            else if (lifted != -1 && valid_opponent_lift)
+                lifted_opponent = index;
+
+            // Lift special move
+            // TO DO
+
+            // Lifted from illegal placed
+            else if (illegal_placed.find(index) != illegal_placed.end())
+                illegal_placed.erase(index);
+
+            // If previous conditions aren't met, lift is illegal
+            else
+                illegal_lifted.insert(index);
+        }
+
+        diff &= diff - 1;
+    }
+    return true;
+}
+
+
+int MakeMove::calculateMoveTick()
+{
+
+}
+
+
+std::array<LedColor, 64> MakeMove::getBoardLights()
+{
+
 }
 
 
@@ -31,23 +109,6 @@ uint64_t MakeMove::getGameBitBoard(ChessGame game)
             bit_board |= (1ULL << i);
     }
     return bit_board;
-}
-
-
-std::vector<BitChange> findBitChanges(uint64_t oldValue, uint64_t newValue) {
-    std::vector<BitChange> changes;
-    uint64_t diff = oldValue ^ newValue;
-
-    while (diff) {
-        int bit = __builtin_ctzll(diff);
-        bool newBit = (newValue >> bit) & 1ULL;
-
-        changes.push_back({ bit, newBit });
-
-        diff &= diff - 1;
-    }
-
-    return changes;
 }
 
 
@@ -149,10 +210,14 @@ Move detectMakeMove(std::atomic<bool>& end_task_flag, int timeout, ChessGame gam
     while (!end_task_flag.load() && timeout > 0)
     {
         uint64_t bit_board_tick = Board::getBoardArr();
-        index = make_move.makeMoveTic(bit_board_tick);
-
-        std::array<LedColor, 64> led_lights = make_move.getBoardLights();
-        Board::setLed(led_lights);
+        bool changes = make_move.detectChangeTick(bit_board_tick);
+        if (changes)
+        {
+            index = make_move.calculateMoveTick();
+            std::array<LedColor, 64> led_lights = make_move.getBoardLights();
+            Board::setLed(led_lights);
+        }
+        
         if (index >= 0)
             return moves.at(index);
 
