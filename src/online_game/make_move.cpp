@@ -2,9 +2,35 @@
 #include "make_move.hpp"
 
 
-bool determineSpecialMoveLift(Move move, int lifted)
+std::pair<bool, bool> determineSpecialMoveLift(Move move, int lifted)
 {
+    // White King castle
+    if (lifted == 4 && move.from_square == 4 && move.to_square == 6)
+        return {7, 5};
+    
+    // White Queen castle
+    if (lifted == 4 && move.from_square == 4 && move.to_square == 2)
+        return {0, 3};
 
+    // Black King Castle
+    if (lifted == 60 && move.from_square == 60 && move.to_square == 62)
+        return {63, 61};
+
+    // Black Queen Castle
+    if (lifted == 60 && move.from_square == 60 && move.to_square == 58)
+        return {56, 59};
+
+    int diff = move.to_square - move.from_square;
+    // Right en passant both colors
+    if (diff == 9 || diff == -7)
+        return {move.to_square + 1, -1};
+
+    // Left en passant both colors
+    if (diff == 7 || diff == -9)
+        return {move.to_square - 1, -1};
+
+
+    return {-1, -1};
 }
 
 
@@ -22,7 +48,8 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
         bool valid_player_lift = false;
         bool valid_opponent_lift = false;
         bool valid_placed_move = false;
-        bool special_move_lift = false;
+        int special_move_lift_index = false;
+        int special_move_placed_index = false;
         for (Move move : moves)
         {
             if (!placed_bool && move.from_square == index)
@@ -32,7 +59,11 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
             else if (placed_bool && move.to_square == index && move.to_square == lifted)
                 valid_placed_move;
             else if (lifted == move.from_square && move.special_move)
-                special_move_lift = determineSpecialMoveLift(move, index);
+            {
+                std::pair<bool, bool> special_move = determineSpecialMoveLift(move, lifted);
+                special_move_lift_index = special_move.first;
+                special_move_placed_index = special_move.second;
+            }
         }
         
         if (placed_bool)
@@ -42,9 +73,18 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
                 placed = index;
 
             // Place special move
-            // TO DO
+            else if (special_move_placed_index == index)
+                placed_special = index;
 
-            // Placed illegally lifted
+            // Place back lifted piece
+            else if (lifted == index)
+                lifted = -1;
+
+            // Place back special move
+            else if (lifted_special == index)
+                lifted_special = -1;
+
+            // Place back illegally lifted
             else if (illegal_lifted.find(index) != illegal_lifted.end())
                 illegal_lifted.erase(index);
 
@@ -63,7 +103,12 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
                 lifted_opponent = index;
 
             // Lift special move
-            // TO DO
+            else if (special_move_lift_index == index)
+                special_move_lift_index = index;
+
+            // Lift from special placed
+            else if (placed_special == index)
+                placed_special = -1;
 
             // Lifted from illegal placed
             else if (illegal_placed.find(index) != illegal_placed.end())
