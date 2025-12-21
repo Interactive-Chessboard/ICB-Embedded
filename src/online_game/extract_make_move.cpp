@@ -104,4 +104,6 @@ ExtractMakeMove extractMakeMove(const std::string& request)
 
     if (make_move.past_move_from < -1 || make_move.past_move_from >= 64) throw std::runtime_error("Error, Invalid past move from value");
     if (make_move.past_move_to < -1 || make_move.past_move_to >= 64) throw std::runtime_error("Error, Invalid past move to value");
+
+    return make_move;
 }
