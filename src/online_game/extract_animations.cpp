@@ -1,5 +1,5 @@
-// animations.cpp
-#include "animations.hpp"
+// extract_animations.cpp
+#include "extract_animations.hpp"
 
 
 inline void skipSpaces(const std::string& s, int& i) 
@@ -121,20 +121,4 @@ std::vector<Animation> parseAnimations(const std::string& text)
     }
 
     return result;
-}
-
-
-std::string animation(const std::string& request, std::atomic<bool>& end_task_flag)
-{
-    std::string animation = extract_value(request, "animation");
-    std::vector<Animation> animations;
-    try
-    {
-        animations = parseAnimations(request);
-    }
-    catch (const std::runtime_error& e)
-    {
-        return e.what();
-    }
-    return Board::playAnimations(std::ref(end_task_flag), animations);
 }

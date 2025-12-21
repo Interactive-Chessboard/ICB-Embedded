@@ -1,4 +1,4 @@
-// animations.hpp
+// extract_animations.hpp
 #pragma once
 #include <vector>
 #include <string>
@@ -8,4 +8,4 @@
 #include "board.hpp"
 #include "extract_value.hpp"
 
-std::string animation(const std::string&, std::atomic<bool>&);
+std::vector<Animation> parseAnimations(const std::string&);

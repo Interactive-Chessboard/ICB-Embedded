@@ -88,4 +88,62 @@ int extractTimeOut(const std::string &str)
     if (timeout <= 0) throw std::runtime_error("Error, timeout must be positive");
     return timeout;
 }
+
+
+void setClockSettings(ClockSetting &clock_settings, const std::string& request)
+{
+    std::string clock_settings_str = extract_value(request, "clock");
+
+    std::string active_str = extract_value(clock_settings_str, "active");
+    bool active;
+    if (active_str == "true")
+        active = true;
+    else if (active_str == "false")
+        active = false;
+    else
+        throw std::runtime_error("Error, expecting square bracket");
+
+    int white, black, extra_time;
+    try
+    {
+        white = stoi(extract_value(clock_settings_str, "white"));
+        black = stoi(extract_value(clock_settings_str, "black"));
+        extra_time = stoi(extract_value(clock_settings_str, "extra_time"));
+    }
+    catch(...)
+    {
+        throw std::runtime_error("Error, time values are not ints");
+    }
+    if (white < 0 || black < 0 || extra_time < 0) throw std::runtime_error("Error, time values can't be negative");
     
+
+
+    std::string run_down = extract_value(clock_settings_str, "run_down");
+    ClockColor clock_color;
+    if (run_down == "w")
+        clock_color = ClockColor::White;
+    else if (run_down == "b")
+        clock_color = ClockColor::Black;
+    else
+        throw std::runtime_error("Error, invalid clock color");
+
+    {
+    std::lock_guard<std::mutex> lock(clock_settings.mtx);
+
+    clock_settings.active.store(active);
+    clock_settings.time_white.store(white * 100);
+    clock_settings.time_black.store(black * 100);
+    clock_settings.extra_time.store(extra_time * 100);
+    clock_settings.player_turn.store(clock_color);
+    }
+}
+
+
+LedColor getColor(const std::string &color_str)
+{
+    int r, g, b;
+    std::sscanf(color_str.c_str(), "[%d, %d, %d]", &r, &g, &b);
+    if (r > 255 || g > 255 || b > 255) throw std::runtime_error("Error, colors must be lower than 256");
+    if (r < 0 || g < 0 || b < 0) throw std::runtime_error("Error, colors must be positive");
+    return LedColor(r, g, b);
+}

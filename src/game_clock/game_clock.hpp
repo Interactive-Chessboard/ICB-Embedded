@@ -1,5 +1,7 @@
 // game_clock.hpp
 #pragma once
+#include <thread>
+#include <chrono>
 #include <mutex>
 #include <atomic>
 #include "board.hpp"
