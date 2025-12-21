@@ -1,4 +1,4 @@
-// animations.hpp
+// extract_animations.hpp
 #pragma once
 #include <vector>
 #include <string>

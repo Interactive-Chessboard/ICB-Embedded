@@ -2,6 +2,54 @@
 #include "online_game.hpp"
 
 
+std::string setBoard(ClockSetting &clock_settings, const std::string& request, std::atomic<bool>& end_task_flag)
+{
+    ExtractSetBoard extract_set_board;
+    try
+    {
+        setClockSettings(std::ref(clock_settings), request);
+        extract_set_board = extractSetBoard(request);
+    }
+    catch (const std::runtime_error& e)
+    {
+        return e.what();
+    }
+    SetBoard set_board(extract_set_board.color, extract_set_board.board);
+    return set_board.startOnline(std::ref(end_task_flag), extract_set_board.timeout);
+}
+
+
+std::string makeMove(ClockSetting &clock_settings, const std::string& request, std::atomic<bool>& end_task_flag)
+{
+    ExtractMakeMove extract_move;
+    try
+    {
+        extract_move = extractMakeMove(request);
+        setClockSettings(std::ref(clock_settings), request);
+    }
+    catch (const std::runtime_error& e)
+    {
+        return e.what();
+    }
+
+    MakeMove make_move(extract_move.game, extract_move.past_move_from, extract_move.past_move_to,
+                       extract_move.past_move_color, extract_move.lifted_square_color,
+                       extract_move.legal_moves_color, extract_move.illegal_moves_color);
+    Move move_made;
+    try
+    {
+        make_move.startOnline(std::ref(end_task_flag), extract_move.timeout);
+    }
+    catch (const std::runtime_error& e)
+    {
+        return e.what();
+    }
+
+    return "ok, \"move_from\": " + std::to_string(move_made.from_square) +
+           ", \"move_to\": " + std::to_string(move_made.to_square) + "\"";
+}
+
+
 std::string animation(const std::string& request, std::atomic<bool>& end_task_flag)
 {
     std::string animation = extract_value(request, "animation");

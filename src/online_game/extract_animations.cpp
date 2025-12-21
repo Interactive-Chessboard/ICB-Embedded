@@ -1,5 +1,5 @@
-// animations.cpp
-#include "animations.hpp"
+// extract_animations.cpp
+#include "extract_animations.hpp"
 
 
 inline void skipSpaces(const std::string& s, int& i) 

@@ -2,7 +2,7 @@
 #include "make_move.hpp"
 
 
-std::pair<bool, bool> determineSpecialMoveLift(Move move, int lifted)
+std::pair<bool, bool> MakeMove::determineSpecialMoveLift(Move move, int lifted)
 {
     // White King castle
     if (lifted == 4 && move.from_square == 4 && move.to_square == 6)
@@ -176,14 +176,6 @@ std::array<LedColor, 64> MakeMove::getBoardLights()
 }
 
 
-void MakeMove::construct()
-{
-    moves = Chess::generateLegalMoves(game);
-    original_bit_board = getGameBitBoard(game);
-    current_bit_board = original_bit_board;
-
-}
-
 uint64_t MakeMove::getGameBitBoard(ChessGame game)
 {
     uint64_t bit_board = 0;
@@ -196,110 +188,26 @@ uint64_t MakeMove::getGameBitBoard(ChessGame game)
 }
 
 
-ChessGame getChessGame(const std::string& request)
+void MakeMove::construct()
 {
-    std::string board_str = extract_value(request, "board");
-    std::string castling_str = extract_value(request, "castling");
-    int en_passant;
-    try
-    {
-        en_passant = stoi(extract_value(request, "en_passant"));
-    }
-    catch(...)
-    {
-        throw std::runtime_error("Error, en_passant must be a valid integer");
-    }
-    std::string player_turn = extract_value(extract_value(request, "clock"), "run_down");
-
-    if (board_str.length() != 64) throw std::runtime_error("Error, board must be 64 characters long");
-    if (castling_str.length() != 4) throw std::runtime_error("Error, castling must be 4 characters long");
-    if (en_passant < -1 || en_passant >= 64) throw std::runtime_error("Error, Invalid en passant value");
-    Color color;
-    if (player_turn == "w")
-        color = Color::White;
-    else if (player_turn == "b")
-        color = Color::Black;
-    else
-        throw std::runtime_error("Error, invalid clock color");
-
-    ChessGame game;
-    for (int i = 0 ; i < 64; i++)
-    {
-        switch (board_str.at(i))
-        {
-        case '.':
-            game.board.at(i) = Piece();
-            break;
-        case 'P':
-            game.board.at(i) = Piece(Color::White, PieceType::Pawn);
-            break;
-        case 'p':
-            game.board.at(i) = Piece(Color::Black, PieceType::Pawn);
-            break;
-        case 'R':
-            game.board.at(i) = Piece(Color::White, PieceType::Rook);
-            break;
-        case 'r':
-            game.board.at(i) = Piece(Color::Black, PieceType::Rook);
-            break;
-        case 'N':
-            game.board.at(i) = Piece(Color::White, PieceType::Knight);
-            break;
-        case 'n':
-            game.board.at(i) = Piece(Color::Black, PieceType::Knight);
-            break;
-        case 'B':
-            game.board.at(i) = Piece(Color::White, PieceType::Bishop);
-            break;
-        case 'b':
-            game.board.at(i) = Piece(Color::Black, PieceType::Bishop);
-            break;
-        case 'Q':
-            game.board.at(i) = Piece(Color::White, PieceType::Queen);
-            break;
-        case 'q':
-            game.board.at(i) = Piece(Color::Black, PieceType::Queen);
-            break;
-        case 'K':
-            game.board.at(i) = Piece(Color::White, PieceType::King);
-            break;
-        case 'k':
-            game.board.at(i) = Piece(Color::Black, PieceType::King);
-            break;
-        default:
-            throw std::runtime_error("Error, invalid piece");
-            break;
-        }
-    }
-
-    // Fix for bit mask
-    for (int i = 0; i < 4; i++)
-    {
-        game.castle.at(0) = castling_str.at(0);
-    }
-
-    game.en_passant = en_passant;
-    game.player_turn = color;
-    return game;
+    moves = Chess::generateLegalMoves(game);
+    original_bit_board = getGameBitBoard(game);
+    current_bit_board = original_bit_board;
 }
 
 
-Move detectMakeMove(std::atomic<bool>& end_task_flag, int timeout, ChessGame game, std::vector<Move> moves,
-              LedColor past_move_color, LedColor lifted_square_color, LedColor legal_moves_color,
-              LedColor illegal_moves_color, int past_move_from, int past_move_to)
+Move MakeMove::startOnline(std::atomic<bool>& end_task_flag, int timeout)
 {
-    MakeMove make_move(game, past_move_from, past_move_to, past_move_color, lifted_square_color, legal_moves_color, illegal_moves_color);
-
     while (!end_task_flag.load() && timeout > 0)
     {
         uint64_t bit_board_tick = Board::getBoardArr();
-        bool changes = make_move.detectChangeTick(bit_board_tick);
+        bool changes = detectChangeTick(bit_board_tick);
         if (changes)
         {
-            int move_index = make_move.calculateMoveTick();
+            int move_index = calculateMoveTick();
             if (move_index >= 0)
                 return moves.at(move_index);
-            std::array<LedColor, 64> led_lights = make_move.getBoardLights();
+            std::array<LedColor, 64> led_lights = getBoardLights();
             Board::setLed(led_lights);
         }
 
@@ -307,46 +215,4 @@ Move detectMakeMove(std::atomic<bool>& end_task_flag, int timeout, ChessGame gam
         timeout--;
     }
     throw std::runtime_error("Error, timeout reached or end task called");
-}
-
-
-std::string makeMove(ClockSetting &clock_settings, const std::string& request, std::atomic<bool>& end_task_flag)
-{
-    ChessGame game;
-    LedColor past_move_color, lifted_square_color, legal_moves_color, illegal_moves_color;
-    int past_move_from, past_move_to, timeout;
-    try
-    {
-        game = getChessGame(request);
-        setClockSettings(std::ref(clock_settings), request);
-
-        past_move_color = getColor(extract_value(extract_value(request, "past_move"), "color"));
-        lifted_square_color = getColor(extract_value(request, "lifted_square_color"));
-        legal_moves_color = getColor(extract_value(request, "legal_moves_color"));
-        illegal_moves_color = getColor(extract_value(request, "illegal_moves_color"));
-        past_move_from = stoi(extract_value(extract_value(request, "past_move"), "from"));
-        past_move_to = stoi(extract_value(extract_value(request, "past_move"), "to"));
-        timeout = extractTimeOut(request) * 100;
-    }
-    catch (const std::runtime_error& e)
-    {
-        return e.what();
-    }
-    if (past_move_from < -1 || past_move_from >= 64) return "Error, Invalid past move from value";
-    if (past_move_to < -1 || past_move_to >= 64) return "Error, Invalid past move to value";
-
-    std::vector<Move> moves = Chess::generateLegalMoves(game);
-    Move move_made;
-    try
-    {
-        move_made = detectMakeMove(std::ref(end_task_flag), timeout, game, moves, past_move_color, lifted_square_color,
-                              legal_moves_color, illegal_moves_color, past_move_from, past_move_to);
-    }
-    catch (const std::runtime_error& e)
-    {
-        return e.what();
-    }
-
-    return "ok, \"move_from\": " + std::to_string(move_made.from_square) +
-           ", \"move_to\": " + std::to_string(move_made.to_square) + "\"";
 }

@@ -6,11 +6,9 @@
 #include <vector>
 #include <utility>
 #include <unordered_set>
-#include "game_clock/game_clock.hpp"
-#include "online_game/extract_value.hpp"
 #include "chess.hpp"
 #include "board.hpp"
-#include "online_game/set_board.hpp" //temp
+
 
 class MakeMove
 {
@@ -36,11 +34,18 @@ private:
     uint64_t original_bit_board;
     uint64_t current_bit_board;
 
+    bool use_timeout;
+    int time_out;
+
     void construct();
     uint64_t getGameBitBoard(ChessGame);
+    std::pair<bool, bool> determineSpecialMoveLift(Move, int);
+    bool detectChangeTick(uint64_t);
+    int calculateMoveTick();
+    std::array<LedColor, 64> getBoardLights();
 
 public:
-    // Full constructor
+    // Online game constructor
     MakeMove(ChessGame game,
              int past_move_from,
              int past_move_to,
@@ -60,7 +65,7 @@ public:
         construct();
     }
 
-    // Delegating constructor
+    // Offline game constructor
     MakeMove(ChessGame game,
              int past_move_from,
              int past_move_to)
@@ -75,16 +80,6 @@ public:
         construct();
     }
 
-    bool detectChangeTick(uint64_t);
-    int calculateMoveTick();
-    std::array<LedColor, 64> getBoardLights();
+    Move startOnline(std::atomic<bool>&, int);
+    Move startOffline();
 };
-
-
-struct BitChange {
-    int index;   // Bit index [0–63]
-    bool to;     // New bit value (after the change)
-};
-
-
-std::string makeMove(ClockSetting &clock_settings, const std::string& request, std::atomic<bool>& end_task_flag);
