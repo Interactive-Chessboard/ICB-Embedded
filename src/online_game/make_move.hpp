@@ -17,15 +17,15 @@ class MakeMove
 private:
     ChessGame game;
     std::vector<Move> moves;
-    int lifted;
-    int lifted_opponent;
-    int lifted_special;
-    int placed;
-    int placed_special;
+    int lifted = -1;
+    int lifted_opponent = -1;
+    int lifted_special = -1;
+    int placed = -1;
+    int placed_special = -1;
     std::unordered_set<int> illegal_lifted;
     std::unordered_set<int> illegal_placed;
 
-    LedColor old_move_color = (0, 0, 255);
+    LedColor past_move_color = (0, 0, 255);
     LedColor lifted_square_color = (0, 230, 0);
     LedColor legal_moves_color = (0, 255, 0);
     LedColor illegal_moves_color = (255, 0, 0);
@@ -44,7 +44,7 @@ public:
     MakeMove(ChessGame game,
              int past_move_from,
              int past_move_to,
-             LedColor old_move_color,
+             LedColor past_move_color,
              LedColor lifted_square_color,
              LedColor legal_moves_color,
              LedColor illegal_moves_color
@@ -52,7 +52,7 @@ public:
         : game(std::move(game)),
           past_move_from(past_move_from),
           past_move_to(past_move_to),
-          old_move_color(old_move_color),
+          past_move_color(past_move_color),
           lifted_square_color(lifted_square_color),
           legal_moves_color(legal_moves_color),
           illegal_moves_color(illegal_moves_color)
@@ -67,7 +67,7 @@ public:
         : MakeMove(std::move(game),
                    past_move_from,
                    past_move_to,
-                   old_move_color,
+                   past_move_color,
                    lifted_square_color,
                    legal_moves_color,
                    illegal_moves_color)

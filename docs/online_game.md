@@ -96,7 +96,7 @@ Colors are added to customize play
     "board": "RNBQKBNRPPPPPPPP................................pppppppprnbqkbr",
     "castling": "KQ.q",
     "en_passant": -1,
-    "old_move": {
+    "past_move": {
         "color": [0, 0, 255],
         "from": 12,
         "to": 28

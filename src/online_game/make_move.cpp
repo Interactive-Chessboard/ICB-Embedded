@@ -145,7 +145,34 @@ int MakeMove::calculateMoveTick()
 
 std::array<LedColor, 64> MakeMove::getBoardLights()
 {
+    std::array<LedColor, 64> lights;
+    // Light past move first (can be overriden)
+    lights.at(past_move_from) = past_move_color;
+    lights.at(past_move_to) = past_move_color;
 
+    // Light illegal moves
+    for (int val : illegal_lifted)
+        lights.at(val) = illegal_moves_color;
+    for (int val : illegal_placed)
+        lights.at(val) = illegal_moves_color;
+
+    // Move is almost completed
+    if (lifted != -1 && lifted_opponent != -1 && placed == -1)
+    {
+        lights.at(lifted) = lifted_square_color;
+        lights.at(lifted_opponent) = legal_moves_color;
+    }
+    // Display legal moves
+    else if (lifted != -1 && placed == -1)
+    {
+        lights.at(lifted) = lifted_square_color;
+        for (Move move : moves)
+        {
+            if (move.from_square == lifted)
+                lights.at(move.to_square) = legal_moves_color;
+        }
+    }
+    return lights;
 }
 
 
@@ -258,25 +285,23 @@ ChessGame getChessGame(const std::string& request)
 
 
 Move detectMakeMove(std::atomic<bool>& end_task_flag, int timeout, ChessGame game, std::vector<Move> moves,
-              LedColor old_move_color, LedColor lifted_square_color, LedColor legal_moves_color,
+              LedColor past_move_color, LedColor lifted_square_color, LedColor legal_moves_color,
               LedColor illegal_moves_color, int past_move_from, int past_move_to)
 {
-    MakeMove make_move(game, past_move_from, past_move_to, old_move_color, lifted_square_color, legal_moves_color, illegal_moves_color);
+    MakeMove make_move(game, past_move_from, past_move_to, past_move_color, lifted_square_color, legal_moves_color, illegal_moves_color);
 
-    int index = -1;
     while (!end_task_flag.load() && timeout > 0)
     {
         uint64_t bit_board_tick = Board::getBoardArr();
         bool changes = make_move.detectChangeTick(bit_board_tick);
         if (changes)
         {
-            index = make_move.calculateMoveTick();
+            int move_index = make_move.calculateMoveTick();
+            if (move_index >= 0)
+                return moves.at(move_index);
             std::array<LedColor, 64> led_lights = make_move.getBoardLights();
             Board::setLed(led_lights);
         }
-        
-        if (index >= 0)
-            return moves.at(index);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         timeout--;
@@ -288,19 +313,19 @@ Move detectMakeMove(std::atomic<bool>& end_task_flag, int timeout, ChessGame gam
 std::string makeMove(ClockSetting &clock_settings, const std::string& request, std::atomic<bool>& end_task_flag)
 {
     ChessGame game;
-    LedColor old_move_color, lifted_square_color, legal_moves_color, illegal_moves_color;
+    LedColor past_move_color, lifted_square_color, legal_moves_color, illegal_moves_color;
     int past_move_from, past_move_to, timeout;
     try
     {
         game = getChessGame(request);
         setClockSettings(std::ref(clock_settings), request);
 
-        old_move_color = getColor(extract_value(extract_value(request, "old_move"), "color"));
+        past_move_color = getColor(extract_value(extract_value(request, "past_move"), "color"));
         lifted_square_color = getColor(extract_value(request, "lifted_square_color"));
         legal_moves_color = getColor(extract_value(request, "legal_moves_color"));
         illegal_moves_color = getColor(extract_value(request, "illegal_moves_color"));
-        past_move_from = stoi(extract_value(extract_value(request, "old_move"), "from"));
-        past_move_to = stoi(extract_value(extract_value(request, "old_move"), "to"));
+        past_move_from = stoi(extract_value(extract_value(request, "past_move"), "from"));
+        past_move_to = stoi(extract_value(extract_value(request, "past_move"), "to"));
         timeout = extractTimeOut(request) * 100;
     }
     catch (const std::runtime_error& e)
@@ -314,7 +339,7 @@ std::string makeMove(ClockSetting &clock_settings, const std::string& request, s
     Move move_made;
     try
     {
-        move_made = detectMakeMove(std::ref(end_task_flag), timeout, game, moves, old_move_color, lifted_square_color,
+        move_made = detectMakeMove(std::ref(end_task_flag), timeout, game, moves, past_move_color, lifted_square_color,
                               legal_moves_color, illegal_moves_color, past_move_from, past_move_to);
     }
     catch (const std::runtime_error& e)
