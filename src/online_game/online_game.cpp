@@ -2,6 +2,22 @@
 #include "online_game.hpp"
 
 
+std::string animation(const std::string& request, std::atomic<bool>& end_task_flag)
+{
+    std::string animation = extract_value(request, "animation");
+    std::vector<Animation> animations;
+    try
+    {
+        animations = parseAnimations(request);
+    }
+    catch (const std::runtime_error& e)
+    {
+        return e.what();
+    }
+    return Board::playAnimations(std::ref(end_task_flag), animations);
+}
+
+
 std::string makeReturnMsg(const std::string& request_id, const std::string& status)
 {
     return "{\"id\": " + request_id + ", \"status\": \"" + status + "\"}";

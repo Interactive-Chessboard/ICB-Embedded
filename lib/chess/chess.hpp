@@ -7,7 +7,6 @@
 #include <map>
 #include <array>
 #include <limits.h>
-#include "structs.hpp"
 
 
 enum class Color {

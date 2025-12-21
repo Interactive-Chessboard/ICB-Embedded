@@ -4,12 +4,11 @@
 #include <thread>
 #include <mutex>
 #include <string>
-#include "structs.hpp"
 #include "bluetooth.hpp"
-#include "animations.hpp"
+#include "extract_animations.hpp"
 #include "extract_value.hpp"
-#include "set_board.hpp"
+#include "extract_set_board.hpp"
 #include "game_clock/game_clock.hpp"
-#include "make_move.hpp"
+#include "extract_make_move.hpp"
 
 void onlineGame(ClockSetting &clock_settings);

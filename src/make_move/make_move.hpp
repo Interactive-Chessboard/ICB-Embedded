@@ -7,10 +7,10 @@
 #include <utility>
 #include <unordered_set>
 #include "game_clock/game_clock.hpp"
-#include "extract_value.hpp"
+#include "online_game/extract_value.hpp"
 #include "chess.hpp"
 #include "board.hpp"
-#include "set_board.hpp" //temp
+#include "online_game/set_board.hpp" //temp
 
 class MakeMove
 {

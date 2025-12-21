@@ -8,4 +8,4 @@
 #include "board.hpp"
 #include "extract_value.hpp"
 
-std::string animation(const std::string&, std::atomic<bool>&);
+std::vector<Animation> parseAnimations(const std::string&);
