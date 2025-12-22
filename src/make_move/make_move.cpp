@@ -136,7 +136,7 @@ int MakeMove::calculateMoveTick()
     {
         // Lifted and placed piece correspond to a move and the bit board corresponds to that moves result as well
         if (moves[i].from_square == lifted && moves[i].to_square == placed &&
-            current_bit_board == getGameBitBoard(moves[i].chess_game))
+            current_bit_board == Chess::getGameBitBoard(moves[i].chess_game))
             return i;
     }
     return -1;
@@ -176,22 +176,10 @@ std::array<LedColor, 64> MakeMove::getBoardLights()
 }
 
 
-uint64_t MakeMove::getGameBitBoard(ChessGame game)
-{
-    uint64_t bit_board = 0;
-    for (int i = 0; i < 64; i++)
-    {
-        if (game.board.at(i) != Piece())
-            bit_board |= (1ULL << i);
-    }
-    return bit_board;
-}
-
-
 void MakeMove::construct()
 {
     moves = Chess::generateLegalMoves(game);
-    original_bit_board = getGameBitBoard(game);
+    original_bit_board = Chess::getGameBitBoard(game);
     current_bit_board = original_bit_board;
 }
 

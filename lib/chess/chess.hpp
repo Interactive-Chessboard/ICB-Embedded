@@ -117,4 +117,5 @@ Winner calculateEndGame(ChessGame, std::vector<Move>);
 bool insufficientMaterials(const ChessGame&, Color);
 //void chess_clock(ClockSetting&);
 Move botMove(ChessGame, std::vector<Move>);
+uint64_t getGameBitBoard(ChessGame);
 }

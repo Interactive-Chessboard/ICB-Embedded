@@ -38,7 +38,6 @@ private:
     int time_out;
 
     void construct();
-    uint64_t getGameBitBoard(ChessGame);
     std::pair<bool, bool> determineSpecialMoveLift(Move, int);
     bool detectChangeTick(uint64_t);
     int calculateMoveTick();
@@ -81,5 +80,5 @@ public:
     }
 
     Move startOnline(std::atomic<bool>&, int);
-    Move startOffline();
+    Move startOffline(); // TODO (don't forget about promotions)
 };

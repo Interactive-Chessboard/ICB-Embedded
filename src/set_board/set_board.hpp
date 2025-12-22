@@ -16,5 +16,5 @@ public:
         : color(color), board(board) {}
 
     std::string startOnline(std::atomic<bool>&, int);
-    void startOffline();
+    void startOffline(); // TO DO
 };
