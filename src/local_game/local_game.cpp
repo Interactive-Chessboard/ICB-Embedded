@@ -106,7 +106,7 @@ void localGame(Settings game_settings, ClockSetting &clock_settings)
     // ---Game End---
     if (chess_game.winner == Winner::Nil)
     {
-        //chess_game.winner = Chess::getClockWinner(clock_settings, chess_game);
+        chess_game.winner = Chess::getClockWinner(clock_settings.time_white.load(), clock_settings.time_black.load(), chess_game);
     }
     //Board::gameEndAnimation(chess_game.winner); //REMOVE COMMENT WHEN IMPLEMENTED
 }
