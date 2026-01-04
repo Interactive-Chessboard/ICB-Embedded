@@ -115,15 +115,13 @@ void setClockSettings(ClockSetting &clock_settings, const std::string& request)
         throw std::runtime_error("Error, time values are not ints");
     }
     if (white < 0 || black < 0 || extra_time < 0) throw std::runtime_error("Error, time values can't be negative");
-    
-
 
     std::string run_down = extract_value(clock_settings_str, "run_down");
-    ClockColor clock_color;
+    Color clock_color;
     if (run_down == "w")
-        clock_color = ClockColor::White;
+        clock_color = Color::White;
     else if (run_down == "b")
-        clock_color = ClockColor::Black;
+        clock_color = Color::Black;
     else
         throw std::runtime_error("Error, invalid clock color");
 

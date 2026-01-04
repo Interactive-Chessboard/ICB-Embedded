@@ -204,3 +204,23 @@ Move MakeMove::startOnline(std::atomic<bool>& end_task_flag, int timeout)
     }
     throw std::runtime_error("Error, timeout reached or end task called");
 }
+
+Move MakeMove::startOffline(ClockSetting& clock_settings)
+{
+    while (clock_settings.active.load())
+    {
+        uint64_t bit_board_tick = Board::getBoardArr();
+        bool changes = detectChangeTick(bit_board_tick);
+        if (changes)
+        {
+            int move_index = calculateMoveTick();
+            if (move_index >= 0)
+                // TODO Promotions
+                return moves.at(move_index);
+            std::array<LedColor, 64> led_lights = getBoardLights();
+            Board::setLed(led_lights);
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    return Move{};
+}

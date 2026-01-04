@@ -2,16 +2,16 @@
 #include "game_clock.hpp"
 
 
-void tick(ClockSetting& clock_settings, ClockColor previous_iteration)
+void tick(ClockSetting& clock_settings, Color previous_iteration)
 {
     if (!clock_settings.active.load()) return;
 
     // Decrement timer
-    if (clock_settings.player_turn.load() == ClockColor::White)
+    if (clock_settings.player_turn.load() == Color::White)
     {
         clock_settings.time_white.fetch_sub(1);
     }
-    else if (clock_settings.player_turn.load() == ClockColor::Black)
+    else if (clock_settings.player_turn.load() == Color::Black)
     {
         clock_settings.time_black.fetch_sub(1);
     }
@@ -21,12 +21,12 @@ void tick(ClockSetting& clock_settings, ClockColor previous_iteration)
     }
 
     // Add extra time if changed turn
-    if (clock_settings.player_turn.load() == ClockColor::White && 
+    if (clock_settings.player_turn.load() == Color::White && 
         previous_iteration != clock_settings.player_turn.load())
     {
         clock_settings.time_black.fetch_add(clock_settings.extra_time.load());
     }
-    else if (clock_settings.player_turn.load() == ClockColor::Black && 
+    else if (clock_settings.player_turn.load() == Color::Black && 
         previous_iteration != clock_settings.player_turn.load())
     {
         clock_settings.time_white.fetch_add(clock_settings.extra_time.load());
@@ -47,7 +47,7 @@ void game_clock(ClockSetting &clock_settings, std::atomic<bool> &stop_clock_loop
     constexpr std::chrono::milliseconds interval(10);
     auto start = clock::now();
     int i = 0;
-    ClockColor previous_iteration = ClockColor::White;
+    Color previous_iteration = Color::White;
     while(!stop_clock_loop.load())
     {
         auto iteration_start = start + i * interval;

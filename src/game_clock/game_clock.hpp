@@ -5,19 +5,13 @@
 #include <mutex>
 #include <atomic>
 #include "board.hpp"
-
-
-enum class ClockColor {
-    White,
-    Black,
-    Nil
-};
+#include "chess.hpp"
 
 
 struct ClockSetting
 {
     std::atomic<bool> active{true}; // True if a winner hasn't been declared
-    std::atomic<ClockColor> player_turn{ClockColor::White}; // Players turn do determine the active clock
+    std::atomic<Color> player_turn{Color::White}; // Players turn do determine the active clock
     std::atomic<int> time_white; // Time remaining on whites clock in ms
     std::atomic<int> time_black; // Same for black
     std::atomic<int> extra_time; // Extra time in ms to add after each move

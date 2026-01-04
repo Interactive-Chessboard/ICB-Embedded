@@ -8,6 +8,7 @@
 #include <unordered_set>
 #include "chess.hpp"
 #include "board.hpp"
+#include "game_clock/game_clock.hpp"
 
 
 class MakeMove
@@ -34,7 +35,6 @@ private:
     uint64_t original_bit_board;
     uint64_t current_bit_board;
 
-    bool use_timeout;
     int time_out;
 
     void construct();
@@ -80,5 +80,5 @@ public:
     }
 
     Move startOnline(std::atomic<bool>&, int);
-    Move startOffline(); // TODO (don't forget about promotions)
+    Move startOffline(ClockSetting&); // TODO promotions
 };

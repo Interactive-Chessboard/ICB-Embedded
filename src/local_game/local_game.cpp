@@ -2,9 +2,12 @@
 #include "local_game.hpp"
 
 
-ChessGame gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings)
+ChessGame gameLoopBotsOffline(PlayerColor gamemode_player_color, ClockSetting &clock_settings)
 {
+    Color player_color = (gamemode_player_color == PlayerColor::White ? Color::White : Color::Black);
+
     ChessGame chess_game;
+    Move past_move;
     while (clock_settings.active.load())
     {
         // Generate a list of legal moves/positions and looks if the game has ended
@@ -19,16 +22,22 @@ ChessGame gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings)
         Move move;
         if (player_color == chess_game.player_turn)
         {
-            move = Board::playerTurnDetectMoves(clock_settings, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
+            MakeMove make_move(chess_game, past_move.from_square, past_move.to_square);
+            move = make_move.startOffline(std::ref(clock_settings));
         }
         else
         {
             move = Chess::botMove(chess_game, legal_moves);
-            Board::playerMakeOpponentMove(clock_settings, move); //REMOVE COMMENT WHEN IMPLEMENTED
+            // TODO display promotion on screen
+
+            uint64_t bitboard_move = Chess::getGameBitBoard(move.chess_game);
+            SetBoard set_board(bitboard_move);
+            set_board.startOffline(std::ref(clock_settings));
         }
 
         chess_game = move.chess_game;
         clock_settings.player_turn.store(chess_game.player_turn);
+        past_move = move;
     }
     return chess_game;
 }
@@ -38,6 +47,7 @@ ChessGame gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings)
 ChessGame gameLoopMultiplayerOffline(ClockSetting &clock_settings)
 {
     ChessGame chess_game;
+    Move past_move;
     while (clock_settings.active.load())
     {
         // Generate a list of legal moves/positions and looks if the game has ended
@@ -50,10 +60,12 @@ ChessGame gameLoopMultiplayerOffline(ClockSetting &clock_settings)
         }
 
         // Make the move on the board
-        Move move = Board::playerTurnDetectMoves(clock_settings, legal_moves); //REMOVE COMMENT WHEN IMPLEMENTED
+        MakeMove make_move(chess_game, past_move.from_square, past_move.to_square);
+        Move move = make_move.startOffline(std::ref(clock_settings));
 
         chess_game = move.chess_game;
-        clock_settings.player_turn.store(chess_game.player_turn); 
+        clock_settings.player_turn.store(chess_game.player_turn);
+        past_move = move;
     }
     return chess_game;
 }
