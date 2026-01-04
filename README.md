@@ -1,10 +1,10 @@
-# 🚀 Project Setup with PlatformIO
+# Project Setup with PlatformIO
 
 This guide will walk you through installing **PlatformIO** and getting your environment ready to clone and work on this project.  
 
 ---
 
-## 📦 Installation  
+## Installation  
 
 ### 1. Install VS Code  
 - Download and install [Visual Studio Code](https://code.visualstudio.com/).  
@@ -44,7 +44,7 @@ This guide will walk you through installing **PlatformIO** and getting your envi
 
 ---
 
-## ✅ You’re Ready!  
+## You’re Ready!  
 
 Now you can:  
 - Build the project → `PlatformIO: Build`  

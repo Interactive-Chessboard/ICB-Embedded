@@ -1,6 +1,6 @@
 // local_game.cpp
 #include "local_game.hpp"
-/*
+
 
 ChessGame gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings)
 {
@@ -28,7 +28,7 @@ ChessGame gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings)
         }
 
         chess_game = move.chess_game;
-        clock_settings.player_turn.store(chess_game.player_turn); 
+        clock_settings.player_turn.store(chess_game.player_turn);
     }
     return chess_game;
 }
@@ -59,17 +59,26 @@ ChessGame gameLoopMultiplayerOffline(ClockSetting &clock_settings)
 }
 
 
-void localGame(Settings game_settings)
+void localGame(Settings game_settings, ClockSetting &clock_settings)
 {
-    // Set up the clock for the game
-    int game_time_clock = game_settings.game_time_min * 6000;
-    int game_time_extra_clock = game_settings.extra_time_sec * 100;
-    ClockSetting clock_settings(game_time_clock, game_time_extra_clock);
+    // ---Init---
+    u_int64_t starting_position = 0xffff00000000ffff;
+    int timeout_ms = 600000;
+    bool timeout_reached = true;
+    for (int i = 0; i < timeout_ms; i++)
+    {
+        if (starting_position == Board::getBoardArr())
+        {
+        timeout_reached = false;
+        break;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    if (timeout_reached)
+        return;
 
     // ---Start Loop---
     ChessGame chess_game;
-    std::thread clock_thread;
-    clock_thread = std::thread(Chess::chess_clock, std::ref(clock_settings));
     switch (game_settings.game_mode)
     {
     case GameMode::BotsOffline:
@@ -83,11 +92,10 @@ void localGame(Settings game_settings)
     }
 
     // ---Game End---
-    clock_thread.join();
     if (chess_game.winner == Winner::Nil)
     {
-        chess_game.winner = Chess::getClockWinner(clock_settings, chess_game);
+        //chess_game.winner = Chess::getClockWinner(clock_settings, chess_game);
     }
-    Board::gameEndAnimation(chess_game.winner); //REMOVE COMMENT WHEN IMPLEMENTED
+    //Board::gameEndAnimation(chess_game.winner); //REMOVE COMMENT WHEN IMPLEMENTED
 }
-    */
+

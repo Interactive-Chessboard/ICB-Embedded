@@ -7,7 +7,6 @@
 #include "local_game/local_game.hpp"
 #include "game_settings/game_settings.hpp"
 #include "game_clock/game_clock.hpp"
-#include "structs.hpp"
 #include "bluetooth.hpp"
 #include "board.hpp"
 
@@ -29,33 +28,12 @@ void loop()
   std::atomic<bool> stop_clock_thread{false};
   clock_thread = std::thread(game_clock, std::ref(clock_settings), std::ref(stop_clock_thread));
 
-  // ---Start online game---
+  // ---Start game---
   if (game_settings.game_mode == GameMode::Online)
-  {
-    onlineGame(std::ref(clock_settings)); //REMOVE COMMENT WHEN IMPLEMENTED
-    return;
-  }
+    onlineGame(std::ref(clock_settings));
+  else
+    localGame(game_settings, std::ref(clock_settings));
 
-  // ---Init---
-  u_int64_t starting_position = 0xffff00000000ffff;
-  int timeout_ms = 600000;
-  bool timeout_reached = true;
-  for (int i = 0; i < timeout_ms; i++)
-  {
-    if (starting_position == Board::getBoardArr())
-    {
-      timeout_reached = false;
-      break;
-    }
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-  }
-  if (timeout_reached)
-    return;
-
-  // ---Local Game---
-  //localGame(game_settings); //REMOVE COMMENT WHEN IMPLEMENTED
-
-  
   // ---Stop Clock Thread;
   stop_clock_thread.store(true);
 }

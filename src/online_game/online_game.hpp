@@ -14,4 +14,4 @@
 #include "set_board/set_board.hpp"
 
 
-void onlineGame(ClockSetting &clock_settings);
+void onlineGame(ClockSetting&);
