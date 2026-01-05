@@ -1,7 +1,8 @@
 // legal_moves.cpp
 #include "chess.hpp"
 
-std::vector<Move> whitePawnMoves(const Piece board[64], int index)
+
+std::vector<Move> whitePawnMoves(std::array<Piece, 64> board, int index)
 {
     std::vector<Move> moves;
     moves.reserve(10);
@@ -52,7 +53,8 @@ std::vector<Move> whitePawnMoves(const Piece board[64], int index)
     return moves;
 }
 
-std::vector<Move> blackPawnMoves(const Piece board[64], int index)
+
+std::vector<Move> blackPawnMoves(std::array<Piece, 64> board, int index)
 {
     std::vector<Move> moves;
     moves.reserve(10);
@@ -103,7 +105,8 @@ std::vector<Move> blackPawnMoves(const Piece board[64], int index)
     return moves;
 }
 
-std::vector<Move> knightMoves(const Piece board[64], int index)
+
+std::vector<Move> knightMoves(std::array<Piece, 64> board, int index)
 {
     std::vector<Move> moves;
     moves.reserve(10);
@@ -113,12 +116,12 @@ std::vector<Move> knightMoves(const Piece board[64], int index)
     int knight_moves_right[4] = {index - 15, index - 6, index + 10, index + 17};
     for (int i = 0; i < 4; i++)
     {
-        if (knight_moves_left[i] < 64 && knight_moves_left[i] >= 0 && 
+        if (knight_moves_left[i] < 64 && knight_moves_left[i] >= 0 &&
             index % 8 > knight_moves_left[i] % 8 && board[knight_moves_left[i]].color != piece_color)
         {
             moves.push_back(Move(index, knight_moves_left[i]));
         }
-        if (knight_moves_right[i] < 64 && knight_moves_right[i] >= 0 && 
+        if (knight_moves_right[i] < 64 && knight_moves_right[i] >= 0 &&
             index % 8 < knight_moves_right[i] % 8 && board[knight_moves_right[i]].color != piece_color)
         {
             moves.push_back(Move(index, knight_moves_right[i]));
@@ -128,7 +131,7 @@ std::vector<Move> knightMoves(const Piece board[64], int index)
 }
 
 
-std::vector<Move> bishopMoves(const Piece board[64], int index)
+std::vector<Move> bishopMoves(std::array<Piece, 64> board, int index)
 {
     std::vector<Move> moves;
     moves.reserve(10);
@@ -217,7 +220,7 @@ std::vector<Move> bishopMoves(const Piece board[64], int index)
 }
 
 
-std::vector<Move> rookMoves(const Piece board[64], int index)
+std::vector<Move> rookMoves(std::array<Piece, 64> board, int index)
 {
     std::vector<Move> moves;
     moves.reserve(10);
@@ -305,7 +308,8 @@ std::vector<Move> rookMoves(const Piece board[64], int index)
     return moves;
 }
 
-std::vector<Move> kingMoves(const Piece board[64], int index)
+
+std::vector<Move> kingMoves(std::array<Piece, 64> board, int index)
 {
     std::vector<Move> moves;
     moves.reserve(10);
@@ -316,12 +320,12 @@ std::vector<Move> kingMoves(const Piece board[64], int index)
     int king_moves[2] = {index - 8, index + 8};
     for (int i = 0; i < 3; i++)
     {
-        if (king_moves_left[i] < 64 && king_moves_left[i] >= 0 && 
+        if (king_moves_left[i] < 64 && king_moves_left[i] >= 0 &&
             index % 8 > king_moves_left[i] % 8 && board[king_moves_left[i]].color != piece_color)
         {
             moves.push_back(Move(index, king_moves_left[i]));
         }
-        if (king_moves_right[i] < 64 && king_moves_right[i] >= 0 && 
+        if (king_moves_right[i] < 64 && king_moves_right[i] >= 0 &&
             index % 8 < king_moves_right[i] % 8 && board[king_moves_right[i]].color != piece_color)
         {
             moves.push_back(Move(index, king_moves_right[i]));
@@ -329,7 +333,7 @@ std::vector<Move> kingMoves(const Piece board[64], int index)
     }
     for (int i = 0; i < 2; i++)
     {
-        if (king_moves[i] < 64 && king_moves[i] >= 0 && 
+        if (king_moves[i] < 64 && king_moves[i] >= 0 &&
             board[king_moves[i]].color != piece_color)
         {
             moves.push_back(Move(index, king_moves[i]));
@@ -345,12 +349,12 @@ Move updateBoard(ChessGame chess_game, Move move)
     {
         chess_game.board[move.to_square] = move.promotion;
     }
-    else 
+    else
     {
         chess_game.board[move.to_square] = chess_game.board[move.from_square];
-    }  
+    }
     chess_game.board[move.from_square] = Piece();
-    
+
     // En passant flags
     chess_game.en_passant = -1;
     if (chess_game.player_turn == Color::White && (move.to_square - move.from_square) == 16 && 
@@ -370,28 +374,28 @@ Move updateBoard(ChessGame chess_game, Move move)
     }
 
     // Castle flags
-    if (chess_game.castle[0] == 'K' && 
+    if (chess_game.castle[0] == 'K' &&
         (chess_game.board[4] != Piece(Color::White, PieceType::King) ||
         chess_game.board[7] != Piece(Color::White, PieceType::Rook)))
     {
         chess_game.castle[0] = ' ';
     }
 
-    if (chess_game.castle[1] == 'Q' && 
+    if (chess_game.castle[1] == 'Q' &&
         (chess_game.board[4] != Piece(Color::White, PieceType::King) ||
         chess_game.board[0] != Piece(Color::White, PieceType::Rook)))
     {
         chess_game.castle[1] = ' ';
     }
 
-    if (chess_game.castle[2] == 'k' && 
+    if (chess_game.castle[2] == 'k' &&
         (chess_game.board[60] != Piece(Color::Black, PieceType::King) ||
         chess_game.board[63] != Piece(Color::Black, PieceType::Rook)))
     {
         chess_game.castle[2] = ' ';
     }
 
-    if (chess_game.castle[3] == 'q' && 
+    if (chess_game.castle[3] == 'q' &&
         (chess_game.board[60] != Piece(Color::Black, PieceType::King) ||
         chess_game.board[56] != Piece(Color::Black, PieceType::Rook)))
     {
@@ -409,7 +413,7 @@ std::vector<Move> generatePseudoLegalMoves(ChessGame chess_game)
 
     // Normal moves
     for (int i = 0; i < 64; i++)
-    {  
+    {
         Piece piece = chess_game.board[i];
         if (chess_game.player_turn != piece.color)
         {
@@ -419,7 +423,7 @@ std::vector<Move> generatePseudoLegalMoves(ChessGame chess_game)
         new_moves.reserve(50);
         std::vector<Move> new_moves2;
         new_moves2.reserve(10);
-        switch (piece.piece_type) 
+        switch (piece.piece_type)
         {
         case PieceType::Pawn:
             new_moves = piece.color == Color::White ? whitePawnMoves(chess_game.board, i) : blackPawnMoves(chess_game.board, i);
@@ -535,7 +539,7 @@ std::vector<Move> castleMoves(ChessGame chess_game)
             move.chess_game.board[7] = Piece();
             moves.push_back(move);
         }
-    
+
     // Queen side castle black
     if (chess_game.player_turn == Color::White && chess_game.castle[1] == 'Q' &&
         chess_game.board[3] == Piece() && chess_game.board[2] == Piece() && chess_game.board[1] == Piece() &&
@@ -554,7 +558,7 @@ std::vector<Move> castleMoves(ChessGame chess_game)
             move.chess_game.board[4] = Piece();
             moves.push_back(move);
         }
-    
+
     // King side castle black
     if (chess_game.player_turn == Color::Black && chess_game.castle[2] == 'k' &&
         chess_game.board[61] == Piece() && chess_game.board[62] == Piece() &&
@@ -572,7 +576,7 @@ std::vector<Move> castleMoves(ChessGame chess_game)
             move.chess_game.board[63] = Piece();
             moves.push_back(move);
         }
-    
+
     // Queen side castle black
     if (chess_game.player_turn == Color::Black && chess_game.castle[3] == 'q' &&
         chess_game.board[57] == Piece() && chess_game.board[58] == Piece() && chess_game.board[59] == Piece() &&
@@ -624,6 +628,6 @@ std::vector<Move> Chess::generateLegalMoves(ChessGame chess_game)
             moves.push_back(move);
         }
     }
-    
+
     return moves;
 }
