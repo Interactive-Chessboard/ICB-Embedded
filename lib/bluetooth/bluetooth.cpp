@@ -41,10 +41,10 @@ std::string getFromQueue(std::queue<std::string> &queue)
  *  - the response is sent back via BLE notify().
  */
 class MyCallbacks : public BLECharacteristicCallbacks {
-    void onWrite(BLECharacteristic *pChar) 
+    void onWrite(BLECharacteristic *pChar)
     {
         std::string value = pChar->getValue();
-        if (value.length() > 0) 
+        if (value.length() > 0)
         {
             receive_queue.push(value);
             std::string msg = getFromQueue(send_queue);

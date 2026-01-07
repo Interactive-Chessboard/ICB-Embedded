@@ -7,7 +7,7 @@ std::pair<bool, bool> MakeMove::determineSpecialMoveLift(Move move, int lifted)
     // White King castle
     if (lifted == 4 && move.from_square == 4 && move.to_square == 6)
         return {7, 5};
-    
+
     // White Queen castle
     if (lifted == 4 && move.from_square == 4 && move.to_square == 2)
         return {0, 3};
@@ -65,7 +65,7 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
                 special_move_placed_index = special_move.second;
             }
         }
-        
+
         if (placed_bool)
         {
             // Place piece at a valid position
@@ -204,6 +204,7 @@ Move MakeMove::startOnline(std::atomic<bool>& end_task_flag, int timeout)
     }
     throw std::runtime_error("Error, timeout reached or end task called");
 }
+
 
 Move MakeMove::startOffline(ClockSetting& clock_settings)
 {

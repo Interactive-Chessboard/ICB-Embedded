@@ -110,4 +110,3 @@ void localGame(Settings game_settings, ClockSetting &clock_settings)
     }
     //Board::gameEndAnimation(chess_game.winner); //REMOVE COMMENT WHEN IMPLEMENTED
 }
-

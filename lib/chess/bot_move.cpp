@@ -1,7 +1,7 @@
 // bot_move.cpp
 #include "chess.hpp"
 
-const std::map<PieceType, int> piece_value = 
+const std::map<PieceType, int> piece_value =
 {
     {PieceType::Nil, 0},
     {PieceType::Pawn, 100},
@@ -12,10 +12,10 @@ const std::map<PieceType, int> piece_value =
     {PieceType::King, 60000}
 };
 
-const std::map<PieceType, std::array<int, 64>> square_value = 
+const std::map<PieceType, std::array<int, 64>> square_value =
 {
     {PieceType::Nil, std::array<int, 64>{}},
-    
+
     {PieceType::Pawn, {
         0, 0, 0, 0, 0, 0, 0, 0,
         -30, 9, -6, -35, -36, -13, 4, -29,

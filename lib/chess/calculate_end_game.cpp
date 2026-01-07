@@ -12,7 +12,7 @@ Winner Chess::calculateEndGame(ChessGame chess_game, std::vector<Move> legal_mov
     {
         return Winner::Draw;
     }
-    if (Chess::insufficientMaterials(chess_game, Color::White) && 
+    if (Chess::insufficientMaterials(chess_game, Color::White) &&
         Chess::insufficientMaterials(chess_game, Color::Black))
     {
         return Winner::Draw;

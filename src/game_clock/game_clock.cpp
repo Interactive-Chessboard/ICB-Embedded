@@ -21,12 +21,12 @@ void tick(ClockSetting& clock_settings, Color previous_iteration)
     }
 
     // Add extra time if changed turn
-    if (clock_settings.player_turn.load() == Color::White && 
+    if (clock_settings.player_turn.load() == Color::White &&
         previous_iteration != clock_settings.player_turn.load())
     {
         clock_settings.time_black.fetch_add(clock_settings.extra_time.load());
     }
-    else if (clock_settings.player_turn.load() == Color::Black && 
+    else if (clock_settings.player_turn.load() == Color::Black &&
         previous_iteration != clock_settings.player_turn.load())
     {
         clock_settings.time_white.fetch_add(clock_settings.extra_time.load());

@@ -2,7 +2,7 @@
 #include "extract_animations.hpp"
 
 
-inline void skipSpaces(const std::string& s, int& i) 
+inline void skipSpaces(const std::string& s, int& i)
 {
     while (i < s.size() && std::isspace(s[i])) i++;
 }
@@ -26,7 +26,7 @@ int parseInt(const std::string& s, int& i)
 }
 
 
-LedColor parseColorTriplet(const std::string& s, int& i) 
+LedColor parseColorTriplet(const std::string& s, int& i)
 {
     skipSpaces(s, i);
     if (s[i] != '[') return LedColor();
@@ -75,7 +75,7 @@ void parseBoard(const std::string& s, int& i, std::array<LedColor,64>& leds)
         {
             i++;
             break;
-        } 
+        }
         else
             i++;
     }

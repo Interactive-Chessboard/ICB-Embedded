@@ -13,7 +13,7 @@
 /**
  * @brief Namespace encapsulating Bluetooth functionality for BLE messaging.
  */
-namespace Bluetooth 
+namespace Bluetooth
 {
 /**
  * @brief Initialize the Bluetooth device, BLE server, service and characteristic.

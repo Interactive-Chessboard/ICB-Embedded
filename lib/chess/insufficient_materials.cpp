@@ -1,6 +1,7 @@
 // insufficient_materials.cpp
 #include "chess.hpp"
 
+
 // Insufficient materials is only king, knight + king, bishop + king or knight + bishop + king
 bool Chess::insufficientMaterials(const ChessGame &chess_game, Color color)
 {

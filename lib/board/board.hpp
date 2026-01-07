@@ -11,9 +11,9 @@ struct LedColor {
     u_int8_t red;
     u_int8_t green;
     u_int8_t blue;
-    LedColor(int red = 0, int green = 0, int blue = 0) : 
+    LedColor(int red = 0, int green = 0, int blue = 0) :
              red(red), green(green), blue(blue) {}
-    
+
     bool operator==(const LedColor& other) const {
         return red == other.red &&
                green == other.green &&
@@ -39,6 +39,7 @@ void clearLed(void);
 std::string playAnimations(std::atomic<bool>&, const std::vector<Animation>&);
 
 // screen
-void setTime(int white_time_ms, int black_time_ms);
-
+void setTime(int, int);
+void setSentence(std::string);
+void clearBoard(void);
 };

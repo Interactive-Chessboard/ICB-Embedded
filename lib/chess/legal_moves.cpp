@@ -342,6 +342,7 @@ std::vector<Move> kingMoves(std::array<Piece, 64> board, int index)
     return moves;
 }
 
+
 Move updateBoard(ChessGame chess_game, Move move)
 {
     // Make move
@@ -405,6 +406,7 @@ Move updateBoard(ChessGame chess_game, Move move)
     move.chess_game = chess_game;
     return move;
 }
+
 
 std::vector<Move> generatePseudoLegalMoves(ChessGame chess_game)
 {

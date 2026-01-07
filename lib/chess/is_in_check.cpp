@@ -1,6 +1,7 @@
 // is_in_check.cpp
 #include "chess.hpp"
 
+
 bool Chess::isInCheck(ChessGame chess_game, int square)
 {
     // Find the king
@@ -57,12 +58,12 @@ bool Chess::isInCheck(ChessGame chess_game, int square)
     int knight_moves_right[4] = {square - 15, square - 6, square + 10, square + 17};
     for (int i = 0; i < 4; i++)
     {
-        if (knight_moves_left[i] < 64 && knight_moves_left[i] >= 0 && square % 8 > knight_moves_left[i] % 8 && 
+        if (knight_moves_left[i] < 64 && knight_moves_left[i] >= 0 && square % 8 > knight_moves_left[i] % 8 &&
             chess_game.board[knight_moves_left[i]] == Piece(opponent_color, PieceType::Knight))
         {
             return true;
         }
-        if (knight_moves_right[i] < 64 && knight_moves_right[i] >= 0 && square % 8 < knight_moves_right[i] % 8 && 
+        if (knight_moves_right[i] < 64 && knight_moves_right[i] >= 0 && square % 8 < knight_moves_right[i] % 8 &&
             chess_game.board[knight_moves_right[i]] == Piece(opponent_color, PieceType::Knight))
         {
             return true;
@@ -132,8 +133,7 @@ bool Chess::isInCheck(ChessGame chess_game, int square)
             break;
         }
         up_right += 9;
-    } 
-
+    }
 
     // Rook and Queen
     // left
@@ -207,12 +207,12 @@ bool Chess::isInCheck(ChessGame chess_game, int square)
     int king_moves[2] = {square - 8, square + 8};
     for (int i = 0; i < 3; i++)
     {
-        if (king_moves_left[i] < 64 && king_moves_left[i] >= 0 && square % 8 > king_moves_left[i] % 8 && 
+        if (king_moves_left[i] < 64 && king_moves_left[i] >= 0 && square % 8 > king_moves_left[i] % 8 &&
             chess_game.board[king_moves_left[i]] == Piece(opponent_color, PieceType::King))
         {
             return true;
         }
-        if (king_moves_right[i] < 64 && king_moves_right[i] >= 0 && square % 8 < king_moves_right[i] % 8 && 
+        if (king_moves_right[i] < 64 && king_moves_right[i] >= 0 && square % 8 < king_moves_right[i] % 8 &&
             chess_game.board[king_moves_right[i]] == Piece(opponent_color, PieceType::King))
         {
             return true;
@@ -220,7 +220,7 @@ bool Chess::isInCheck(ChessGame chess_game, int square)
     }
     for (int i = 0; i < 2; i++)
     {
-        if (king_moves[i] < 64 && king_moves[i] >= 0 && 
+        if (king_moves[i] < 64 && king_moves[i] >= 0 &&
             chess_game.board[king_moves[i]] == Piece(opponent_color, PieceType::King))
         {
             return true;
