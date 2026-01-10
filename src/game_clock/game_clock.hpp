@@ -4,7 +4,7 @@
 #include <chrono>
 #include <mutex>
 #include <atomic>
-#include "board.hpp"
+#include "hardware.hpp"
 #include "chess.hpp"
 
 

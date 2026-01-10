@@ -24,14 +24,14 @@ std::string SetBoard::startOnline(std::atomic<bool>& end_task_flag, int timeout)
 {
     while (!end_task_flag.load() && timeout > 0)
     {
-        uint64_t current_board = Board::getBoardArr();
+        uint64_t current_board = Hardware::get().getBoardArr();
         if (current_board == board)
         {
             return "ok";
         }
 
         std::array<LedColor, 64> lights = lightUpDifference(current_board, board, color);
-        Board::setLed(lights);
+        Hardware::get().setLed(lights);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         timeout--;
     }
@@ -43,14 +43,14 @@ void SetBoard::startOffline(ClockSetting& clock_settings)
 {
     while (clock_settings.active.load())
     {
-        uint64_t current_board = Board::getBoardArr();
+        uint64_t current_board = Hardware::get().getBoardArr();
         if (current_board == board)
         {
             return;
         }
 
         std::array<LedColor, 64> lights = lightUpDifference(current_board, board, color);
-        Board::setLed(lights);
+        Hardware::get().setLed(lights);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }

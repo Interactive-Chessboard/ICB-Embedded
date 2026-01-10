@@ -1,7 +1,7 @@
 // extract_make_move.hpp
 #pragma once
 #include "chess.hpp"
-#include "board.hpp"
+#include "hardware.hpp"
 #include "extract_value.hpp"
 
 

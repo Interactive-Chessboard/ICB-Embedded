@@ -59,7 +59,7 @@ void game_clock(ClockSetting &clock_settings, std::atomic<bool> &stop_clock_loop
         previous_iteration = clock_settings.player_turn.load();
         }
 
-        Board::setTime(clock_settings.time_white.load(), clock_settings.time_black.load());
+        Hardware::get().setTime(clock_settings.time_white.load(), clock_settings.time_black.load());
         i++;
         std::this_thread::sleep_until(iteration_start + interval);
     }

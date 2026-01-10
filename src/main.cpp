@@ -7,13 +7,13 @@
 #include "local_game/local_game.hpp"
 #include "game_settings/game_settings.hpp"
 #include "game_clock/game_clock.hpp"
-#include "bluetooth.hpp"
-#include "board.hpp"
+#include "hardware.hpp"
 
-void setup() 
+void setup()
 {
   Serial.begin(115200);
-  Bluetooth::init();
+  Hardware::set(RealHardware::instance());
+  Hardware::get().bluetooth_init();
   //delay(8000); //for debugging purposes
 }
 
@@ -40,3 +40,7 @@ void loop()
 
 // Note sur comment print in std::string
 //Serial.println(msg.c_str());
+
+// Pour tester utilise
+// MockHardware mock;
+// Hardware::set(mock);

@@ -7,7 +7,7 @@
 #include <utility>
 #include <unordered_set>
 #include "chess.hpp"
-#include "board.hpp"
+#include "hardware.hpp"
 #include "game_clock/game_clock.hpp"
 
 

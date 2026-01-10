@@ -2,6 +2,11 @@
 #include "local_game.hpp"
 
 
+std::vector<Animation> createBasicAnimation(Winner color)
+{
+    return std::vector<Animation> {};
+}
+
 ChessGame gameLoopBotsOffline(PlayerColor gamemode_player_color, ClockSetting &clock_settings)
 {
     Color player_color = (gamemode_player_color == PlayerColor::White ? Color::White : Color::Black);
@@ -79,7 +84,7 @@ void localGame(Settings game_settings, ClockSetting &clock_settings)
     bool timeout_reached = true;
     for (int i = 0; i < timeout_ms; i++)
     {
-        if (starting_position == Board::getBoardArr())
+        if (starting_position == Hardware::get().getBoardArr())
         {
         timeout_reached = false;
         break;
@@ -108,5 +113,7 @@ void localGame(Settings game_settings, ClockSetting &clock_settings)
     {
         chess_game.winner = Chess::getClockWinner(clock_settings.time_white.load(), clock_settings.time_black.load(), chess_game);
     }
-    //Board::gameEndAnimation(chess_game.winner); //REMOVE COMMENT WHEN IMPLEMENTED
+    std::vector<Animation> basic_animations = createBasicAnimation(chess_game.winner);
+    std::atomic<bool> stop{false};
+    Hardware::get().playAnimations(stop, basic_animations);
 }

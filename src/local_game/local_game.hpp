@@ -2,7 +2,8 @@
 #pragma once
 #include <thread>
 #include <string>
-#include "board.hpp"
+#include <vector>
+#include "hardware.hpp"
 #include "chess.hpp"
 #include "game_settings/game_settings.hpp"
 #include "game_clock/game_clock.hpp"

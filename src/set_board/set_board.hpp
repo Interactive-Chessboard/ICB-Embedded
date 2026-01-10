@@ -2,7 +2,7 @@
 #pragma once
 #include <array>
 #include <string>
-#include "board.hpp"
+#include "hardware.hpp"
 #include "game_clock/game_clock.hpp"
 
 

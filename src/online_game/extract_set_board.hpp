@@ -2,7 +2,7 @@
 #pragma once
 #include <chrono>
 #include <stdexcept>
-#include "board.hpp"
+#include "hardware.hpp"
 #include "extract_value.hpp"
 
 

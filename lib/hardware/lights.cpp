@@ -1,9 +1,9 @@
 // lights.cpp
-#include "board.hpp"
+#include "hardware.hpp"
 
 std::array<LedColor, 64> current_global_light;
 
-void Board::setLed(std::array<LedColor, 64> leds)
+void RealHardware::setLed(std::array<LedColor, 64> leds)
 {
     if (leds == current_global_light)
         return;
@@ -17,28 +17,28 @@ void Board::setLed(std::array<LedColor, 64> leds)
 }
 
 
-void Board::clearLed(void)
+void RealHardware::clearLed(void)
 {
     std::array<LedColor, 64> leds;
     return setLed(leds);
 }
 
 
-std::string Board::playAnimations(std::atomic<bool>& stop, const std::vector<Animation>& animations)
+std::string RealHardware::playAnimations(std::atomic<bool>& stop, const std::vector<Animation>& animations)
 {
     for (auto& animation : animations)
     {
-        Board::setLed(animation.leds);
+        RealHardware::setLed(animation.leds);
         for (int _ = 0; _ < animation.display_time_ms / 10; _++)
         {
             if (stop.load())
             {
-                Board::clearLed();
+                RealHardware::clearLed();
                 return "Error, stopped";
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
     }
-    Board::clearLed();
+    RealHardware::clearLed();
     return "ok";
 }

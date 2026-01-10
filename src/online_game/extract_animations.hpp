@@ -5,7 +5,7 @@
 #include <array>
 #include <cctype>
 #include <stdexcept>
-#include "board.hpp"
+#include "hardware.hpp"
 #include "extract_value.hpp"
 
 std::vector<Animation> parseAnimations(const std::string&);

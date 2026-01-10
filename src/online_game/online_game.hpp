@@ -4,7 +4,7 @@
 #include <thread>
 #include <mutex>
 #include <string>
-#include "bluetooth.hpp"
+#include "hardware.hpp"
 #include "extract_animations.hpp"
 #include "extract_value.hpp"
 #include "extract_set_board.hpp"

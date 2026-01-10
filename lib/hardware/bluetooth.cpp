@@ -1,5 +1,5 @@
 // bluetooth.cpp
-#include "bluetooth.hpp"
+#include "hardware.hpp"
 
 BLEServer *pServer = NULL;
 BLECharacteristic *pCharacteristic = NULL;
@@ -20,7 +20,7 @@ std::string getFromQueue(std::queue<std::string> &queue)
     std::string msg;
     while(true)
     {
-        if (!queue.empty()) 
+        if (!queue.empty())
         {
             msg = queue.front();
             queue.pop();
@@ -55,7 +55,13 @@ class MyCallbacks : public BLECharacteristicCallbacks {
 };
 
 
-void Bluetooth::init()
+/**
+ * @brief Initialize the Bluetooth device, BLE server, service and characteristic.
+ *
+ * Creates the BLE server, registers the characteristic, sets callbacks,
+ * and starts advertising to make the device discoverable.
+ */
+void RealHardware::bluetooth_init()
 {
     BLEDevice::init("ICB_test_board");
     pServer = BLEDevice::createServer();
@@ -78,13 +84,28 @@ void Bluetooth::init()
 };
 
 
-std::string Bluetooth::getBluetoothMessage()
+/**
+ * @brief Blocking read from the received BLE message queue.
+ *
+ * This function blocks until a message has arrived from the BLE client.
+ *
+ * @return The received message as a std::string.
+ */
+std::string RealHardware::getBluetoothMessage()
 {
     return getFromQueue(receive_queue);
 }
 
 
-void Bluetooth::sendBluetoothMessage(std::string msg)
+/**
+ * @brief Queue a message to be sent back to the BLE client.
+ *
+ * The next time a client writes data, this queued message will be sent back
+ * as a notification to the client.
+ *
+ * @param msg Message to enqueue for transmission.
+ */
+void RealHardware::sendBluetoothMessage(std::string msg)
 {
     send_queue.push(msg);
 }
