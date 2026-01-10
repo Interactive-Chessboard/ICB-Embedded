@@ -188,7 +188,7 @@ Move MakeMove::startOnline(std::atomic<bool>& end_task_flag, int timeout)
 {
     while (!end_task_flag.load() && timeout > 0)
     {
-        uint64_t bit_board_tick = Board::getBoardArr();
+        uint64_t bit_board_tick = Hardware::get().getBoardArr();
         bool changes = detectChangeTick(bit_board_tick);
         if (changes)
         {
@@ -196,7 +196,7 @@ Move MakeMove::startOnline(std::atomic<bool>& end_task_flag, int timeout)
             if (move_index >= 0)
                 return moves.at(move_index);
             std::array<LedColor, 64> led_lights = getBoardLights();
-            Board::setLed(led_lights);
+            Hardware::get().setLed(led_lights);
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -210,7 +210,7 @@ Move MakeMove::startOffline(ClockSetting& clock_settings)
 {
     while (clock_settings.active.load())
     {
-        uint64_t bit_board_tick = Board::getBoardArr();
+        uint64_t bit_board_tick = Hardware::get().getBoardArr();
         bool changes = detectChangeTick(bit_board_tick);
         if (changes)
         {
@@ -219,7 +219,7 @@ Move MakeMove::startOffline(ClockSetting& clock_settings)
                 // TODO Promotions
                 return moves.at(move_index);
             std::array<LedColor, 64> led_lights = getBoardLights();
-            Board::setLed(led_lights);
+            Hardware::get().setLed(led_lights);
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
