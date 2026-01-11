@@ -8,6 +8,8 @@
 #include "screen_selection/screen_selection.hpp"
 #include "game_clock/game_clock.hpp"
 #include "hardware.hpp"
+#include "animations/animations.hpp"
+
 
 void setup()
 {
@@ -19,6 +21,9 @@ void setup()
 
 void loop()
 {
+  // ---Start up animation---
+  playStartUpAnimation();
+
   // ---Game Settings---
   Settings game_settings = getGameSettings(); //REMOVE COMMENT WHEN IMPLEMENTED
 

@@ -31,12 +31,6 @@ struct LedColor {
 };
 
 
-struct Animation {
-    std::array<LedColor, 64> leds;
-    int display_time_ms;
-};
-
-
 // Interface class
 class IHardware
 {
@@ -54,7 +48,6 @@ public:
     // lights
     virtual void setLed(std::array<LedColor, 64>) = 0;
     virtual void clearLed() = 0;
-    virtual std::string playAnimations(std::atomic<bool>&, const std::vector<Animation>&) = 0;
 
     // screen
     virtual void setTime(int, int) = 0;
@@ -88,7 +81,6 @@ public:
 
     void setLed(std::array<LedColor, 64>) override;
     void clearLed() override;
-    std::string playAnimations(std::atomic<bool>&, const std::vector<Animation>&) override;
 
     void setTime(int, int) override;
     bool detectSelectClick() override;

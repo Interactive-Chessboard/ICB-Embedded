@@ -9,6 +9,7 @@
 #include "game_clock/game_clock.hpp"
 #include "set_board/set_board.hpp"
 #include "make_move/make_move.hpp"
+#include "animations/animations.hpp"
 
 
 void localGame(Settings, ClockSetting&);

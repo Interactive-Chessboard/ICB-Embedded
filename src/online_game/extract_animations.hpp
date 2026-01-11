@@ -7,5 +7,6 @@
 #include <stdexcept>
 #include "hardware.hpp"
 #include "extract_value.hpp"
+#include "animations/animations.hpp"
 
 std::vector<Animation> parseAnimations(const std::string&);
