@@ -27,7 +27,7 @@ ChessGame gameLoopBotsOffline(PlayerColor gamemode_player_color, ClockSetting &c
         Move move;
         if (player_color == chess_game.player_turn)
         {
-            MakeMove make_move(chess_game, past_move.from_square, past_move.to_square);
+            MakeMove make_move(chess_game, legal_moves, past_move.from_square, past_move.to_square);
             move = make_move.startOffline(std::ref(clock_settings));
         }
         else
@@ -65,7 +65,7 @@ ChessGame gameLoopMultiplayerOffline(ClockSetting &clock_settings)
         }
 
         // Make the move on the board
-        MakeMove make_move(chess_game, past_move.from_square, past_move.to_square);
+        MakeMove make_move(chess_game, legal_moves, past_move.from_square, past_move.to_square);
         Move move = make_move.startOffline(std::ref(clock_settings));
 
         chess_game = move.chess_game;

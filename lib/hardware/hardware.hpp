@@ -58,8 +58,10 @@ public:
 
     // screen
     virtual void setTime(int, int) = 0;
-    virtual void setSentence(std::string) = 0;
-    virtual void clearBoard() = 0;
+    virtual bool detectSelectClick() = 0;
+    virtual bool detectStartClick() = 0;
+    virtual void setOptions(std::vector<std::string>, int) = 0;
+    virtual void clearScreen() = 0;
 };
 
 
@@ -86,14 +88,13 @@ public:
 
     void setLed(std::array<LedColor, 64>) override;
     void clearLed() override;
-    std::string playAnimations(
-        std::atomic<bool>&,
-        const std::vector<Animation>&
-    ) override;
+    std::string playAnimations(std::atomic<bool>&, const std::vector<Animation>&) override;
 
     void setTime(int, int) override;
-    void setSentence(std::string) override;
-    void clearBoard() override;
+    bool detectSelectClick() override;
+    bool detectStartClick() override;
+    void setOptions(std::vector<std::string>, int) override;
+    void clearScreen() override;
 };
 
 

@@ -78,7 +78,6 @@ ChessGame getChessGame(const std::string& request)
         }
     }
 
-    // TO DO: Change castling to bit mask
     for (int i = 0; i < 4; i++)
     {
         game.castle.at(0) = castling_str.at(0);

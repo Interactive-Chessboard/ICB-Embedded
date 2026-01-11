@@ -1,5 +1,10 @@
-// game_settings.hpp
+// screen_selection.hpp
 #pragma once
+#include <vector>
+#include <string>
+#include "hardware.hpp"
+#include "chess.hpp"
+#include "game_clock/game_clock.hpp"
 
 
 enum class GameMode {
@@ -27,3 +32,4 @@ struct Settings
 
 
 Settings getGameSettings(void);
+PieceType getPromotionPiece(ClockSetting& clock_settings);

@@ -5,7 +5,7 @@
 #include <atomic>
 #include "online_game/online_game.hpp"
 #include "local_game/local_game.hpp"
-#include "game_settings/game_settings.hpp"
+#include "screen_selection/screen_selection.hpp"
 #include "game_clock/game_clock.hpp"
 #include "hardware.hpp"
 

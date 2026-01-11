@@ -9,6 +9,7 @@
 #include "chess.hpp"
 #include "hardware.hpp"
 #include "game_clock/game_clock.hpp"
+#include "screen_selection/screen_selection.hpp"
 
 
 class MakeMove
@@ -42,6 +43,7 @@ private:
     bool detectChangeTick(uint64_t);
     int calculateMoveTick();
     std::array<LedColor, 64> getBoardLights();
+    Move returnMove(ClockSetting&, int);
 
 public:
     // Online game constructor
@@ -61,24 +63,23 @@ public:
           legal_moves_color(legal_moves_color),
           illegal_moves_color(illegal_moves_color)
     {
+        moves = Chess::generateLegalMoves(game);
         construct();
     }
 
     // Offline game constructor
     MakeMove(ChessGame game,
+             std::vector<Move> moves,
              int past_move_from,
              int past_move_to)
-        : MakeMove(std::move(game),
-                   past_move_from,
-                   past_move_to,
-                   past_move_color,
-                   lifted_square_color,
-                   legal_moves_color,
-                   illegal_moves_color)
+        : game(game),
+          moves(moves),
+          past_move_from(past_move_from),
+          past_move_to(past_move_to)
     {
         construct();
     }
 
     Move startOnline(std::atomic<bool>&, int);
-    Move startOffline(ClockSetting&); // TODO promotions
+    Move startOffline(ClockSetting&);
 };

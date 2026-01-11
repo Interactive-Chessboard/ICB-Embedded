@@ -178,7 +178,6 @@ std::array<LedColor, 64> MakeMove::getBoardLights()
 
 void MakeMove::construct()
 {
-    moves = Chess::generateLegalMoves(game);
     original_bit_board = Chess::getGameBitBoard(game);
     current_bit_board = original_bit_board;
 }
@@ -206,6 +205,24 @@ Move MakeMove::startOnline(std::atomic<bool>& end_task_flag, int timeout)
 }
 
 
+Move MakeMove::returnMove(ClockSetting& clock_settings, int move_index)
+{
+    Move move = moves.at(move_index);
+    if (move.promotion == Piece())
+        return move;
+
+    PieceType piece_type = getPromotionPiece(std::ref(clock_settings));
+    for (Move promo_move : moves)
+    {
+        if (promo_move.from_square == move.from_square &&
+            promo_move.to_square == move.to_square &&
+            promo_move.promotion.piece_type == piece_type)
+            return promo_move;
+    }
+    return move;
+}
+
+
 Move MakeMove::startOffline(ClockSetting& clock_settings)
 {
     while (clock_settings.active.load())
@@ -216,8 +233,9 @@ Move MakeMove::startOffline(ClockSetting& clock_settings)
         {
             int move_index = calculateMoveTick();
             if (move_index >= 0)
-                // TODO Promotions
-                return moves.at(move_index);
+            {
+                return returnMove(std::ref(clock_settings), move_index);
+            }
             std::array<LedColor, 64> led_lights = getBoardLights();
             Hardware::get().setLed(led_lights);
         }

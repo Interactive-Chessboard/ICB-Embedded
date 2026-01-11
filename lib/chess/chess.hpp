@@ -37,7 +37,7 @@ enum class Winner {
 struct Piece {
     Color color;
     PieceType piece_type;
-    Piece(Color color = Color::Nil, PieceType piece_type = PieceType::Nil) 
+    Piece(Color color = Color::Nil, PieceType piece_type = PieceType::Nil)
         : color(color), piece_type(piece_type) {}
     bool operator==(const Piece& other) const {
         return color == other.color && piece_type == other.piece_type;
