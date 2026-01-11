@@ -30,10 +30,10 @@ Settings getGameSettings()
 }
 
 
-PieceType getPromotionPiece(ClockSetting& clock_settings)
+PieceType screenSelectPromotion(const std::atomic<bool>& active)
 {
     std::vector<std::string> options = {"Queen", "Rook", "Bishop", "Knight"};
-    int option = selectOption(options, clock_settings.active);
+    int option = selectOption(options, active);
     switch (option)
     {
     case 0:

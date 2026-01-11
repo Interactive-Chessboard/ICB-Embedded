@@ -39,15 +39,13 @@ std::string SetBoard::startOnline(std::atomic<bool>& end_task_flag, int timeout)
 }
 
 
-void SetBoard::startOffline(ClockSetting& clock_settings)
+void SetBoard::startOffline(const std::atomic<bool>& active)
 {
-    while (clock_settings.active.load())
+    while (active.load())
     {
         uint64_t current_board = Hardware::get().getBoardArr();
         if (current_board == board)
-        {
             return;
-        }
 
         std::array<LedColor, 64> lights = lightUpDifference(current_board, board, color);
         Hardware::get().setLed(lights);

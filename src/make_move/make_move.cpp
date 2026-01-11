@@ -205,13 +205,13 @@ Move MakeMove::startOnline(std::atomic<bool>& end_task_flag, int timeout)
 }
 
 
-Move MakeMove::returnMove(ClockSetting& clock_settings, int move_index)
+Move MakeMove::returnMove(const std::atomic<bool>& active, int move_index)
 {
     Move move = moves.at(move_index);
     if (move.promotion == Piece())
         return move;
 
-    PieceType piece_type = getPromotionPiece(std::ref(clock_settings));
+    PieceType piece_type = screenSelectPromotion(active);
     for (Move promo_move : moves)
     {
         if (promo_move.from_square == move.from_square &&
@@ -223,9 +223,9 @@ Move MakeMove::returnMove(ClockSetting& clock_settings, int move_index)
 }
 
 
-Move MakeMove::startOffline(ClockSetting& clock_settings)
+Move MakeMove::startOffline(const std::atomic<bool>& active)
 {
-    while (clock_settings.active.load())
+    while (active.load())
     {
         uint64_t bit_board_tick = Hardware::get().getBoardArr();
         bool changes = detectChangeTick(bit_board_tick);
@@ -234,7 +234,7 @@ Move MakeMove::startOffline(ClockSetting& clock_settings)
             int move_index = calculateMoveTick();
             if (move_index >= 0)
             {
-                return returnMove(std::ref(clock_settings), move_index);
+                return returnMove(active, move_index);
             }
             std::array<LedColor, 64> led_lights = getBoardLights();
             Hardware::get().setLed(led_lights);

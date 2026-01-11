@@ -8,7 +8,6 @@
 #include <unordered_set>
 #include "chess.hpp"
 #include "hardware.hpp"
-#include "game_clock/game_clock.hpp"
 #include "screen_selection/screen_selection.hpp"
 
 
@@ -43,7 +42,7 @@ private:
     bool detectChangeTick(uint64_t);
     int calculateMoveTick();
     std::array<LedColor, 64> getBoardLights();
-    Move returnMove(ClockSetting&, int);
+    Move returnMove(const std::atomic<bool>&, int);
 
 public:
     // Online game constructor
@@ -81,5 +80,5 @@ public:
     }
 
     Move startOnline(std::atomic<bool>&, int);
-    Move startOffline(ClockSetting&);
+    Move startOffline(const std::atomic<bool>&);
 };

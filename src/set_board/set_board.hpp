@@ -3,7 +3,6 @@
 #include <array>
 #include <string>
 #include "hardware.hpp"
-#include "game_clock/game_clock.hpp"
 
 
 class SetBoard
@@ -20,5 +19,5 @@ public:
         : board(board) {}
 
     std::string startOnline(std::atomic<bool>&, int);
-    void startOffline(ClockSetting&); // TODO Promotions
+    void startOffline(const std::atomic<bool>&);
 };

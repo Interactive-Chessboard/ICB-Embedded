@@ -30,9 +30,9 @@ void loop()
 
   // ---Start game---
   if (game_settings.game_mode == GameMode::Online)
-    onlineGame(std::ref(clock_settings));
+    onlineGame(clock_settings);
   else
-    localGame(game_settings, std::ref(clock_settings));
+    localGame(game_settings, clock_settings);
 
   // ---Stop Clock Thread;
   stop_clock_thread.store(true);

@@ -7,6 +7,7 @@ std::vector<Animation> createBasicAnimation(Winner color)
     return std::vector<Animation> {};
 }
 
+
 ChessGame gameLoopBotsOffline(PlayerColor gamemode_player_color, ClockSetting &clock_settings)
 {
     Color player_color = (gamemode_player_color == PlayerColor::White ? Color::White : Color::Black);
@@ -28,7 +29,7 @@ ChessGame gameLoopBotsOffline(PlayerColor gamemode_player_color, ClockSetting &c
         if (player_color == chess_game.player_turn)
         {
             MakeMove make_move(chess_game, legal_moves, past_move.from_square, past_move.to_square);
-            move = make_move.startOffline(std::ref(clock_settings));
+            move = make_move.startOffline(clock_settings.active);
         }
         else
         {
@@ -37,7 +38,7 @@ ChessGame gameLoopBotsOffline(PlayerColor gamemode_player_color, ClockSetting &c
 
             uint64_t bitboard_move = Chess::getGameBitBoard(move.chess_game);
             SetBoard set_board(bitboard_move);
-            set_board.startOffline(std::ref(clock_settings));
+            set_board.startOffline(clock_settings.active);
         }
 
         chess_game = move.chess_game;
@@ -66,7 +67,7 @@ ChessGame gameLoopMultiplayerOffline(ClockSetting &clock_settings)
 
         // Make the move on the board
         MakeMove make_move(chess_game, legal_moves, past_move.from_square, past_move.to_square);
-        Move move = make_move.startOffline(std::ref(clock_settings));
+        Move move = make_move.startOffline(clock_settings.active);
 
         chess_game = move.chess_game;
         clock_settings.player_turn.store(chess_game.player_turn);
@@ -99,10 +100,10 @@ void localGame(Settings game_settings, ClockSetting &clock_settings)
     switch (game_settings.game_mode)
     {
     case GameMode::BotsOffline:
-        chess_game = gameLoopBotsOffline(game_settings.player_color, std::ref(clock_settings));
+        chess_game = gameLoopBotsOffline(game_settings.player_color, clock_settings);
         break;
     case GameMode::MultiplayerOffline:
-        chess_game = gameLoopMultiplayerOffline(std::ref(clock_settings));
+        chess_game = gameLoopMultiplayerOffline(clock_settings);
         break;
     default:
         return;
