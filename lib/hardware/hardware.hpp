@@ -53,7 +53,7 @@ public:
     virtual void setTime(int, int) = 0;
     virtual bool detectSelectClick() = 0;
     virtual bool detectStartClick() = 0;
-    virtual void setOptions(std::vector<std::string>, int) = 0;
+    virtual void setScreen(std::vector<std::string>, int) = 0;
     virtual void clearScreen() = 0;
 };
 
@@ -85,7 +85,7 @@ public:
     void setTime(int, int) override;
     bool detectSelectClick() override;
     bool detectStartClick() override;
-    void setOptions(std::vector<std::string>, int) override;
+    void setScreen(std::vector<std::string>, int) override;
     void clearScreen() override;
 };
 

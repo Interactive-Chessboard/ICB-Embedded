@@ -49,3 +49,9 @@ void loop()
 // Pour tester utilise
 // MockHardware mock;
 // Hardware::set(mock);
+
+
+// TO DO
+// Add getsettings feature
+// Add api call to get version number
+// test!!!!

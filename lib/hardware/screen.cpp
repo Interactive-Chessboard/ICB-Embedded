@@ -19,10 +19,12 @@ bool RealHardware::detectStartClick()
 }
 
 
-void RealHardware::setOptions(std::vector<std::string> options, int selected)
+void RealHardware::setScreen(std::vector<std::string> text, int selected)
 {
-    if (selected >= options.size())
+    if (selected >= text.size())
         return;
+
+    // Selected mean having '>' before the text
 }
 
 

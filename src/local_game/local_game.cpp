@@ -28,11 +28,15 @@ ChessGame gameLoopBotsOffline(PlayerColor gamemode_player_color, ClockSetting &c
         else
         {
             move = Chess::botMove(chess_game, legal_moves);
-            // TODO display promotion on screen
+
+            if (move.promotion != Piece())
+                displayBotPromotion(move.promotion.piece_type);
 
             uint64_t bitboard_move = Chess::getGameBitBoard(move.chess_game);
             SetBoard set_board(bitboard_move);
             set_board.startOffline(clock_settings.active);
+            if (move.promotion != Piece())
+                Hardware::get().clearScreen();
         }
 
         chess_game = move.chess_game;
