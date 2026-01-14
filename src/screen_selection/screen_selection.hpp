@@ -25,6 +25,6 @@ struct Settings
 };
 
 
-Settings getGameSettings(void); // TO DO
+Settings getGameSettings(void);
 PieceType screenSelectPromotion(const std::atomic<bool>&);
 void displayBotPromotion(PieceType);

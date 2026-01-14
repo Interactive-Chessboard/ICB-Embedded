@@ -52,6 +52,13 @@ void loop()
 
 
 // TO DO
-// Add getsettings feature
+// Add unit tests
+
+// TO DO
 // Add api call to get version number
-// test!!!!
+
+// TO DO
+// Over the air update
+
+// TO DO
+// Chess bot

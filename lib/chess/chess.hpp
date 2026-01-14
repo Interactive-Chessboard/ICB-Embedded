@@ -123,6 +123,6 @@ bool isInCheck(ChessGame, int = -1);
 Winner calculateEndGame(ChessGame, std::vector<Move>);
 Winner getClockWinner(int time_white, int time_black, const ChessGame&);
 bool insufficientMaterials(const ChessGame&, Color);
-Move botMove(ChessGame, std::vector<Move>, BotStrength);
+Move botMove(ChessGame, std::vector<Move>, BotStrength); // TO DO
 uint64_t getGameBitBoard(ChessGame);
 }
