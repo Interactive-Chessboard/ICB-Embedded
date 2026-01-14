@@ -20,7 +20,105 @@ int selectOption(std::vector<std::string> options, const std::atomic<bool>& acti
 
 Settings getGameSettings()
 {
+    std::atomic<bool> active{true};
     Settings settings;
+
+    // Gamemode
+    std::vector<std::string> game_mode_options = {"Online", "Local 1v1", "Local bot"};
+    int game_mode_option = selectOption(game_mode_options, active);
+    switch (game_mode_option)
+    {
+    case 0:
+        settings.game_mode = GameMode::Online;
+        return settings;
+    case 1:
+        settings.game_mode = GameMode::MultiplayerOffline;
+        break;
+    case 2:
+        settings.game_mode = GameMode::BotsOffline;
+        break;
+    default:
+        return settings;
+    }
+
+    // Player color
+    std::vector<std::string> color_options = {"White", "Black", "Random"};
+    int color_option = selectOption(color_options, active);
+    switch (color_option)
+    {
+    case 0:
+        settings.player_color = Color::White;
+        break;
+    case 1:
+        settings.player_color = Color::Black;
+        break;
+    case 2:
+        settings.player_color = std::rand() & 1 ? Color::White : Color::Black;
+        break;
+    default:
+        return settings;
+    }
+
+    // Clock
+    std::vector<std::string> clock_options = {"No clock", "10+0", "5+0", "1+0", "10+5", "30+10"};
+    int clock_option = selectOption(clock_options, active);
+    switch (clock_option)
+    {
+    case 0:
+        settings.play_with_clock = false;
+        break;
+    case 1:
+        settings.play_with_clock = true;
+        settings.game_time_min = 10;
+        settings.extra_time_sec = 0;
+        break;
+    case 2:
+        settings.play_with_clock = true;
+        settings.game_time_min = 5;
+        settings.extra_time_sec = 0;
+        break;
+    case 3:
+        settings.play_with_clock = true;
+        settings.game_time_min = 1;
+        settings.extra_time_sec = 0;
+        break;
+    case 4:
+        settings.play_with_clock = true;
+        settings.game_time_min = 10;
+        settings.extra_time_sec = 5;
+        break;
+    case 5:
+        settings.play_with_clock = true;
+        settings.game_time_min = 30;
+        settings.extra_time_sec = 10;
+        break;
+    default:
+        return settings;
+    }
+
+    // Bot strength
+    if (settings.game_mode != GameMode::BotsOffline)
+        return settings;
+
+    std::vector<std::string> bot_options = {"Easy", "Medium", "Hard", "Impossible"};
+    int bot_option = selectOption(bot_options, active);
+    switch (bot_option)
+    {
+    case 0:
+        settings.bot_strength = BotStrength::Easy;
+        break;
+    case 1:
+        settings.bot_strength = BotStrength::Medium;
+        break;
+    case 2:
+        settings.bot_strength = BotStrength::Hard;
+        break;
+    case 3:
+        settings.bot_strength = BotStrength::Impossible;
+        break;
+    default:
+        return settings;
+    }
     return settings;
 }
 

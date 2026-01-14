@@ -2,10 +2,8 @@
 #include "local_game.hpp"
 
 
-ChessGame gameLoopBotsOffline(PlayerColor gamemode_player_color, ClockSetting &clock_settings)
+ChessGame gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings, BotStrength bot_strength)
 {
-    Color player_color = (gamemode_player_color == PlayerColor::White ? Color::White : Color::Black);
-
     ChessGame chess_game;
     Move past_move;
     while (clock_settings.active.load())
@@ -27,7 +25,7 @@ ChessGame gameLoopBotsOffline(PlayerColor gamemode_player_color, ClockSetting &c
         }
         else
         {
-            move = Chess::botMove(chess_game, legal_moves);
+            move = Chess::botMove(chess_game, legal_moves, bot_strength);
 
             if (move.promotion != Piece())
                 displayBotPromotion(move.promotion.piece_type);
@@ -98,7 +96,7 @@ void localGame(Settings game_settings, ClockSetting &clock_settings)
     switch (game_settings.game_mode)
     {
     case GameMode::BotsOffline:
-        chess_game = gameLoopBotsOffline(game_settings.player_color, clock_settings);
+        chess_game = gameLoopBotsOffline(game_settings.player_color, clock_settings, game_settings.bot_strength);
         break;
     case GameMode::MultiplayerOffline:
         chess_game = gameLoopMultiplayerOffline(clock_settings);

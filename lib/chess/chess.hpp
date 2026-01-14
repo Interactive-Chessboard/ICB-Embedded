@@ -34,6 +34,14 @@ enum class Winner {
 };
 
 
+enum class BotStrength {
+    Easy,
+    Medium,
+    Hard,
+    Impossible
+};
+
+
 struct Piece {
     Color color;
     PieceType piece_type;
@@ -115,6 +123,6 @@ bool isInCheck(ChessGame, int = -1);
 Winner calculateEndGame(ChessGame, std::vector<Move>);
 Winner getClockWinner(int time_white, int time_black, const ChessGame&);
 bool insufficientMaterials(const ChessGame&, Color);
-Move botMove(ChessGame, std::vector<Move>);
+Move botMove(ChessGame, std::vector<Move>, BotStrength);
 uint64_t getGameBitBoard(ChessGame);
 }

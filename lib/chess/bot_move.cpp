@@ -146,7 +146,7 @@ int minimax(ChessGame chess_game, int depth=3, int alpha=INT_MIN, int beta=INT_M
 }
 
 
-Move Chess::botMove(ChessGame chess_game, std::vector<Move> moves)
+Move Chess::botMove(ChessGame chess_game, std::vector<Move> moves, BotStrength bot_stength)
 {
     Move best_move = moves[0];
     int best_eval = minimax(moves[0].chess_game);

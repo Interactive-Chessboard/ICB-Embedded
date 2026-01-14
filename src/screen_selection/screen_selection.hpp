@@ -2,6 +2,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <cstdlib>
 #include "hardware.hpp"
 #include "chess.hpp"
 
@@ -13,20 +14,14 @@ enum class GameMode {
 };
 
 
-enum class PlayerColor {
-    White,
-    Black
-};
-
-
 struct Settings
 {
   GameMode game_mode; // Relevant for all gamemodes
+  Color player_color;
   bool play_with_clock; // Relevant for local play
   int game_time_min;
   int extra_time_sec;
-  int bot_strength;
-  PlayerColor player_color; // Relevant for bots
+  BotStrength bot_strength; // Relevant for bots
 };
 
 
