@@ -97,7 +97,7 @@ int parseTimeMs(const std::string& s, int& i)
 }
 
 
-std::vector<Animation> parseAnimations(const std::string& text)
+std::vector<Animation> extractAnimations(const std::string& text)
 {
     std::vector<Animation> result;
 

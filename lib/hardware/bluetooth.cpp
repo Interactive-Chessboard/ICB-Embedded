@@ -1,6 +1,11 @@
 // bluetooth.cpp
 #include "hardware.hpp"
 
+
+// Init hardware instance
+IHardware* Hardware::instance_ = nullptr;
+
+// Init bluetooth server and queues.
 BLEServer *pServer = NULL;
 BLECharacteristic *pCharacteristic = NULL;
 std::queue<std::string> receive_queue;

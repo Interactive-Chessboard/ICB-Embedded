@@ -106,11 +106,3 @@ public:
 private:
     static IHardware* instance_;
 };
-
-
-// How to use
-//Hardware& hw = Hardware::instance();
-//hw.bluetooth_init();
-//or
-//hardware::instance().clearLed();
-

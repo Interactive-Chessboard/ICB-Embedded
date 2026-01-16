@@ -56,7 +56,7 @@ std::string animation(const std::string& request, std::atomic<bool>& end_task_fl
     std::vector<Animation> animations;
     try
     {
-        animations = parseAnimations(request);
+        animations = extractAnimations(request);
     }
     catch (const std::runtime_error& e)
     {

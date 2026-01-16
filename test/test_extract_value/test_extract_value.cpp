@@ -3,6 +3,7 @@
 #include "online_game/extract_value.hpp"
 #include "online_game/extract_value.cpp"
 
+
 void test_extract_string()
 {
     std::string input = R"(
@@ -255,7 +256,7 @@ void test_extract_missing_closing_square_bracket()
 
 void setup() {
     UNITY_BEGIN();
-    
+
     RUN_TEST(test_extract_string);
     RUN_TEST(test_extract_int);
     RUN_TEST(test_extract_json);

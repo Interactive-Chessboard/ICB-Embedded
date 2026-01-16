@@ -9,4 +9,4 @@
 #include "extract_value.hpp"
 #include "animations/animations.hpp"
 
-std::vector<Animation> parseAnimations(const std::string&);
+std::vector<Animation> extractAnimations(const std::string&);
