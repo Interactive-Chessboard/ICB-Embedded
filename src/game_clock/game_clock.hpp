@@ -17,7 +17,7 @@ struct ClockSetting
     std::atomic<int> extra_time; // Extra time in ms to add after each move
     std::mutex mtx; // Mutex to synchronize
     ClockSetting(int game_time_min, int extra_time_sec)
-                : time_white(game_time_min * 6000), time_black(game_time_min * 6000), extra_time(extra_time_sec * 100) {}
+                : time_white(game_time_min * 60000), time_black(game_time_min * 60000), extra_time(extra_time_sec * 1000) {}
 };
 
 

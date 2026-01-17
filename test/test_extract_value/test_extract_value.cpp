@@ -16,8 +16,9 @@ void test_extract_string()
         },
         "clock": {
             "started": "true",
-            "white": 50,
-            "black": 60,
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
             "run_down": "w",
         },
         "timeout": 60
@@ -49,8 +50,9 @@ void test_extract_int()
         },
         "clock": {
             "started": "true",
-            "white": 50,
-            "black": 60,
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
             "run_down": "w",
         },
         "timeout": 60
@@ -82,8 +84,9 @@ void test_extract_json()
         },
         "clock": {
             "started": "true",
-            "white": 50,
-            "black": 60,
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
             "run_down": "w",
         },
         "timeout": 60
@@ -101,8 +104,9 @@ void test_extract_json()
     }
     std::string expected = R"({
             "started": "true",
-            "white": 50,
-            "black": 60,
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
             "run_down": "w",
         })";
     TEST_ASSERT_EQUAL_STRING(expected.c_str(), value.c_str());
@@ -121,8 +125,9 @@ void test_extract_nested()
         },
         "clock": {
             "started": "true",
-            "white": 50,
-            "black": 60,
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
             "run_down": "w",
         },
         "timeout": 60
@@ -154,8 +159,9 @@ void test_extract_key_not_found()
         },
         "clock": {
             "started": "true",
-            "white": 50,
-            "black": 60,
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
             "run_down": "w",
         },
         "timeout": 60
@@ -351,6 +357,261 @@ void test_timeout_overflow()
 }
 
 
+void test_valid_clock_settings()
+{
+    ClockSetting clock_setting(10, 10);
+    std::string input = R"(
+    {
+        "id": 1,
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "w",
+        },
+    }
+    )";
+
+    try
+    {
+        setClockSettings(clock_setting, input);
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("No exceptions were expected");
+    }
+    TEST_ASSERT_EQUAL(true, clock_setting.active.load());
+    TEST_ASSERT_EQUAL(50000, clock_setting.time_white.load());
+    TEST_ASSERT_EQUAL(60000, clock_setting.time_black.load());
+    TEST_ASSERT_EQUAL(5000, clock_setting.extra_time.load());
+    TEST_ASSERT_EQUAL(Color::White, clock_setting.player_turn.load());
+}
+
+
+void test_inactive_clock_settings()
+{
+    ClockSetting clock_setting(10, 10);
+    std::string input = R"(
+    {
+        "id": 1,
+        "clock": {
+            "active": "f",
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "b",
+        },
+    }
+    )";
+
+    try
+    {
+        setClockSettings(clock_setting, input);
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("No exceptions were expected");
+    }
+    // Inactive makes it so the base values are not modified
+    TEST_ASSERT_EQUAL(false, clock_setting.active.load());
+    TEST_ASSERT_EQUAL(600000, clock_setting.time_white.load());
+    TEST_ASSERT_EQUAL(600000, clock_setting.time_black.load());
+    TEST_ASSERT_EQUAL(10000, clock_setting.extra_time.load());
+    TEST_ASSERT_EQUAL(Color::White, clock_setting.player_turn.load());
+}
+
+
+void test_run_down_black_clock_settings()
+{
+    ClockSetting clock_setting(10, 10);
+    std::string input = R"(
+    {
+        "id": 1,
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "b",
+        },
+    }
+    )";
+
+    try
+    {
+        setClockSettings(clock_setting, input);
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("No exceptions were expected");
+    }
+    TEST_ASSERT_EQUAL(true, clock_setting.active.load());
+    TEST_ASSERT_EQUAL(50000, clock_setting.time_white.load());
+    TEST_ASSERT_EQUAL(60000, clock_setting.time_black.load());
+    TEST_ASSERT_EQUAL(5000, clock_setting.extra_time.load());
+    TEST_ASSERT_EQUAL(Color::Black, clock_setting.player_turn.load());
+}
+
+void test_invalid_active_clock_settings()
+{
+    ClockSetting clock_setting(10, 10);
+    std::string input = R"(
+    {
+        "id": 1,
+        "clock": {
+            "active": "a",
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "b",
+        },
+    }
+    )";
+
+    try
+    {
+        setClockSettings(clock_setting, input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, expecting true (t) or false (f)", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_invalid_white_time_clock_settings()
+{
+    ClockSetting clock_setting(10, 10);
+    std::string input = R"(
+    {
+        "id": 1,
+        "clock": {
+            "active": "t",
+            "white_ms": aaa,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "b",
+        },
+    }
+    )";
+
+    try
+    {
+        setClockSettings(clock_setting, input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, time values must be valid", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_overflow_black_time_clock_settings()
+{
+    ClockSetting clock_setting(10, 10);
+    std::string input = R"(
+    {
+        "id": 1,
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 999999999999999999999999999999999999999999999999999999,
+            "extra_time_ms": 5000,
+            "run_down": "b",
+        },
+    }
+    )";
+
+    try
+    {
+        setClockSettings(clock_setting, input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, time values must be valid", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_negative_extra_time_clock_settings()
+{
+    ClockSetting clock_setting(10, 10);
+    std::string input = R"(
+    {
+        "id": 1,
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 700,
+            "extra_time_ms": -1000,
+            "run_down": "b",
+        },
+    }
+    )";
+
+    try
+    {
+        setClockSettings(clock_setting, input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, time values must be positive", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_invalid_run_down_color_clock_settings()
+{
+    ClockSetting clock_setting(10, 10);
+    std::string input = R"(
+    {
+        "id": 1,
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 700,
+            "extra_time_ms": 5000,
+            "run_down": "not_color",
+        },
+    }
+    )";
+
+    try
+    {
+        setClockSettings(clock_setting, input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, invalid run down clock color", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
 
 void setup() {
     UNITY_BEGIN();
@@ -368,6 +629,15 @@ void setup() {
     RUN_TEST(test_timeout_not_number);
     RUN_TEST(test_timeout_negative_number);
     RUN_TEST(test_timeout_overflow);
+
+    RUN_TEST(test_valid_clock_settings);
+    RUN_TEST(test_inactive_clock_settings);
+    RUN_TEST(test_run_down_black_clock_settings);
+    RUN_TEST(test_invalid_active_clock_settings);
+    RUN_TEST(test_invalid_white_time_clock_settings);
+    RUN_TEST(test_overflow_black_time_clock_settings);
+    RUN_TEST(test_negative_extra_time_clock_settings);
+    RUN_TEST(test_invalid_run_down_color_clock_settings);
 
     UNITY_END();
 }

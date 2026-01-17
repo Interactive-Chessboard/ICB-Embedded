@@ -63,8 +63,9 @@ Note an old move can be set to -1, -1 if there is no old move to display
     "color": [0, 0, 255],
     "clock": {
         "active": "f",
-        "white": 50,
-        "black": 60,
+        "white_ms": 50000,
+        "black_ms": 60000,
+        "extra_time_ms": 5000,
         "run_down": "w",
     },
     "timeout": 60
@@ -106,9 +107,9 @@ Colors are added to customize play
     "illegal_move_color": [255, 0, 0],
     "clock": {
         "active": "t",
-        "white": 50,
-        "black": 60,
-        "extra_time": 5,
+        "white_ms": 50000,
+        "black_ms": 60000,
+        "extra_time_ms": 5000,
         "run_down": "w",
     },
     "timeout": 60

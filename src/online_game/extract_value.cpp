@@ -2,7 +2,7 @@
 #include "extract_value.hpp"
 
 
-std::string extract_value(const std::string& str, const std::string& key)
+std::string extract_value(const std::string &str, const std::string &key)
 {
     // ---- Find the key ----
     std::string quotedKey;
@@ -90,32 +90,42 @@ int extractTimeOut(const std::string &str)
 }
 
 
-void setClockSettings(ClockSetting &clock_settings, const std::string& request)
+void setClockSettings(ClockSetting &clock_settings, const std::string &request)
 {
     std::string clock_settings_str = extract_value(request, "clock");
 
+    std::lock_guard<std::mutex> lock(clock_settings.mtx);
+    {
+    // Extract active state
     std::string active_str = extract_value(clock_settings_str, "active");
-    bool active;
+    if (active_str == "f")
+    {
+        clock_settings.active.store(false);
+        return;
+    }
     if (active_str == "t")
-        active = true;
-    else if (active_str == "f")
-        active = false;
+        clock_settings.active.store(true);
     else
         throw std::runtime_error("Error, expecting true (t) or false (f)");
 
+    // Extract time
     int white, black, extra_time;
     try
     {
-        white = stoi(extract_value(clock_settings_str, "white"));
-        black = stoi(extract_value(clock_settings_str, "black"));
-        extra_time = stoi(extract_value(clock_settings_str, "extra_time"));
+        white = stoi(extract_value(clock_settings_str, "white_ms"));
+        black = stoi(extract_value(clock_settings_str, "black_ms"));
+        extra_time = stoi(extract_value(clock_settings_str, "extra_time_ms"));
     }
     catch(...)
     {
-        throw std::runtime_error("Error, time values are not ints");
+        throw std::runtime_error("Error, time values must be valid");
     }
-    if (white < 0 || black < 0 || extra_time < 0) throw std::runtime_error("Error, time values can't be negative");
+    if (white < 0 || black < 0 || extra_time < 0) throw std::runtime_error("Error, time values must be positive");
+    clock_settings.time_white.store(white);
+    clock_settings.time_black.store(black);
+    clock_settings.extra_time.store(extra_time);
 
+    // Extract clock player turn
     std::string run_down = extract_value(clock_settings_str, "run_down");
     Color clock_color;
     if (run_down == "w")
@@ -123,15 +133,7 @@ void setClockSettings(ClockSetting &clock_settings, const std::string& request)
     else if (run_down == "b")
         clock_color = Color::Black;
     else
-        throw std::runtime_error("Error, invalid clock color");
-
-    {
-    std::lock_guard<std::mutex> lock(clock_settings.mtx);
-
-    clock_settings.active.store(active);
-    clock_settings.time_white.store(white * 100);
-    clock_settings.time_black.store(black * 100);
-    clock_settings.extra_time.store(extra_time * 100);
+        throw std::runtime_error("Error, invalid run down clock color");
     clock_settings.player_turn.store(clock_color);
     }
 }

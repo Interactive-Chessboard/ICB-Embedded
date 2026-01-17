@@ -70,5 +70,43 @@ std::string extract_value(const std::string&, const std::string&);
 int extractTimeOut(const std::string &str);
 
 
-void setClockSettings(ClockSetting &clock_settings, const std::string& request);
+/**
+ * @brief Parse and apply clock configuration settings from a request string.
+ *
+ * This function extracts the "clock" object from the given request string and
+ * updates the provided ClockSetting instance in a thread-safe manner.
+ *
+ * Expected clock fields:
+ *  - active ("t" or "f")
+ *      * "t" → clock is active and all clock values are updated
+ *      * "f" → clock is inactive; function sets active to false and returns
+ *              immediately without modifying any other clock values
+ *  - white_ms (integer, >= 0): remaining time for White in milliseconds
+ *  - black_ms (integer, >= 0): remaining time for Black in milliseconds
+ *  - extra_time_ms (integer, >= 0): increment added after each move
+ *  - run_down ("w" or "b"): indicates which player's clock is currently running
+ *
+ * Thread safety:
+ *  - All modifications to ClockSetting are protected by an internal mutex.
+ *  - Atomic members are updated while holding the mutex to ensure consistency.
+ *
+ * Error handling:
+ *  - Throws std::runtime_error with the following messages:
+ *      * "Error, expecting true (t) or false (f)"
+ *          - if the "active" field is not "t" or "f"
+ *      * "Error, time values must be valid"
+ *          - if any time field is missing, non-numeric, or causes conversion failure
+ *      * "Error, time values must be positive"
+ *          - if any time value is negative
+ *      * "Error, invalid run down clock color"
+ *          - if "run_down" is not "w" or "b"
+ *
+ * @param clock_settings Reference to the ClockSetting object to update.
+ * @param request        String containing the serialized request with clock data.
+ *
+ * @throws std::runtime_error on invalid or malformed clock settings.
+ */
+void setClockSettings(ClockSetting&, const std::string&);
+
+
 LedColor getColor(const std::string &color_str);
