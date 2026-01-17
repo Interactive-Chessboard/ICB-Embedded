@@ -62,7 +62,7 @@ Note an old move can be set to -1, -1 if there is no old move to display
     "board": 18446462598732906495,
     "color": [0, 0, 255],
     "clock": {
-        "active": "true",
+        "active": "f",
         "white": 50,
         "black": 60,
         "run_down": "w",
@@ -105,7 +105,7 @@ Colors are added to customize play
     "legal_move_color": [0, 255, 0],
     "illegal_move_color": [255, 0, 0],
     "clock": {
-        "active": "true",
+        "active": "t",
         "white": 50,
         "black": 60,
         "extra_time": 5,

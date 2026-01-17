@@ -79,13 +79,13 @@ int extractTimeOut(const std::string &str)
     int timeout;
     try
     {
-        timeout = stoi(extract_value(str, "timout"));
+        timeout = stoi(extract_value(str, "timeout"));
     }
     catch(const std::exception& e)
     {
-        throw std::runtime_error("Error, timeout must be a number");
+        throw std::runtime_error("Error, timeout must be a valid number");
     }
-    if (timeout <= 0) throw std::runtime_error("Error, timeout must be positive");
+    if (timeout <= 0) throw std::runtime_error("Error, timeout must be a valid positive number");
     return timeout;
 }
 
@@ -96,12 +96,12 @@ void setClockSettings(ClockSetting &clock_settings, const std::string& request)
 
     std::string active_str = extract_value(clock_settings_str, "active");
     bool active;
-    if (active_str == "true")
+    if (active_str == "t")
         active = true;
-    else if (active_str == "false")
+    else if (active_str == "f")
         active = false;
     else
-        throw std::runtime_error("Error, expecting square bracket");
+        throw std::runtime_error("Error, expecting true (t) or false (f)");
 
     int white, black, extra_time;
     try

@@ -254,6 +254,104 @@ void test_extract_missing_closing_square_bracket()
 }
 
 
+void test_valid_timeout()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "timeout": 20
+    }
+    )";
+
+    int value;
+    try
+    {
+        value = extractTimeOut(input);
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("No exceptions were expected");
+    }
+    TEST_ASSERT_EQUAL(20, value);
+}
+
+
+void test_timeout_not_number()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "timeout": aaa
+    }
+    )";
+
+    try
+    {
+        auto _ = extractTimeOut(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, timeout must be a valid number", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_timeout_negative_number()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "timeout": -1
+    }
+    )";
+
+    try
+    {
+        auto _ = extractTimeOut(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, timeout must be a valid positive number", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_timeout_overflow()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "timeout": 99999999999999999999999999999999999999999999999
+    }
+    )";
+
+    try
+    {
+        auto _ = extractTimeOut(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, timeout must be a valid number", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+
 void setup() {
     UNITY_BEGIN();
 
@@ -265,6 +363,11 @@ void setup() {
     RUN_TEST(test_extract_missing_semicolon);
     RUN_TEST(test_extract_missing_closing_quotes);
     RUN_TEST(test_extract_missing_closing_square_bracket);
+
+    RUN_TEST(test_valid_timeout);
+    RUN_TEST(test_timeout_not_number);
+    RUN_TEST(test_timeout_negative_number);
+    RUN_TEST(test_timeout_overflow);
 
     UNITY_END();
 }
