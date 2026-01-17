@@ -1,7 +1,7 @@
 // test_extract_value.cpp
 #include <unity.h>
-#include "online_game/extract_value.hpp"
-#include "online_game/extract_value.cpp"
+#include "online_game/extract_value/extract_value.hpp"
+#include "online_game/extract_value/extract_value.cpp"
 
 
 void test_extract_string()

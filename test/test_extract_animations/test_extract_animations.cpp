@@ -2,9 +2,8 @@
 #include <unity.h>
 #include <string>
 #include <stdexcept>
-#include "online_game/extract_animations.hpp"
-#include "online_game/extract_value.hpp"
-#include "online_game/extract_animations.cpp"
+#include "online_game/extract_animations/extract_animations.hpp"
+#include "online_game/extract_animations/extract_animations.cpp"
 
 
 void test_functional_animation()
