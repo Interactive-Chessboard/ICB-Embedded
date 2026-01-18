@@ -6,7 +6,7 @@ uint64_t to_uint64(const std::string &request)
 {
     try
     {
-        return std::stoull(extract_value(request, "board"));
+        return std::stoull(extractValue(request, "board"));
     }
     catch (...)
     {
@@ -18,7 +18,7 @@ uint64_t to_uint64(const std::string &request)
 ExtractSetBoard extractSetBoard(const std::string& request)
 {
     ExtractSetBoard set_board;
-    set_board.color = getColor(extract_value(request, "color"));
+    set_board.color = getLedColor(extractValue(request, "color"));
     set_board.board = to_uint64(request);
     set_board.timeout = extractTimeOut(request) * 100;
     return set_board;

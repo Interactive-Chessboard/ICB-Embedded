@@ -18,7 +18,7 @@
  * intentionally lightweight and does NOT implement full JSON parsing.
  *
  * Nested objects or arrays are supported and may be re-parsed by calling
- * extract_value again on the returned substring.
+ * extractValue again on the returned substring.
  *
  * @param str The input string containing a JSON-like object.
  * @param key The key whose value should be extracted.
@@ -41,14 +41,14 @@
  *       roughly follows a JSON-like structure. It does not handle escaped quotes,
  *       commas inside strings, or malformed nesting beyond basic bracket matching.
  */
-std::string extract_value(const std::string&, const std::string&);
+std::string extractValue(const std::string&, const std::string&);
 
 
 /**
  * @brief Extracts and validates the "timeout" value from a JSON-like string.
  *
  * This function retrieves the value associated with the `"timeout"` key using
- * extract_value(), converts it to an integer, and validates that it is a
+ * extractValue(), converts it to an integer, and validates that it is a
  * strictly positive number.
  *
  * The input is expected to follow a JSON-like structure. Whitespace is ignored,
@@ -64,7 +64,7 @@ std::string extract_value(const std::string&, const std::string&);
  *   - The `"timeout"` value is zero or negative
  *     ("Error, timeout must be a valid positive number").
  *
- * @note This function relies on extract_value() and inherits its limitations.
+ * @note This function relies on extractValue() and inherits its limitations.
  *       It does not support floating-point values or full JSON validation.
  */
 int extractTimeOut(const std::string &str);
@@ -109,4 +109,4 @@ int extractTimeOut(const std::string &str);
 void setClockSettings(ClockSetting&, const std::string&);
 
 
-LedColor getColor(const std::string &color_str);
+LedColor getLedColor(const std::string &color_str);

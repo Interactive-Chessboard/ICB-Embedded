@@ -2,7 +2,7 @@
 #include "extract_value.hpp"
 
 
-std::string extract_value(const std::string &str, const std::string &key)
+std::string extractValue(const std::string &str, const std::string &key)
 {
     // ---- Find the key ----
     std::string quotedKey;
@@ -79,7 +79,7 @@ int extractTimeOut(const std::string &str)
     int timeout;
     try
     {
-        timeout = stoi(extract_value(str, "timeout"));
+        timeout = stoi(extractValue(str, "timeout"));
     }
     catch(const std::exception& e)
     {
@@ -92,12 +92,12 @@ int extractTimeOut(const std::string &str)
 
 void setClockSettings(ClockSetting &clock_settings, const std::string &request)
 {
-    std::string clock_settings_str = extract_value(request, "clock");
+    std::string clock_settings_str = extractValue(request, "clock");
 
     std::lock_guard<std::mutex> lock(clock_settings.mtx);
     {
     // Extract active state
-    std::string active_str = extract_value(clock_settings_str, "active");
+    std::string active_str = extractValue(clock_settings_str, "active");
     if (active_str == "f")
     {
         clock_settings.active.store(false);
@@ -112,9 +112,9 @@ void setClockSettings(ClockSetting &clock_settings, const std::string &request)
     int white, black, extra_time;
     try
     {
-        white = stoi(extract_value(clock_settings_str, "white_ms"));
-        black = stoi(extract_value(clock_settings_str, "black_ms"));
-        extra_time = stoi(extract_value(clock_settings_str, "extra_time_ms"));
+        white = stoi(extractValue(clock_settings_str, "white_ms"));
+        black = stoi(extractValue(clock_settings_str, "black_ms"));
+        extra_time = stoi(extractValue(clock_settings_str, "extra_time_ms"));
     }
     catch(...)
     {
@@ -126,7 +126,7 @@ void setClockSettings(ClockSetting &clock_settings, const std::string &request)
     clock_settings.extra_time.store(extra_time);
 
     // Extract clock player turn
-    std::string run_down = extract_value(clock_settings_str, "run_down");
+    std::string run_down = extractValue(clock_settings_str, "run_down");
     Color clock_color;
     if (run_down == "w")
         clock_color = Color::White;
@@ -139,11 +139,16 @@ void setClockSettings(ClockSetting &clock_settings, const std::string &request)
 }
 
 
-LedColor getColor(const std::string &color_str)
+LedColor getLedColor(const std::string &color_str)
 {
     int r, g, b;
-    std::sscanf(color_str.c_str(), "[%d, %d, %d]", &r, &g, &b);
-    if (r > 255 || g > 255 || b > 255) throw std::runtime_error("Error, colors must be lower than 256");
-    if (r < 0 || g < 0 || b < 0) throw std::runtime_error("Error, colors must be positive");
+    int parsed = std::sscanf(color_str.c_str(), "[%d, %d, %d]", &r, &g, &b);
+
+    if (parsed != 3)
+        throw std::runtime_error("Error, invalid LED color format");
+    if (r > 255 || g > 255 || b > 255)
+        throw std::runtime_error("Error, colors must be lower than 256");
+    if (r < 0 || g < 0 || b < 0)
+        throw std::runtime_error("Error, colors must be positive");
     return LedColor(r, g, b);
 }

@@ -4,18 +4,18 @@
 
 ChessGame getChessGame(const std::string& request)
 {
-    std::string board_str = extract_value(request, "board");
-    std::string castling_str = extract_value(request, "castling");
+    std::string board_str = extractValue(request, "board");
+    std::string castling_str = extractValue(request, "castling");
     int en_passant;
     try
     {
-        en_passant = stoi(extract_value(request, "en_passant"));
+        en_passant = stoi(extractValue(request, "en_passant"));
     }
     catch(...)
     {
         throw std::runtime_error("Error, en_passant must be a valid integer");
     }
-    std::string player_turn = extract_value(extract_value(request, "clock"), "run_down");
+    std::string player_turn = extractValue(extractValue(request, "clock"), "run_down");
 
     if (board_str.length() != 64) throw std::runtime_error("Error, board must be 64 characters long");
     if (castling_str.length() != 4) throw std::runtime_error("Error, castling must be 4 characters long");
@@ -93,12 +93,12 @@ ExtractMakeMove extractMakeMove(const std::string& request)
 {
     ExtractMakeMove make_move;
     make_move.game = getChessGame(request);
-    make_move.past_move_color = getColor(extract_value(extract_value(request, "past_move"), "color"));
-    make_move.lifted_square_color = getColor(extract_value(request, "lifted_square_color"));
-    make_move.legal_moves_color = getColor(extract_value(request, "legal_moves_color"));
-    make_move.illegal_moves_color = getColor(extract_value(request, "illegal_moves_color"));
-    make_move.past_move_from = stoi(extract_value(extract_value(request, "past_move"), "from"));
-    make_move.past_move_to = stoi(extract_value(extract_value(request, "past_move"), "to"));
+    make_move.past_move_color = getLedColor(extractValue(extractValue(request, "past_move"), "color"));
+    make_move.lifted_square_color = getLedColor(extractValue(request, "lifted_square_color"));
+    make_move.legal_moves_color = getLedColor(extractValue(request, "legal_moves_color"));
+    make_move.illegal_moves_color = getLedColor(extractValue(request, "illegal_moves_color"));
+    make_move.past_move_from = stoi(extractValue(extractValue(request, "past_move"), "from"));
+    make_move.past_move_to = stoi(extractValue(extractValue(request, "past_move"), "to"));
     make_move.timeout = extractTimeOut(request) * 100;
 
     if (make_move.past_move_from < -1 || make_move.past_move_from >= 64) throw std::runtime_error("Error, Invalid past move from value");

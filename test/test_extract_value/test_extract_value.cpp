@@ -28,7 +28,7 @@ void test_extract_string()
     std::string value;
     try
     {
-        value = extract_value(input, "type");
+        value = extractValue(input, "type");
     }
     catch (...)
     {
@@ -62,7 +62,7 @@ void test_extract_int()
     std::string value;
     try
     {
-        value = extract_value(input, "id");
+        value = extractValue(input, "id");
     }
     catch (...)
     {
@@ -96,7 +96,7 @@ void test_extract_json()
     std::string value;
     try
     {
-        value = extract_value(input, "clock");
+        value = extractValue(input, "clock");
     }
     catch (...)
     {
@@ -137,7 +137,7 @@ void test_extract_nested()
     std::string value;
     try
     {
-        value = extract_value(extract_value(input, "clock"), "run_down");
+        value = extractValue(extractValue(input, "clock"), "run_down");
     }
     catch (...)
     {
@@ -170,7 +170,7 @@ void test_extract_key_not_found()
 
     try
     {
-        auto _ = extract_value(input, "invalid_key");
+        auto _ = extractValue(input, "invalid_key");
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -195,7 +195,7 @@ void test_extract_missing_semicolon()
 
     try
     {
-        auto _ = extract_value(input, "type");
+        auto _ = extractValue(input, "type");
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -220,7 +220,7 @@ void test_extract_missing_closing_quotes()
 
     try
     {
-        auto _ = extract_value(input, "type");
+        auto _ = extractValue(input, "type");
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -246,7 +246,7 @@ void test_extract_missing_closing_square_bracket()
 
     try
     {
-        auto _ = extract_value(input, "type");
+        auto _ = extractValue(input, "type");
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -613,9 +613,187 @@ void test_invalid_run_down_color_clock_settings()
 }
 
 
+void test_valid_led_color()
+{
+    std::string input = "[255, 127, 3]";
+    LedColor led_color;
+    try
+    {
+        led_color = getLedColor(input);
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("No exceptions were expected");
+    }
+    TEST_ASSERT_EQUAL(255, led_color.red);
+    TEST_ASSERT_EQUAL(127, led_color.green);
+    TEST_ASSERT_EQUAL(3, led_color.blue);
+}
+
+
+void test_valid_too_many_colors()
+{
+    std::string input = "[55, 17, 35, 83, 23, 8]";
+    LedColor led_color;
+    try
+    {
+        led_color = getLedColor(input);
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("No exceptions were expected");
+    }
+    // Function only grabs the first three
+    TEST_ASSERT_EQUAL(55, led_color.red);
+    TEST_ASSERT_EQUAL(17, led_color.green);
+    TEST_ASSERT_EQUAL(35, led_color.blue);
+}
+
+
+void test_led_color_not_number()
+{
+    std::string input = "[255, 127, aaa]";
+    LedColor led_color;
+    try
+    {
+        led_color = getLedColor(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, invalid LED color format", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_led_color_fixed_string()
+{
+    std::string input = "[sfs55kfs, kal17fw, fj35pwk]";
+    LedColor led_color;
+    try
+    {
+        led_color = getLedColor(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, invalid LED color format", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_led_color_over_255()
+{
+    std::string input = "[256, 9, 2]";
+    LedColor led_color;
+    try
+    {
+        led_color = getLedColor(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, colors must be lower than 256", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_led_color_negative()
+{
+    std::string input = "[255, -9, 2]";
+    LedColor led_color;
+    try
+    {
+        led_color = getLedColor(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, colors must be positive", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_led_color_no_brakets()
+{
+    std::string input = "255, -9, 2";
+    LedColor led_color;
+    try
+    {
+        led_color = getLedColor(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, invalid LED color format", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_led_color_no_comma()
+{
+    std::string input = "[255 -9 2]";
+    LedColor led_color;
+    try
+    {
+        led_color = getLedColor(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, invalid LED color format", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_led_color_not_enough_values()
+{
+    std::string input = "[255, -9]";
+    LedColor led_color;
+    try
+    {
+        led_color = getLedColor(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, invalid LED color format", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
 void setup() {
     UNITY_BEGIN();
 
+    // test extractValue()
     RUN_TEST(test_extract_string);
     RUN_TEST(test_extract_int);
     RUN_TEST(test_extract_json);
@@ -625,11 +803,13 @@ void setup() {
     RUN_TEST(test_extract_missing_closing_quotes);
     RUN_TEST(test_extract_missing_closing_square_bracket);
 
+    // test extractTimeOut()
     RUN_TEST(test_valid_timeout);
     RUN_TEST(test_timeout_not_number);
     RUN_TEST(test_timeout_negative_number);
     RUN_TEST(test_timeout_overflow);
 
+    // test setClockSettings
     RUN_TEST(test_valid_clock_settings);
     RUN_TEST(test_inactive_clock_settings);
     RUN_TEST(test_run_down_black_clock_settings);
@@ -638,6 +818,17 @@ void setup() {
     RUN_TEST(test_overflow_black_time_clock_settings);
     RUN_TEST(test_negative_extra_time_clock_settings);
     RUN_TEST(test_invalid_run_down_color_clock_settings);
+
+    // test getLEDColor()
+    RUN_TEST(test_valid_led_color);
+    RUN_TEST(test_valid_too_many_colors);
+    RUN_TEST(test_led_color_not_number);
+    RUN_TEST(test_led_color_fixed_string);
+    RUN_TEST(test_led_color_over_255);
+    RUN_TEST(test_led_color_negative);
+    RUN_TEST(test_led_color_no_brakets);
+    RUN_TEST(test_led_color_no_comma);
+    RUN_TEST(test_led_color_not_enough_values);
 
     UNITY_END();
 }
