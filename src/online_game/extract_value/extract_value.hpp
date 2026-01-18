@@ -45,23 +45,23 @@ std::string extractValue(const std::string&, const std::string&);
 
 
 /**
- * @brief Extracts and validates the "timeout" value from a JSON-like string.
+ * @brief Extracts and validates the "timeout_s" value from a JSON-like string.
  *
- * This function retrieves the value associated with the `"timeout"` key using
- * extractValue(), converts it to an integer, and validates that it is a
- * strictly positive number.
+ * This function retrieves the value associated with the `"timeout_s"` key using
+ * extractValue(), converts it to an integer, multiplies it by 100 and validates
+ * that it is a strictly positive number.
  *
  * The input is expected to follow a JSON-like structure. Whitespace is ignored,
  * but the value must be a valid base-10 integer representation.
  *
- * @param str A string containing a JSON-like object with a `"timeout"` key.
+ * @param str A string containing a JSON-like object with a `"timeout_s"` key.
  *
- * @return The timeout value as a positive integer.
+ * @return The timeout value as a positive integer in centiseconds.
  *
  * @throws std::runtime_error If any of the following conditions occur:
- *   - The `"timeout"` value cannot be parsed as an integer
+ *   - The `"timeout_s"` value cannot be parsed as an integer
  *     ("Error, timeout must be a valid number").
- *   - The `"timeout"` value is zero or negative
+ *   - The `"timeout_s"` value is zero or negative
  *     ("Error, timeout must be a valid positive number").
  *
  * @note This function relies on extractValue() and inherits its limitations.
@@ -109,4 +109,30 @@ int extractTimeOut(const std::string &str);
 void setClockSettings(ClockSetting&, const std::string&);
 
 
-LedColor getLedColor(const std::string &color_str);
+/**
+ * @brief Parse a string representation of an RGB LED color.
+ *
+ * This function parses a color string formatted as:
+ *     "[R, G, B]"
+ * where R, G, and B are integer values.
+ *
+ * The function:
+ * - Extracts the first three integer values found in the brackets.
+ * - Ignores any additional values beyond the first three.
+ * - Validates that exactly three integers are successfully parsed.
+ * - Ensures each color component is within the range [0, 255].
+ *
+ * @param color_str A string containing the LED color in bracketed RGB format.
+ *
+ * @return LedColor An instance of LedColor initialized with the parsed RGB values.
+ *
+ * @throws std::runtime_error If:
+ *         - The input string does not match the expected "[R, G, B]" format.
+ *         - Fewer than three integer values are present.
+ *         - Any color value is negative.
+ *         - Any color value is greater than 255.
+ *
+ * @note Strings containing more than three values (e.g. "[55, 17, 35, 83]")
+ *       are considered valid; only the first three values are used.
+ */
+LedColor getLedColor(const std::string &);

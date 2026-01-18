@@ -52,7 +52,7 @@ std::string makeMove(ClockSetting &clock_settings, const std::string& request, s
 
 std::string animation(const std::string& request, std::atomic<bool>& end_task_flag)
 {
-    std::string animation = extract_value(request, "animation");
+    std::string animation = extractValue(request, "animation");
     std::vector<Animation> animations;
     try
     {
@@ -104,8 +104,8 @@ void onlineGame(ClockSetting &clock_settings)
     while (true)
     {
         std::string request = Hardware::get().getBluetoothMessage();
-        std::string request_id = extract_value(request, "id");
-        std::string request_type = extract_value(request, "type");
+        std::string request_id = extractValue(request, "id");
+        std::string request_type = extractValue(request, "type");
 
         // Handle close and end task request regardless of if task is running
         if (request_type == "close" || request_type == "end_task")

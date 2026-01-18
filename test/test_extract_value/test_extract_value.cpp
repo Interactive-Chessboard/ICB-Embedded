@@ -21,7 +21,7 @@ void test_extract_string()
             "extra_time_ms": 5000,
             "run_down": "w",
         },
-        "timeout": 60
+        "timeout_s": 60
     }
     )";
 
@@ -55,7 +55,7 @@ void test_extract_int()
             "extra_time_ms": 5000,
             "run_down": "w",
         },
-        "timeout": 60
+        "timeout_s": 60
     }
     )";
 
@@ -89,7 +89,7 @@ void test_extract_json()
             "extra_time_ms": 5000,
             "run_down": "w",
         },
-        "timeout": 60
+        "timeout_s": 60
     }
     )";
 
@@ -130,7 +130,7 @@ void test_extract_nested()
             "extra_time_ms": 5000,
             "run_down": "w",
         },
-        "timeout": 60
+        "timeout_s": 60
     }
     )";
 
@@ -164,7 +164,7 @@ void test_extract_key_not_found()
             "extra_time_ms": 5000,
             "run_down": "w",
         },
-        "timeout": 60
+        "timeout_s": 60
     }
     )";
 
@@ -265,7 +265,7 @@ void test_valid_timeout()
     std::string input = R"(
     {
         "id": 1,
-        "timeout": 20
+        "timeout_s": 20
     }
     )";
 
@@ -278,7 +278,8 @@ void test_valid_timeout()
     {
         TEST_FAIL_MESSAGE("No exceptions were expected");
     }
-    TEST_ASSERT_EQUAL(20, value);
+    // timeout result in centiseconds
+    TEST_ASSERT_EQUAL(2000, value);
 }
 
 
@@ -287,7 +288,7 @@ void test_timeout_not_number()
     std::string input = R"(
     {
         "id": 1,
-        "timeout": aaa
+        "timeout_s": aaa
     }
     )";
 
@@ -312,7 +313,7 @@ void test_timeout_negative_number()
     std::string input = R"(
     {
         "id": 1,
-        "timeout": -1
+        "timeout_s": -1
     }
     )";
 
@@ -337,7 +338,7 @@ void test_timeout_overflow()
     std::string input = R"(
     {
         "id": 1,
-        "timeout": 99999999999999999999999999999999999999999999999
+        "timeout_s": 99999999999999999999999999999999999999999999999
     }
     )";
 

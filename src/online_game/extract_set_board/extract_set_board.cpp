@@ -20,6 +20,6 @@ ExtractSetBoard extractSetBoard(const std::string& request)
     ExtractSetBoard set_board;
     set_board.color = getLedColor(extractValue(request, "color"));
     set_board.board = to_uint64(request);
-    set_board.timeout = extractTimeOut(request) * 100;
+    set_board.timeout = extractTimeOut(request);
     return set_board;
 }

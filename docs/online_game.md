@@ -68,7 +68,7 @@ Note an old move can be set to -1, -1 if there is no old move to display
         "extra_time_ms": 5000,
         "run_down": "w",
     },
-    "timeout": 60
+    "timeout_s": 60
 }
 ```
 
@@ -112,7 +112,7 @@ Colors are added to customize play
         "extra_time_ms": 5000,
         "run_down": "w",
     },
-    "timeout": 60
+    "timeout_s": 60
 }
 ```
 

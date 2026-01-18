@@ -93,13 +93,15 @@ ExtractMakeMove extractMakeMove(const std::string& request)
 {
     ExtractMakeMove make_move;
     make_move.game = getChessGame(request);
-    make_move.past_move_color = getLedColor(extractValue(extractValue(request, "past_move"), "color"));
     make_move.lifted_square_color = getLedColor(extractValue(request, "lifted_square_color"));
     make_move.legal_moves_color = getLedColor(extractValue(request, "legal_moves_color"));
     make_move.illegal_moves_color = getLedColor(extractValue(request, "illegal_moves_color"));
-    make_move.past_move_from = stoi(extractValue(extractValue(request, "past_move"), "from"));
-    make_move.past_move_to = stoi(extractValue(extractValue(request, "past_move"), "to"));
-    make_move.timeout = extractTimeOut(request) * 100;
+    make_move.timeout = extractTimeOut(request);
+
+    std::string past_move_str = extractValue(request, "past_move");
+    make_move.past_move_color = getLedColor(extractValue(past_move_str, "color"));
+    make_move.past_move_from = stoi(extractValue(past_move_str, "from"));
+    make_move.past_move_to = stoi(extractValue(past_move_str, "to"));
 
     if (make_move.past_move_from < -1 || make_move.past_move_from >= 64) throw std::runtime_error("Error, Invalid past move from value");
     if (make_move.past_move_to < -1 || make_move.past_move_to >= 64) throw std::runtime_error("Error, Invalid past move to value");
