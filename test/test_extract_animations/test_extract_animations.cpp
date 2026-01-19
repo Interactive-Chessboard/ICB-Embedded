@@ -2,8 +2,8 @@
 #include <unity.h>
 #include <string>
 #include <stdexcept>
+#include "../test_helper.hpp"
 #include "online_game/extract_animations/extract_animations.hpp"
-#include "online_game/extract_animations/extract_animations.cpp"
 
 
 void test_functional_animation()
@@ -53,32 +53,20 @@ void test_functional_animation()
     TEST_ASSERT_EQUAL(1000, anim0.display_time_ms);
 
     for (int i = 0; i < 32; i++) {
-        LedColor led = anim0.leds[i];
-        TEST_ASSERT_EQUAL(0, led.red);
-        TEST_ASSERT_EQUAL(0, led.green);
-        TEST_ASSERT_EQUAL(255, led.blue);
+        TEST_ASSERT_EQUAL_LED_COLOR(LedColor(0, 0, 255), anim0.leds[i]);
     }
     for (int i = 32; i < 64; i++) {
-        LedColor led = anim0.leds[i];
-        TEST_ASSERT_EQUAL(255, led.red);
-        TEST_ASSERT_EQUAL(0, led.green);
-        TEST_ASSERT_EQUAL(0, led.blue);
+        TEST_ASSERT_EQUAL_LED_COLOR(LedColor(255, 0, 0), anim0.leds[i]);
     }
 
     Animation anim1 = animations[1];
     TEST_ASSERT_EQUAL(800, anim1.display_time_ms);
 
     for (int i = 0; i < 32; i++) {
-        LedColor led = anim1.leds[i];
-        TEST_ASSERT_EQUAL(255, led.red);
-        TEST_ASSERT_EQUAL(0, led.green);
-        TEST_ASSERT_EQUAL(0, led.blue);
+        TEST_ASSERT_EQUAL_LED_COLOR(LedColor(255, 0, 0), anim1.leds[i]);
     }
     for (int i = 32; i < 64; i++) {
-        LedColor led = anim1.leds[i];
-        TEST_ASSERT_EQUAL(0, led.red);
-        TEST_ASSERT_EQUAL(0, led.green);
-        TEST_ASSERT_EQUAL(255, led.blue);
+        TEST_ASSERT_EQUAL_LED_COLOR(LedColor(0, 0, 255), anim1.leds[i]);
     }
 }
 
@@ -723,7 +711,8 @@ void test_time_ms_key_not_found2()
 }
 
 
-void setup() {
+void setup()
+{
     UNITY_BEGIN();
 
     RUN_TEST(test_functional_animation);

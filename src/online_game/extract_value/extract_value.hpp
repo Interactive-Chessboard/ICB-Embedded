@@ -56,7 +56,7 @@ std::string extractValue(const std::string&, const std::string&);
  *
  * @param str A string containing a JSON-like object with a `"timeout_s"` key.
  *
- * @return The timeout value as a positive integer in centiseconds.
+ * @return The timeout value as a positive integer in centiseconds (1/100 seconds).
  *
  * @throws std::runtime_error If any of the following conditions occur:
  *   - The `"timeout_s"` value cannot be parsed as an integer

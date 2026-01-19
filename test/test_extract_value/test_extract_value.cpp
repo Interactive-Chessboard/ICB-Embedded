@@ -1,7 +1,7 @@
 // test_extract_value.cpp
 #include <unity.h>
+#include "../test_helper.hpp"
 #include "online_game/extract_value/extract_value.hpp"
-#include "online_game/extract_value/extract_value.cpp"
 
 
 void test_extract_string()
@@ -626,9 +626,7 @@ void test_valid_led_color()
     {
         TEST_FAIL_MESSAGE("No exceptions were expected");
     }
-    TEST_ASSERT_EQUAL(255, led_color.red);
-    TEST_ASSERT_EQUAL(127, led_color.green);
-    TEST_ASSERT_EQUAL(3, led_color.blue);
+    TEST_ASSERT_EQUAL_LED_COLOR(LedColor(255, 127, 3), led_color);
 }
 
 
@@ -645,9 +643,7 @@ void test_valid_too_many_colors()
         TEST_FAIL_MESSAGE("No exceptions were expected");
     }
     // Function only grabs the first three
-    TEST_ASSERT_EQUAL(55, led_color.red);
-    TEST_ASSERT_EQUAL(17, led_color.green);
-    TEST_ASSERT_EQUAL(35, led_color.blue);
+    TEST_ASSERT_EQUAL_LED_COLOR(LedColor(55, 17, 35), led_color);
 }
 
 
@@ -791,7 +787,8 @@ void test_led_color_not_enough_values()
 }
 
 
-void setup() {
+void setup()
+{
     UNITY_BEGIN();
 
     // test extractValue()

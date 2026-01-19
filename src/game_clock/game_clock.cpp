@@ -9,11 +9,11 @@ void tick(ClockSetting& clock_settings, Color previous_iteration)
     // Decrement timer
     if (clock_settings.player_turn.load() == Color::White)
     {
-        clock_settings.time_white.fetch_sub(10);
+        clock_settings.time_white.fetch_sub(1);
     }
     else if (clock_settings.player_turn.load() == Color::Black)
     {
-        clock_settings.time_black.fetch_sub(10);
+        clock_settings.time_black.fetch_sub(1);
     }
     else
     {
@@ -44,23 +44,24 @@ void tick(ClockSetting& clock_settings, Color previous_iteration)
 void game_clock(ClockSetting &clock_settings, std::atomic<bool> &stop_clock_loop)
 {
     using clock = std::chrono::steady_clock;
-    constexpr std::chrono::milliseconds interval(10);
+    constexpr std::chrono::milliseconds interval(1);
     auto start = clock::now();
     int i = 0;
     Color previous_iteration = Color::White;
     while(!stop_clock_loop.load())
     {
         auto iteration_start = start + i * interval;
-
+        i++;
         {
         std::lock_guard<std::mutex> lock(clock_settings.mtx);
 
         tick(std::ref(clock_settings), previous_iteration);
         previous_iteration = clock_settings.player_turn.load();
         }
+        if ((clock_settings.time_white.load() % 10 == 0 && clock_settings.player_turn.load() == Color::White) ||
+            (clock_settings.time_black.load() % 10 == 0 && clock_settings.player_turn.load() == Color::Black))
+            Hardware::get().setTime(clock_settings.time_white.load(), clock_settings.time_black.load());
 
-        Hardware::get().setTime(clock_settings.time_white.load(), clock_settings.time_black.load());
-        i++;
         std::this_thread::sleep_until(iteration_start + interval);
     }
 }

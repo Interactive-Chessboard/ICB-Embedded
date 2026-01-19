@@ -11,6 +11,7 @@
 #include "animations/animations.hpp"
 
 
+#ifndef UNIT_TEST
 void setup()
 {
   Serial.begin(115200);
@@ -42,6 +43,7 @@ void loop()
   // ---Stop Clock Thread;
   stop_clock_thread.store(true);
 }
+#endif
 
 // Note sur comment print in std::string
 //Serial.println(msg.c_str());

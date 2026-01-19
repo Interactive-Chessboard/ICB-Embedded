@@ -94,8 +94,8 @@ ExtractMakeMove extractMakeMove(const std::string& request)
     ExtractMakeMove make_move;
     make_move.game = getChessGame(request);
     make_move.lifted_square_color = getLedColor(extractValue(request, "lifted_square_color"));
-    make_move.legal_moves_color = getLedColor(extractValue(request, "legal_moves_color"));
-    make_move.illegal_moves_color = getLedColor(extractValue(request, "illegal_moves_color"));
+    make_move.legal_moves_color = getLedColor(extractValue(request, "legal_move_color"));
+    make_move.illegal_moves_color = getLedColor(extractValue(request, "illegal_move_color"));
     make_move.timeout = extractTimeOut(request);
 
     std::string past_move_str = extractValue(request, "past_move");

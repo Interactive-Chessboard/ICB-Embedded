@@ -94,7 +94,7 @@ Colors are added to customize play
 {
     "id": 1,
     "type": "make_move",
-    "board": "RNBQKBNRPPPPPPPP................................pppppppprnbqkbr",
+    "board": "RNBQKBNRPPPPPPPP................................pppppppprnbqkbnr",
     "castling": "KQ.q",
     "en_passant": -1,
     "past_move": {
