@@ -4,7 +4,7 @@
 #include "chess.hpp"
 
 
-void TEST_ASSERT_EQUAL_LED_COLOR(const LedColor &expected, const LedColor &actual)
+inline void TEST_ASSERT_EQUAL_LED_COLOR(const LedColor &expected, const LedColor &actual)
 {
     TEST_ASSERT_EQUAL(expected.red, actual.red);
     TEST_ASSERT_EQUAL(expected.green, actual.green);
@@ -12,7 +12,19 @@ void TEST_ASSERT_EQUAL_LED_COLOR(const LedColor &expected, const LedColor &actua
 }
 
 
-void TEST_ASSERT_EQUAL_CHESS_GAME(const ChessGame &expected, const ChessGame &actual)
+inline void TEST_ASSERT_EQUAL_CHESS_GAME(const ChessGame &expected, const ChessGame &actual)
 {
-    TEST_ASSERT_EQUAL_MEMORY(&expected, &actual, sizeof(ChessGame));
+    TEST_ASSERT_EQUAL(expected.player_turn, actual.player_turn);
+    TEST_ASSERT_EQUAL(expected.board.size(), actual.board.size());
+    for (int i = 0; i < expected.board.size(); i++)
+    {
+        TEST_ASSERT_EQUAL(expected.board.at(i).color, actual.board.at(i).color);
+        TEST_ASSERT_EQUAL(expected.board.at(i).piece_type, actual.board.at(i).piece_type);
+    }
+    TEST_ASSERT_EQUAL(expected.castle.size(), actual.castle.size());
+    for (int i = 0; i < expected.castle.size(); i++)
+    {
+        TEST_ASSERT_EQUAL(expected.castle.at(i), actual.castle.at(i));
+    }
+    TEST_ASSERT_EQUAL(expected.en_passant, actual.en_passant);
 }

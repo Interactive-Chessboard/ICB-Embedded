@@ -4,8 +4,22 @@
 
 ChessGame getChessGame(const std::string& request)
 {
-    std::string board_str = extractValue(request, "board");
+    ChessGame game;
+
     std::string castling_str = extractValue(request, "castling");
+    if (castling_str.length() != 4) throw std::runtime_error("Error, castling must be 4 characters long");
+    std::array<char, 4> expected = {'K', 'Q', 'k', 'q'};
+    for (int i = 0; i < 4; i++)
+    {
+        char castling = castling_str.at(i);
+        if (castling == expected.at(i))
+            game.castle.at(i) = castling;
+        else if (castling == '.')
+            game.castle.at(i) = ' ';
+        else
+            throw std::runtime_error("Error, invalid castling character");
+    }
+
     int en_passant;
     try
     {
@@ -15,11 +29,10 @@ ChessGame getChessGame(const std::string& request)
     {
         throw std::runtime_error("Error, en_passant must be a valid integer");
     }
-    std::string player_turn = extractValue(extractValue(request, "clock"), "run_down");
-
-    if (board_str.length() != 64) throw std::runtime_error("Error, board must be 64 characters long");
-    if (castling_str.length() != 4) throw std::runtime_error("Error, castling must be 4 characters long");
     if (en_passant < -1 || en_passant >= 64) throw std::runtime_error("Error, Invalid en passant value");
+    game.en_passant = en_passant;
+
+    std::string player_turn = extractValue(extractValue(request, "clock"), "run_down");
     Color color;
     if (player_turn == "w")
         color = Color::White;
@@ -27,8 +40,10 @@ ChessGame getChessGame(const std::string& request)
         color = Color::Black;
     else
         throw std::runtime_error("Error, invalid clock color");
+    game.player_turn = color;
 
-    ChessGame game;
+    std::string board_str = extractValue(request, "board");
+    if (board_str.length() != 64) throw std::runtime_error("Error, board must be 64 characters long");
     for (int i = 0 ; i < 64; i++)
     {
         switch (board_str.at(i))
@@ -78,13 +93,6 @@ ChessGame getChessGame(const std::string& request)
         }
     }
 
-    for (int i = 0; i < 4; i++)
-    {
-        game.castle.at(0) = castling_str.at(0);
-    }
-
-    game.en_passant = en_passant;
-    game.player_turn = color;
     return game;
 }
 
