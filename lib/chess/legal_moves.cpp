@@ -379,28 +379,28 @@ Move updateBoard(ChessGame chess_game, Move move)
         (chess_game.board[4] != Piece(Color::White, PieceType::King) ||
         chess_game.board[7] != Piece(Color::White, PieceType::Rook)))
     {
-        chess_game.castle[0] = ' ';
+        chess_game.castle[0] = '.';
     }
 
     if (chess_game.castle[1] == 'Q' &&
         (chess_game.board[4] != Piece(Color::White, PieceType::King) ||
         chess_game.board[0] != Piece(Color::White, PieceType::Rook)))
     {
-        chess_game.castle[1] = ' ';
+        chess_game.castle[1] = '.';
     }
 
     if (chess_game.castle[2] == 'k' &&
         (chess_game.board[60] != Piece(Color::Black, PieceType::King) ||
         chess_game.board[63] != Piece(Color::Black, PieceType::Rook)))
     {
-        chess_game.castle[2] = ' ';
+        chess_game.castle[2] = '.';
     }
 
     if (chess_game.castle[3] == 'q' &&
         (chess_game.board[60] != Piece(Color::Black, PieceType::King) ||
         chess_game.board[56] != Piece(Color::Black, PieceType::Rook)))
     {
-        chess_game.castle[3] = ' ';
+        chess_game.castle[3] = '.';
     }
 
     move.chess_game = chess_game;
@@ -532,8 +532,8 @@ std::vector<Move> castleMoves(ChessGame chess_game)
             Move move = Move(4, 6);
             move.chess_game = chess_game;
             move.chess_game.en_passant = -1;
-            move.chess_game.castle[0] = ' ';
-            move.chess_game.castle[1] = ' ';
+            move.chess_game.castle[0] = '.';
+            move.chess_game.castle[1] = '.';
             move.chess_game.player_turn = Color::Black;
             move.chess_game.board[4] = Piece();
             move.chess_game.board[5] = Piece(Color::White, PieceType::Rook);
@@ -550,8 +550,8 @@ std::vector<Move> castleMoves(ChessGame chess_game)
             Move move = Move(4, 2);
             move.chess_game = chess_game;
             move.chess_game.en_passant = -1;
-            move.chess_game.castle[0] = ' ';
-            move.chess_game.castle[1] = ' ';
+            move.chess_game.castle[0] = '.';
+            move.chess_game.castle[1] = '.';
             move.chess_game.player_turn = Color::Black;
             move.chess_game.board[0] = Piece();
             move.chess_game.board[1] = Piece();
@@ -569,8 +569,8 @@ std::vector<Move> castleMoves(ChessGame chess_game)
             Move move = Move(60, 62);
             move.chess_game = chess_game;
             move.chess_game.en_passant = -1;
-            move.chess_game.castle[2] = ' ';
-            move.chess_game.castle[3] = ' ';
+            move.chess_game.castle[2] = '.';
+            move.chess_game.castle[3] = '.';
             move.chess_game.player_turn = Color::White;
             move.chess_game.board[60] = Piece();
             move.chess_game.board[61] = Piece(Color::Black, PieceType::Rook);
@@ -587,8 +587,8 @@ std::vector<Move> castleMoves(ChessGame chess_game)
            Move move = Move(60, 58);
             move.chess_game = chess_game;
             move.chess_game.en_passant = -1;
-            move.chess_game.castle[2] = ' ';
-            move.chess_game.castle[3] = ' ';
+            move.chess_game.castle[2] = '.';
+            move.chess_game.castle[3] = '.';
             move.chess_game.player_turn = Color::White;
             move.chess_game.board[56] = Piece();
             move.chess_game.board[57] = Piece();

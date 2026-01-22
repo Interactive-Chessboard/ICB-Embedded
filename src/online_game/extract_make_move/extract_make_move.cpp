@@ -15,7 +15,7 @@ ChessGame getChessGame(const std::string& request)
         if (castling == expected.at(i))
             game.castle.at(i) = castling;
         else if (castling == '.')
-            game.castle.at(i) = ' ';
+            game.castle.at(i) = '.';
         else
             throw std::runtime_error("Error, invalid castling character");
     }
@@ -27,9 +27,9 @@ ChessGame getChessGame(const std::string& request)
     }
     catch(...)
     {
-        throw std::runtime_error("Error, en_passant must be a valid integer");
+        throw std::runtime_error("Error, en passant must be a valid integer");
     }
-    if (en_passant < -1 || en_passant >= 64) throw std::runtime_error("Error, Invalid en passant value");
+    if (en_passant < -1 || en_passant >= 64) throw std::runtime_error("Error, invalid en passant number");
     game.en_passant = en_passant;
 
     std::string player_turn = extractValue(extractValue(request, "clock"), "run_down");
@@ -39,7 +39,7 @@ ChessGame getChessGame(const std::string& request)
     else if (player_turn == "b")
         color = Color::Black;
     else
-        throw std::runtime_error("Error, invalid clock color");
+        throw std::runtime_error("Error, invalid player color");
     game.player_turn = color;
 
     std::string board_str = extractValue(request, "board");

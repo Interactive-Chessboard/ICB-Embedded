@@ -124,7 +124,7 @@ void test_light_red_above_bounds()
 
     try
     {
-        auto animations = extractAnimations(input);
+        auto _ = extractAnimations(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -160,7 +160,7 @@ void test_light_green_above_bounds()
 
     try
     {
-        auto animations = extractAnimations(input);
+        auto _ = extractAnimations(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -196,7 +196,7 @@ void test_light_blue_above_bounds()
 
     try
     {
-        auto animations = extractAnimations(input);
+        auto _ = extractAnimations(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -232,7 +232,7 @@ void test_light_red_under_bounds()
 
     try
     {
-        auto animations = extractAnimations(input);
+        auto _ = extractAnimations(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -268,7 +268,7 @@ void test_light_green_under_bounds()
 
     try
     {
-        auto animations = extractAnimations(input);
+        auto _ = extractAnimations(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -304,7 +304,7 @@ void test_light_blue_under_bounds()
 
     try
     {
-        auto animations = extractAnimations(input);
+        auto _ = extractAnimations(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -340,7 +340,7 @@ void test_timeout_under_bounds()
 
     try
     {
-        auto animations = extractAnimations(input);
+        auto _ = extractAnimations(input);
         TEST_FAIL_MESSAGE("Expected exception.");
     }
     catch (const std::runtime_error& e)
@@ -376,7 +376,7 @@ void test_light_red_non_number()
 
     try
     {
-        auto animations = extractAnimations(input);
+        auto _ = extractAnimations(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -412,7 +412,7 @@ void test_light_green_non_number()
 
     try
     {
-        auto animations = extractAnimations(input);
+        auto _ = extractAnimations(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -448,7 +448,7 @@ void test_light_blue_non_number()
 
     try
     {
-        auto animations = extractAnimations(input);
+        auto _ = extractAnimations(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -484,7 +484,7 @@ void test_timeout_non_number()
 
     try
     {
-        auto animations = extractAnimations(input);
+        auto _ = extractAnimations(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -520,7 +520,7 @@ void test_board_key_not_found()
 
     try
     {
-        auto animations = extractAnimations(input);
+        auto _ = extractAnimations(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -556,7 +556,7 @@ void test_invalid_board()
 
     try
     {
-        auto animations = extractAnimations(input);
+        auto _ = extractAnimations(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -593,7 +593,7 @@ void test_too_many_square()
 
     try
     {
-        auto animations = extractAnimations(input);
+        auto _ = extractAnimations(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -625,7 +625,7 @@ void test_not_enough_square()
 
     try
     {
-        auto animations = extractAnimations(input);
+        auto _ = extractAnimations(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -661,7 +661,7 @@ void test_time_ms_key_not_found()
 
     try
     {
-        auto animations = extractAnimations(input);
+        auto _ = extractAnimations(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -697,7 +697,7 @@ void test_time_ms_key_not_found2()
 
     try
     {
-        auto animations = extractAnimations(input);
+        auto _ = extractAnimations(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)

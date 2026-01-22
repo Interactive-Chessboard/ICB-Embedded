@@ -36,10 +36,6 @@ void test_functional_make_move()
     {
         extract_make_move = extractMakeMove(input);
     }
-    catch (const std::runtime_error& e)
-    {
-        TEST_ASSERT_EQUAL_STRING("Error, colors must be lower than 256", e.what());
-    }
     catch (...)
     {
         TEST_FAIL_MESSAGE("No exceptions were expected");
@@ -86,10 +82,6 @@ void test_functional_en_passant_make_move()
     try
     {
         extract_make_move = extractMakeMove(input);
-    }
-    catch (const std::runtime_error& e)
-    {
-        TEST_ASSERT_EQUAL_STRING("Error, colors must be lower than 256", e.what());
     }
     catch (...)
     {
@@ -153,10 +145,6 @@ void test_functional_castling_make_move()
     {
         extract_make_move = extractMakeMove(input);
     }
-    catch (const std::runtime_error& e)
-    {
-        TEST_ASSERT_EQUAL_STRING("Error, colors must be lower than 256", e.what());
-    }
     catch (...)
     {
         TEST_FAIL_MESSAGE("No exceptions were expected");
@@ -173,7 +161,7 @@ void test_functional_castling_make_move()
         Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn},
         Piece{Color::Black, PieceType::Rook}, Piece{Color::Black, PieceType::Knight}, Piece{Color::Black, PieceType::Bishop}, Piece{Color::Black, PieceType::Queen}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::King}, Piece{Color::Black, PieceType::Knight}, Piece{Color::Black, PieceType::Rook}
     },
-    game.castle = std::array<char, 4>{'K', ' ', ' ', ' '};
+    game.castle = std::array<char, 4>{'K', '.', '.', '.'};
     game.en_passant = -1;
 
     TEST_ASSERT_EQUAL_CHESS_GAME(game, extract_make_move.game);
@@ -187,6 +175,446 @@ void test_functional_castling_make_move()
 }
 
 
+void test_too_many_castling()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "type": "make_move",
+        "board": ".NB.K.NR.PPP.PPPR....Q....B.P.......p...........pppp.ppprnbq.knr"
+        "castling": "K...Q",
+        "en_passant": -1,
+        "past_move": {
+            "color": [0, 0, 255],
+            "from": 52,
+            "to": 36
+        },
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "b",
+        },
+        "lifted_square_color": [0, 230, 0],
+        "legal_move_color": [0, 255, 0],
+        "illegal_move_color": [255, 0, 0],
+        "timeout_s": 60
+    }
+    )";
+    ExtractMakeMove extract_make_move;
+    try
+    {
+        auto _ = extractMakeMove(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, castling must be 4 characters long", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_not_enough_castling()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "type": "make_move",
+        "board": ".NB.K.NR.PPP.PPPR....Q....B.P.......p...........pppp.ppprnbq.knr"
+        "castling": "..k",
+        "en_passant": -1,
+        "past_move": {
+            "color": [0, 0, 255],
+            "from": 52,
+            "to": 36
+        },
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "b",
+        },
+        "lifted_square_color": [0, 230, 0],
+        "legal_move_color": [0, 255, 0],
+        "illegal_move_color": [255, 0, 0],
+        "timeout_s": 60
+    }
+    )";
+    ExtractMakeMove extract_make_move;
+    try
+    {
+        auto _ = extractMakeMove(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, castling must be 4 characters long", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_misplaced_castling_character()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "type": "make_move",
+        "board": ".NB.K.NR.PPP.PPPR....Q....B.P.......p...........pppp.ppprnbq.knr"
+        "castling": "K.Q.",
+        "en_passant": -1,
+        "past_move": {
+            "color": [0, 0, 255],
+            "from": 52,
+            "to": 36
+        },
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "b",
+        },
+        "lifted_square_color": [0, 230, 0],
+        "legal_move_color": [0, 255, 0],
+        "illegal_move_color": [255, 0, 0],
+        "timeout_s": 60
+    }
+    )";
+    ExtractMakeMove extract_make_move;
+    try
+    {
+        auto _ = extractMakeMove(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, invalid castling character", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_invalid_castling_character()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "type": "make_move",
+        "board": ".NB.K.NR.PPP.PPPR....Q....B.P.......p...........pppp.ppprnbq.knr"
+        "castling": "K..A",
+        "en_passant": -1,
+        "past_move": {
+            "color": [0, 0, 255],
+            "from": 52,
+            "to": 36
+        },
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "b",
+        },
+        "lifted_square_color": [0, 230, 0],
+        "legal_move_color": [0, 255, 0],
+        "illegal_move_color": [255, 0, 0],
+        "timeout_s": 60
+    }
+    )";
+    ExtractMakeMove extract_make_move;
+    try
+    {
+        auto _ = extractMakeMove(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, invalid castling character", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_invalid_en_passant()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "type": "make_move",
+        "board": ".NB.K.NR.PPP.PPPR....Q....B.P.......p...........pppp.ppprnbq.knr"
+        "castling": "K..q",
+        "en_passant": not_en_passant,
+        "past_move": {
+            "color": [0, 0, 255],
+            "from": 52,
+            "to": 36
+        },
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "b",
+        },
+        "lifted_square_color": [0, 230, 0],
+        "legal_move_color": [0, 255, 0],
+        "illegal_move_color": [255, 0, 0],
+        "timeout_s": 60
+    }
+    )";
+    ExtractMakeMove extract_make_move;
+    try
+    {
+        auto _ = extractMakeMove(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, en passant must be a valid integer", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_invalid_number_en_passant()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "type": "make_move",
+        "board": ".NB.K.NR.PPP.PPPR....Q....B.P.......p...........pppp.ppprnbq.knr"
+        "castling": "K..q",
+        "en_passant": 69,
+        "past_move": {
+            "color": [0, 0, 255],
+            "from": 52,
+            "to": 36
+        },
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "b",
+        },
+        "lifted_square_color": [0, 230, 0],
+        "legal_move_color": [0, 255, 0],
+        "illegal_move_color": [255, 0, 0],
+        "timeout_s": 60
+    }
+    )";
+    ExtractMakeMove extract_make_move;
+    try
+    {
+        auto _ = extractMakeMove(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, invalid en passant number", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_invalid_color()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "type": "make_move",
+        "board": ".NB.K.NR.PPP.PPPR....Q....B.P.......p...........pppp.ppprnbq.knr"
+        "castling": "K..q",
+        "en_passant": -1,
+        "past_move": {
+            "color": [0, 0, 255],
+            "from": 52,
+            "to": 36
+        },
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "a",
+        },
+        "lifted_square_color": [0, 230, 0],
+        "legal_move_color": [0, 255, 0],
+        "illegal_move_color": [255, 0, 0],
+        "timeout_s": 60
+    }
+    )";
+    ExtractMakeMove extract_make_move;
+    try
+    {
+        auto _ = extractMakeMove(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, invalid player color", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_too_many_squares_in_board()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "type": "make_move",
+        "board": ".NB.K.NR.PPP.PPPR....Q....B.P.......p...........pppp.ppprnbq.knr....r...P...Q"
+        "castling": "K..q",
+        "en_passant": -1,
+        "past_move": {
+            "color": [0, 0, 255],
+            "from": 52,
+            "to": 36
+        },
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "w",
+        },
+        "lifted_square_color": [0, 230, 0],
+        "legal_move_color": [0, 255, 0],
+        "illegal_move_color": [255, 0, 0],
+        "timeout_s": 60
+    }
+    )";
+    ExtractMakeMove extract_make_move;
+    try
+    {
+        auto _ = extractMakeMove(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, board must be 64 characters long", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_not_enough_squares_in_board()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "type": "make_move",
+        "board": ".NB.K.NR.PPP.PPPR....Q"
+        "castling": "K..q",
+        "en_passant": -1,
+        "past_move": {
+            "color": [0, 0, 255],
+            "from": 52,
+            "to": 36
+        },
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "b",
+        },
+        "lifted_square_color": [0, 230, 0],
+        "legal_move_color": [0, 255, 0],
+        "illegal_move_color": [255, 0, 0],
+        "timeout_s": 60
+    }
+    )";
+    ExtractMakeMove extract_make_move;
+    try
+    {
+        auto _ = extractMakeMove(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, board must be 64 characters long", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_invalid_piece()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "type": "make_move",
+        "board": ".NA.K.PR.PPP.PPPC....Q....B.P.......p...........pppp.ppprnbq.knr"
+        "castling": "K..q",
+        "en_passant": -1,
+        "past_move": {
+            "color": [0, 0, 255],
+            "from": 52,
+            "to": 36
+        },
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "b",
+        },
+        "lifted_square_color": [0, 230, 0],
+        "legal_move_color": [0, 255, 0],
+        "illegal_move_color": [255, 0, 0],
+        "timeout_s": 60
+    }
+    )";
+    ExtractMakeMove extract_make_move;
+    try
+    {
+        auto _ = extractMakeMove(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("Error, invalid piece", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
 void setup()
 {
     UNITY_BEGIN();
@@ -194,6 +622,16 @@ void setup()
     RUN_TEST(test_functional_make_move);
     RUN_TEST(test_functional_en_passant_make_move);
     RUN_TEST(test_functional_castling_make_move);
+    RUN_TEST(test_too_many_castling);
+    RUN_TEST(test_not_enough_castling);
+    RUN_TEST(test_misplaced_castling_character);
+    RUN_TEST(test_invalid_castling_character);
+    RUN_TEST(test_invalid_en_passant);
+    RUN_TEST(test_invalid_number_en_passant);
+    RUN_TEST(test_invalid_color);
+    RUN_TEST(test_too_many_squares_in_board);
+    RUN_TEST(test_not_enough_squares_in_board);
+    RUN_TEST(test_invalid_piece);
 
     UNITY_END();
 }

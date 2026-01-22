@@ -650,10 +650,9 @@ void test_valid_too_many_colors()
 void test_led_color_not_number()
 {
     std::string input = "[255, 127, aaa]";
-    LedColor led_color;
     try
     {
-        led_color = getLedColor(input);
+        auto _ = getLedColor(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -670,10 +669,9 @@ void test_led_color_not_number()
 void test_led_color_fixed_string()
 {
     std::string input = "[sfs55kfs, kal17fw, fj35pwk]";
-    LedColor led_color;
     try
     {
-        led_color = getLedColor(input);
+        auto _ = getLedColor(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -690,10 +688,9 @@ void test_led_color_fixed_string()
 void test_led_color_over_255()
 {
     std::string input = "[256, 9, 2]";
-    LedColor led_color;
     try
     {
-        led_color = getLedColor(input);
+        auto _ = getLedColor(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -710,10 +707,9 @@ void test_led_color_over_255()
 void test_led_color_negative()
 {
     std::string input = "[255, -9, 2]";
-    LedColor led_color;
     try
     {
-        led_color = getLedColor(input);
+        auto _ = getLedColor(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -730,10 +726,9 @@ void test_led_color_negative()
 void test_led_color_no_brakets()
 {
     std::string input = "255, -9, 2";
-    LedColor led_color;
     try
     {
-        led_color = getLedColor(input);
+        auto _ = getLedColor(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -750,10 +745,9 @@ void test_led_color_no_brakets()
 void test_led_color_no_comma()
 {
     std::string input = "[255 -9 2]";
-    LedColor led_color;
     try
     {
-        led_color = getLedColor(input);
+        auto _ = getLedColor(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
@@ -770,10 +764,9 @@ void test_led_color_no_comma()
 void test_led_color_not_enough_values()
 {
     std::string input = "[255, -9]";
-    LedColor led_color;
     try
     {
-        led_color = getLedColor(input);
+        auto _ = getLedColor(input);
         TEST_FAIL_MESSAGE("Expected exception");
     }
     catch (const std::runtime_error& e)
