@@ -76,7 +76,7 @@ ChessGame gameLoopMultiplayerOffline(ClockSetting &clock_settings)
 void localGame(Settings game_settings, ClockSetting &clock_settings)
 {
     // ---Init---
-    u_int64_t starting_position = 0xffff00000000ffff;
+    uint64_t starting_position = 0xffff00000000ffffULL;
     int timeout_ms = 600000;
     bool timeout_reached = true;
     for (int i = 0; i < timeout_ms; i++)

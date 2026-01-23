@@ -202,7 +202,6 @@ void test_too_many_castling()
         "timeout_s": 60
     }
     )";
-    ExtractMakeMove extract_make_move;
     try
     {
         auto _ = extractMakeMove(input);
@@ -246,7 +245,6 @@ void test_not_enough_castling()
         "timeout_s": 60
     }
     )";
-    ExtractMakeMove extract_make_move;
     try
     {
         auto _ = extractMakeMove(input);
@@ -290,7 +288,6 @@ void test_misplaced_castling_character()
         "timeout_s": 60
     }
     )";
-    ExtractMakeMove extract_make_move;
     try
     {
         auto _ = extractMakeMove(input);
@@ -334,7 +331,6 @@ void test_invalid_castling_character()
         "timeout_s": 60
     }
     )";
-    ExtractMakeMove extract_make_move;
     try
     {
         auto _ = extractMakeMove(input);
@@ -378,7 +374,6 @@ void test_invalid_en_passant()
         "timeout_s": 60
     }
     )";
-    ExtractMakeMove extract_make_move;
     try
     {
         auto _ = extractMakeMove(input);
@@ -422,7 +417,6 @@ void test_invalid_number_en_passant()
         "timeout_s": 60
     }
     )";
-    ExtractMakeMove extract_make_move;
     try
     {
         auto _ = extractMakeMove(input);
@@ -466,7 +460,6 @@ void test_invalid_color()
         "timeout_s": 60
     }
     )";
-    ExtractMakeMove extract_make_move;
     try
     {
         auto _ = extractMakeMove(input);
@@ -510,7 +503,6 @@ void test_too_many_squares_in_board()
         "timeout_s": 60
     }
     )";
-    ExtractMakeMove extract_make_move;
     try
     {
         auto _ = extractMakeMove(input);
@@ -554,7 +546,6 @@ void test_not_enough_squares_in_board()
         "timeout_s": 60
     }
     )";
-    ExtractMakeMove extract_make_move;
     try
     {
         auto _ = extractMakeMove(input);
@@ -598,7 +589,6 @@ void test_invalid_piece()
         "timeout_s": 60
     }
     )";
-    ExtractMakeMove extract_make_move;
     try
     {
         auto _ = extractMakeMove(input);

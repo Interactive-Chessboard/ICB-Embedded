@@ -28,3 +28,9 @@ inline void TEST_ASSERT_EQUAL_CHESS_GAME(const ChessGame &expected, const ChessG
     }
     TEST_ASSERT_EQUAL(expected.en_passant, actual.en_passant);
 }
+
+
+inline void TEST_ASSERT_UINT64_T(const uint64_t &expected, const uint64_t &actual)
+{
+    TEST_ASSERT_EQUAL_MEMORY(expected, actual, sizeof(uint64_t));
+}

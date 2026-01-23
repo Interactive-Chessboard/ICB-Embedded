@@ -49,7 +49,7 @@ This request is made to request the ESP32 to set up it's board in a certain arra
 
 #### Request
 The set_board request contains the following fields.
-1. Bitboard of the game being played. The user will need to match this board to then proceed with sending a response. Since the ESP32 can't know which piece is where, the bit board will need to match. This bit board is in a u_int64 format.
+1. Bitboard of the game being played. The user will need to match this board to then proceed with sending a response. Since the ESP32 can't know which piece is where, the bit board will need to match. This bit board is in a uint64_t format.
 2. An old move color, from and to field to allow the the display of the last move made by an opponent on the web app. The color of the LEDs will also be determined by the web app.
 Note an old move can be set to -1, -1 if there is no old move to display
 3. White and black clocks values will be sent from the web app. This will overide the current status of the clock on the esp32 which is actively counting down between requests.

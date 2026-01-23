@@ -17,9 +17,9 @@
 
 
 struct LedColor {
-    u_int8_t red;
-    u_int8_t green;
-    u_int8_t blue;
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
     LedColor(int red = 0, int green = 0, int blue = 0) :
              red(red), green(green), blue(blue) {}
 
