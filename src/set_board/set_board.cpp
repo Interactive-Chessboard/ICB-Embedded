@@ -20,7 +20,7 @@ std::array<LedColor, 64> SetBoard::lightUpDifference(uint64_t current, uint64_t 
 }
 
 
-std::string SetBoard::startOnline(std::atomic<bool>& end_task_flag, int timeout)
+std::string SetBoard::startOnline(const std::atomic<bool>& end_task_flag)
 {
     while (!end_task_flag.load() && timeout > 0)
     {

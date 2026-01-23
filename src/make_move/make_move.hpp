@@ -11,6 +11,19 @@
 #include "screen_selection/screen_selection.hpp"
 
 
+struct ExtractMakeMove
+{
+    ChessGame game;
+    LedColor past_move_color;
+    LedColor lifted_square_color;
+    LedColor legal_moves_color;
+    LedColor illegal_moves_color;
+    int past_move_from;
+    int past_move_to;
+    int timeout;
+};
+
+
 class MakeMove
 {
 private:
@@ -35,7 +48,7 @@ private:
     uint64_t original_bit_board;
     uint64_t current_bit_board;
 
-    int time_out;
+    int timeout;
 
     void construct();
     std::pair<bool, bool> determineSpecialMoveLift(Move, int);
@@ -46,21 +59,15 @@ private:
 
 public:
     // Online game constructor
-    MakeMove(ChessGame game,
-             int past_move_from,
-             int past_move_to,
-             LedColor past_move_color,
-             LedColor lifted_square_color,
-             LedColor legal_moves_color,
-             LedColor illegal_moves_color
-             )
-        : game(std::move(game)),
-          past_move_from(past_move_from),
-          past_move_to(past_move_to),
-          past_move_color(past_move_color),
-          lifted_square_color(lifted_square_color),
-          legal_moves_color(legal_moves_color),
-          illegal_moves_color(illegal_moves_color)
+    MakeMove(ExtractMakeMove e)
+        : game(e.game),
+          past_move_from(e.past_move_from),
+          past_move_to(e.past_move_to),
+          past_move_color(e.past_move_color),
+          lifted_square_color(e.lifted_square_color),
+          legal_moves_color(e.legal_moves_color),
+          illegal_moves_color(e.illegal_moves_color),
+          timeout(e.timeout)
     {
         moves = Chess::generateLegalMoves(game);
         construct();
@@ -79,6 +86,6 @@ public:
         construct();
     }
 
-    Move startOnline(std::atomic<bool>&, int);
+    Move startOnline(const std::atomic<bool>&);
     Move startOffline(const std::atomic<bool>&);
 };

@@ -14,17 +14,17 @@ std::string setBoard(ClockSetting &clock_settings, const std::string& request, s
     {
         return e.what();
     }
-    SetBoard set_board(extract_set_board.color, extract_set_board.board);
-    return set_board.startOnline(std::ref(end_task_flag), extract_set_board.timeout);
+    SetBoard set_board(extract_set_board);
+    return set_board.startOnline(std::ref(end_task_flag));
 }
 
 
 std::string makeMove(ClockSetting &clock_settings, const std::string& request, std::atomic<bool>& end_task_flag)
 {
-    ExtractMakeMove extract_move;
+    ExtractMakeMove extract_make_move;
     try
     {
-        extract_move = extractMakeMove(request);
+        extract_make_move = extractMakeMove(request);
         setClockSettings(std::ref(clock_settings), request);
     }
     catch (const std::runtime_error& e)
@@ -32,13 +32,11 @@ std::string makeMove(ClockSetting &clock_settings, const std::string& request, s
         return e.what();
     }
 
-    MakeMove make_move(extract_move.game, extract_move.past_move_from, extract_move.past_move_to,
-                       extract_move.past_move_color, extract_move.lifted_square_color,
-                       extract_move.legal_moves_color, extract_move.illegal_moves_color);
+    MakeMove make_move(extract_make_move);
     Move move_made;
     try
     {
-        make_move.startOnline(std::ref(end_task_flag), extract_move.timeout);
+        make_move.startOnline(std::ref(end_task_flag));
     }
     catch (const std::runtime_error& e)
     {

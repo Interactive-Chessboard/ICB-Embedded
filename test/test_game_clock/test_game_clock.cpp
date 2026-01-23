@@ -1,7 +1,6 @@
 // test_game_clock.cpp
 #include <unity.h>
 #include "game_clock/game_clock.hpp"
-#include "game_clock/game_clock.cpp"
 
 /*
 void test_inactive_tick()

@@ -183,7 +183,7 @@ void MakeMove::construct()
 }
 
 
-Move MakeMove::startOnline(std::atomic<bool>& end_task_flag, int timeout)
+Move MakeMove::startOnline(const std::atomic<bool>& end_task_flag)
 {
     while (!end_task_flag.load() && timeout > 0)
     {
