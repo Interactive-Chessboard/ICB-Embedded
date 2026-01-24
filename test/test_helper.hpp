@@ -39,12 +39,11 @@ inline void TEST_ASSERT_UINT64_T(const uint64_t &expected, const uint64_t &actua
 }
 
 
-
-// MockHardware
 class MockHardware : public IHardware
 {
 private:
     MockHardware() = default;
+
 public:
     static MockHardware& instance()
     {
@@ -55,59 +54,95 @@ public:
     MockHardware(const MockHardware&) = delete;
     MockHardware& operator=(const MockHardware&) = delete;
 
-    // bluetoothInit mock does nothing
+    // ---------------- Bluetooth ----------------
+
     void bluetoothInit() override {}
 
-    // std::deque for getBluetoothMessage
     std::deque<std::string> get_bluetooth_messages_queue;
-    // getBluetoothMessage mock returns messages from a std::deque
     std::string getBluetoothMessage() override
     {
-        std::string msg;
-        if (!get_bluetooth_messages_queue.empty())
-        {
-            msg = get_bluetooth_messages_queue.front();
-            get_bluetooth_messages_queue.pop_front();
-        }
+        if (get_bluetooth_messages_queue.empty())
+            return {};
+
+        std::string msg = get_bluetooth_messages_queue.front();
+        get_bluetooth_messages_queue.pop_front();
         return msg;
     }
 
-    // vector for sendBluetoothMessage
     std::vector<std::string> send_bluetooth_messages_queue;
-    // sendBluetoothMessage mock saves messages to a vector
     void sendBluetoothMessage(std::string msg) override
     {
-        send_bluetooth_messages_queue.push_back(msg);
+        send_bluetooth_messages_queue.push_back(std::move(msg));
     }
 
-    // std::deque for getBoardArr
+    // ---------------- Board ----------------
+
     std::deque<uint64_t> get_board_arr_queue;
-    // getBoardArr mock returns messages from a std::deque
     uint64_t getBoardArr() override
     {
-        uint64_t val;
-        if (!get_board_arr_queue.empty())
-        {
-            val = get_board_arr_queue.front();
-            get_board_arr_queue.pop_front();
-        }
+        if (get_board_arr_queue.empty())
+            return 0;
+
+        uint64_t val = get_board_arr_queue.front();
+        get_board_arr_queue.pop_front();
         return val;
     }
 
-    // vector for setLed
+    // ---------------- LEDs ----------------
+
     std::vector<std::array<LedColor, 64>> set_led_queue;
-    // ssetLed mock saves messages to a vector
     void setLed(std::array<LedColor, 64> led) override
     {
         set_led_queue.push_back(led);
     }
 
-    // clearLed mock does nothing
     void clearLed() override {}
 
-    void reserveScreen(bool) override;
-    void setTimeScreen(std::vector<std::string>) override;
-    void setScreen(std::vector<std::string>, int) override;
-    bool detectSelectClick() override;
-    bool detectStartClick() override;
+    // ---------------- Screen ----------------
+
+    std::vector<bool> reserve_screen_queue;
+    void reserveScreen(bool reserve) override
+    {
+        reserve_screen_queue.push_back(reserve);
+    }
+
+    std::vector<std::vector<std::string>> time_screen_calls;
+    void setTimeScreen(std::vector<std::string> text) override
+    {
+        time_screen_calls.push_back(std::move(text));
+    }
+
+    struct ScreenCall {
+        std::vector<std::string> text;
+        int selected;
+    };
+    std::vector<ScreenCall> screen_calls;
+    void setScreen(std::vector<std::string> text, int selected) override
+    {
+        screen_calls.push_back({ std::move(text), selected });
+    }
+
+    // ---------------- Buttons ----------------
+
+    std::deque<bool> select_click_queue;
+    bool detectSelectClick() override
+    {
+        if (select_click_queue.empty())
+            return false;
+
+        bool val = select_click_queue.front();
+        select_click_queue.pop_front();
+        return val;
+    }
+
+    std::deque<bool> start_click_queue;
+    bool detectStartClick() override
+    {
+        if (start_click_queue.empty())
+            return false;
+
+        bool val = start_click_queue.front();
+        start_click_queue.pop_front();
+        return val;
+    }
 };

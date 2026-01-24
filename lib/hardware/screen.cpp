@@ -28,15 +28,3 @@ void RealHardware::setScreen(std::vector<std::string> text, int selected)
 
     // Selected mean having '>' before the text
 }
-
-
-bool RealHardware::detectSelectClick()
-{
-    return false;
-}
-
-
-bool RealHardware::detectStartClick()
-{
-    return false;
-}
