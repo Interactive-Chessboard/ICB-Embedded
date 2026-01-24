@@ -12,6 +12,7 @@
 #include <string>
 #include <atomic>
 #include <array>
+#include <mutex>
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 
@@ -38,7 +39,7 @@ public:
     virtual ~IHardware() = default;
 
     // bluetooth
-    virtual void bluetooth_init() = 0;
+    virtual void bluetoothInit() = 0;
     virtual std::string getBluetoothMessage() = 0;
     virtual void sendBluetoothMessage(std::string) = 0;
 
@@ -50,11 +51,11 @@ public:
     virtual void clearLed() = 0;
 
     // screen
-    virtual void setTime(int, int) = 0;
+    virtual void reserveScreen(bool) = 0;
+    virtual void setTimeScreen(std::vector<std::string>) = 0;
+    virtual void setScreen(std::vector<std::string>, int) = 0;
     virtual bool detectSelectClick() = 0;
     virtual bool detectStartClick() = 0;
-    virtual void setScreen(std::vector<std::string>, int) = 0;
-    virtual void clearScreen() = 0;
 };
 
 
@@ -63,6 +64,8 @@ class RealHardware : public IHardware
 {
 private:
     RealHardware() = default;
+    std::mutex screen_mutex;
+    bool screen_reserved = false;
 public:
     static RealHardware& instance()
     {
@@ -73,7 +76,7 @@ public:
     RealHardware(const RealHardware&) = delete;
     RealHardware& operator=(const RealHardware&) = delete;
 
-    void bluetooth_init() override;
+    void bluetoothInit() override;
     std::string getBluetoothMessage() override;
     void sendBluetoothMessage(std::string) override;
 
@@ -82,11 +85,11 @@ public:
     void setLed(std::array<LedColor, 64>) override;
     void clearLed() override;
 
-    void setTime(int, int) override;
+    void reserveScreen(bool r) override;
+    void setTimeScreen(std::vector<std::string>) override;
+    void setScreen(std::vector<std::string>, int) override;
     bool detectSelectClick() override;
     bool detectStartClick() override;
-    void setScreen(std::vector<std::string>, int) override;
-    void clearScreen() override;
 };
 
 

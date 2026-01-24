@@ -1,9 +1,32 @@
 // screen.cpp
 #include "hardware.hpp"
 
-void RealHardware::setTime(int white_time_ms, int black_time_ms)
-{
 
+void RealHardware::reserveScreen(bool reserve)
+{
+    screen_reserved = reserve;
+}
+
+
+void RealHardware::setTimeScreen(std::vector<std::string> text)
+{
+    std::lock_guard<std::mutex> lock(screen_mutex);
+
+    if (screen_reserved)
+        return;
+
+    // Display the times here
+}
+
+
+void RealHardware::setScreen(std::vector<std::string> text, int selected)
+{
+    std::lock_guard<std::mutex> lock(screen_mutex);
+
+    if (selected >= text.size())
+        return;
+
+    // Selected mean having '>' before the text
 }
 
 
@@ -16,19 +39,4 @@ bool RealHardware::detectSelectClick()
 bool RealHardware::detectStartClick()
 {
     return false;
-}
-
-
-void RealHardware::setScreen(std::vector<std::string> text, int selected)
-{
-    if (selected >= text.size())
-        return;
-
-    // Selected mean having '>' before the text
-}
-
-
-void RealHardware::clearScreen()
-{
-
 }

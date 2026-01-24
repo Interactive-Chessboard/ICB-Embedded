@@ -16,7 +16,7 @@ void setup()
 {
   Serial.begin(115200);
   Hardware::set(RealHardware::instance());
-  Hardware::get().bluetooth_init();
+  Hardware::get().bluetoothInit();
   //delay(8000); //for debugging purposes
 }
 
@@ -32,7 +32,7 @@ void loop()
   std::thread clock_thread;
   ClockSetting clock_settings(game_settings.game_time_min, game_settings.extra_time_sec);
   std::atomic<bool> stop_clock_thread{false};
-  clock_thread = std::thread(game_clock, std::ref(clock_settings), std::ref(stop_clock_thread));
+  clock_thread = std::thread(startGameClock, std::ref(clock_settings), std::ref(stop_clock_thread));
 
   // ---Start game---
   if (game_settings.game_mode == GameMode::Online)

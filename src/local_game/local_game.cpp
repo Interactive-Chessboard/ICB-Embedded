@@ -34,7 +34,7 @@ ChessGame gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings, 
             SetBoard set_board(bitboard_move);
             set_board.startOffline(clock_settings.active);
             if (move.promotion != Piece())
-                Hardware::get().clearScreen();
+                Hardware::get().reserveScreen(false);
         }
 
         chess_game = move.chess_game;

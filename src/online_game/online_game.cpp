@@ -7,7 +7,7 @@ std::string setBoard(ClockSetting &clock_settings, const std::string& request, s
     ExtractSetBoard extract_set_board;
     try
     {
-        setClockSettings(std::ref(clock_settings), request);
+        setClockSettings(clock_settings, request);
         extract_set_board = extractSetBoard(request);
     }
     catch (const std::runtime_error& e)
@@ -15,7 +15,7 @@ std::string setBoard(ClockSetting &clock_settings, const std::string& request, s
         return e.what();
     }
     SetBoard set_board(extract_set_board);
-    return set_board.startOnline(std::ref(end_task_flag));
+    return set_board.startOnline(end_task_flag);
 }
 
 
@@ -25,7 +25,7 @@ std::string makeMove(ClockSetting &clock_settings, const std::string& request, s
     try
     {
         extract_make_move = extractMakeMove(request);
-        setClockSettings(std::ref(clock_settings), request);
+        setClockSettings(clock_settings, request);
     }
     catch (const std::runtime_error& e)
     {
@@ -36,7 +36,7 @@ std::string makeMove(ClockSetting &clock_settings, const std::string& request, s
     Move move_made;
     try
     {
-        make_move.startOnline(std::ref(end_task_flag));
+        make_move.startOnline(end_task_flag);
     }
     catch (const std::runtime_error& e)
     {
@@ -60,7 +60,7 @@ std::string animation(const std::string& request, std::atomic<bool>& end_task_fl
     {
         return e.what();
     }
-    return playAnimations(std::ref(end_task_flag), animations);
+    return playAnimations(end_task_flag, animations);
 }
 
 
@@ -77,13 +77,13 @@ void runTask(ClockSetting &clock_settings, std::string request_type, std::string
     std::string status;
 
     if (request_type == "set_board")
-        status = setBoard(std::ref(clock_settings), request, std::ref(end_task_flag));
+        status = setBoard(clock_settings, request, end_task_flag);
 
     else if (request_type == "make_move")
-        status = makeMove(std::ref(clock_settings), request, std::ref(end_task_flag));
+        status = makeMove(clock_settings, request, end_task_flag);
 
     else if (request_type == "animation")
-        status = animation(request, std::ref(end_task_flag));
+        status = animation(request, end_task_flag);
 
     else
         status = "Error, unknown request";

@@ -1,6 +1,33 @@
 // game_clock.cpp
 #include "game_clock.hpp"
 
+std::string formatTimeMs(int ms)
+{
+    if (ms <= 0)
+        return "0.0";
+
+    int total_ds = ms / 100;
+    int ds = total_ds % 10;
+    int total_s = total_ds / 10;
+
+    int s = total_s % 60;
+    int total_m = total_s / 60;
+
+    int m = total_m % 60;
+    int h = total_m / 60;
+
+    std::ostringstream out;
+    if (h > 0)
+        out << h << ":" << std::setw(2) << std::setfill('0') << m << ":" << std::setw(2) << std::setfill('0') << s << "." << ds;
+    else if (m > 0)
+        out << m << ":" << std::setw(2) << std::setfill('0') << s << "." << ds;
+    else
+        out << s << "." << ds;
+
+    return out.str();
+}
+
+
 
 void tick(ClockSetting& clock_settings, Color previous_iteration)
 {
@@ -41,7 +68,7 @@ void tick(ClockSetting& clock_settings, Color previous_iteration)
 }
 
 
-void game_clock(ClockSetting &clock_settings, std::atomic<bool> &stop_clock_loop)
+void startGameClock(ClockSetting &clock_settings, std::atomic<bool> &stop_clock_loop)
 {
     using clock = std::chrono::steady_clock;
     constexpr std::chrono::milliseconds interval(1);
@@ -55,13 +82,18 @@ void game_clock(ClockSetting &clock_settings, std::atomic<bool> &stop_clock_loop
         {
         std::lock_guard<std::mutex> lock(clock_settings.mtx);
 
-        tick(std::ref(clock_settings), previous_iteration);
+        tick(clock_settings, previous_iteration);
         previous_iteration = clock_settings.player_turn.load();
         }
         if ((clock_settings.time_white.load() % 10 == 0 && clock_settings.player_turn.load() == Color::White) ||
             (clock_settings.time_black.load() % 10 == 0 && clock_settings.player_turn.load() == Color::Black))
-            Hardware::get().setTime(clock_settings.time_white.load(), clock_settings.time_black.load());
-
+        {
+            std::vector<std::string> time_display_msg = {
+                "White Time: " + formatTimeMs(clock_settings.time_white.load()),
+                "Black Time: " + formatTimeMs(clock_settings.time_black.load())
+            };
+            Hardware::get().setTimeScreen(time_display_msg);
+        }
         std::this_thread::sleep_until(iteration_start + interval);
     }
 }

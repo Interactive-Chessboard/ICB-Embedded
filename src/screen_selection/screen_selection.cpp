@@ -5,6 +5,7 @@
 int selectOption(std::vector<std::string> options, const std::atomic<bool>& active)
 {
     int selected = 0;
+    Hardware::get().reserveScreen(true);
     while(active.load())
     {
         Hardware::get().setScreen(options, selected);
@@ -14,7 +15,8 @@ int selectOption(std::vector<std::string> options, const std::atomic<bool>& acti
             selected = (selected + 1) % options.size();
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
-    return 0;
+    Hardware::get().reserveScreen(false);
+    return selected;
 }
 
 
@@ -164,5 +166,6 @@ void displayBotPromotion(PieceType piece_type)
         return;
     }
     std::vector<std::string> screen {"Bot promoted to", piece_string};
+    Hardware::get().reserveScreen(true);
     Hardware::get().setScreen(screen, 1);
 }

@@ -4,6 +4,10 @@
 #include <chrono>
 #include <mutex>
 #include <atomic>
+#include <string>
+#include <sstream>
+#include <iomanip>
+#include <algorithm>
 #include "hardware.hpp"
 #include "chess.hpp"
 
@@ -21,4 +25,4 @@ struct ClockSetting
 };
 
 
-void game_clock(ClockSetting&, std::atomic<bool>&);
+void startGameClock(ClockSetting&, std::atomic<bool>&);

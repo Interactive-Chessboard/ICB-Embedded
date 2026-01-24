@@ -66,7 +66,7 @@ class MyCallbacks : public BLECharacteristicCallbacks {
  * Creates the BLE server, registers the characteristic, sets callbacks,
  * and starts advertising to make the device discoverable.
  */
-void RealHardware::bluetooth_init()
+void RealHardware::bluetoothInit()
 {
     BLEDevice::init("ICB_test_board");
     pServer = BLEDevice::createServer();
