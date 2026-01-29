@@ -29,10 +29,9 @@ void loop()
   Settings game_settings = getGameSettings(); //REMOVE COMMENT WHEN IMPLEMENTED
 
   // ---Start Game Clock---
-  std::thread clock_thread;
   ClockSetting clock_settings(game_settings.game_time_min, game_settings.extra_time_sec);
   std::atomic<bool> stop_clock_thread{false};
-  clock_thread = std::thread(startGameClock, std::ref(clock_settings), std::ref(stop_clock_thread));
+  std::thread clock_thread = std::thread(startGameClock, std::ref(clock_settings), std::ref(stop_clock_thread));
 
   // ---Start game---
   if (game_settings.game_mode == GameMode::Online)
@@ -42,6 +41,7 @@ void loop()
 
   // ---Stop Clock Thread;
   stop_clock_thread.store(true);
+  clock_thread.join();
 }
 #endif
 

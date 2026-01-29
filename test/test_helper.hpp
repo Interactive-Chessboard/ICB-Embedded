@@ -39,6 +39,13 @@ inline void TEST_ASSERT_UINT64_T(const uint64_t &expected, const uint64_t &actua
 }
 
 
+inline void TEST_ASSERT_CLOCK_TOLERANCE(const int &expected, const int &actual)
+{
+    TEST_ASSERT_GREATER_OR_EQUAL(expected - 2, actual);
+    TEST_ASSERT_LESS_OR_EQUAL(expected + 2, actual);
+}
+
+
 class MockHardware : public IHardware
 {
 private:
@@ -49,6 +56,19 @@ public:
     {
         static MockHardware instance;
         return instance;
+    }
+
+    void reset()
+    {
+        get_bluetooth_messages_queue.clear();
+        send_bluetooth_messages_queue.clear();
+        get_board_arr_queue.clear();
+        set_led_queue.clear();
+        reserve_screen_queue.clear();
+        time_screen_calls.clear();
+        screen_calls.clear();
+        select_click_queue.clear();
+        start_click_queue.clear();
     }
 
     MockHardware(const MockHardware&) = delete;
@@ -146,3 +166,12 @@ public:
         return val;
     }
 };
+
+
+// Run in setUp() function to run before every test
+void setUpMockHardware()
+{
+    static MockHardware& mock_hardware = MockHardware::instance();
+    mock_hardware.reset();
+    Hardware::set(mock_hardware);
+}

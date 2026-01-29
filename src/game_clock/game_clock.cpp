@@ -31,8 +31,6 @@ std::string formatTimeMs(int ms)
 
 void tick(ClockSetting& clock_settings, Color previous_iteration)
 {
-    if (!clock_settings.active.load()) return;
-
     // Decrement timer
     if (clock_settings.player_turn.load() == Color::White)
     {
@@ -74,26 +72,30 @@ void startGameClock(ClockSetting &clock_settings, std::atomic<bool> &stop_clock_
     constexpr std::chrono::milliseconds interval(1);
     auto start = clock::now();
     int i = 0;
-    Color previous_iteration = Color::White;
+    Color previous_iteration = clock_settings.player_turn;
     while(!stop_clock_loop.load())
     {
         auto iteration_start = start + i * interval;
         i++;
+        if (clock_settings.active.load())
         {
-        std::lock_guard<std::mutex> lock(clock_settings.mtx);
+            {
+            std::lock_guard<std::mutex> lock(clock_settings.mtx);
+            tick(clock_settings, previous_iteration);
+            previous_iteration = clock_settings.player_turn.load();
+            }
 
-        tick(clock_settings, previous_iteration);
-        previous_iteration = clock_settings.player_turn.load();
+            if ((clock_settings.time_white.load() % 10 == 0 && clock_settings.player_turn.load() == Color::White) ||
+                (clock_settings.time_black.load() % 10 == 0 && clock_settings.player_turn.load() == Color::Black))
+            {
+                std::vector<std::string> time_display_msg = {
+                    "White Time: " + formatTimeMs(clock_settings.time_white.load()),
+                    "Black Time: " + formatTimeMs(clock_settings.time_black.load())
+                };
+                Hardware::get().setTimeScreen(time_display_msg);
+            }
         }
-        if ((clock_settings.time_white.load() % 10 == 0 && clock_settings.player_turn.load() == Color::White) ||
-            (clock_settings.time_black.load() % 10 == 0 && clock_settings.player_turn.load() == Color::Black))
-        {
-            std::vector<std::string> time_display_msg = {
-                "White Time: " + formatTimeMs(clock_settings.time_white.load()),
-                "Black Time: " + formatTimeMs(clock_settings.time_black.load())
-            };
-            Hardware::get().setTimeScreen(time_display_msg);
-        }
+
         std::this_thread::sleep_until(iteration_start + interval);
     }
 }
