@@ -1,5 +1,6 @@
 // screen.cpp
-#include "hardware.hpp"
+#include "real_hardware.hpp"
+#ifdef ARDUINO
 
 
 void RealHardware::reserveScreen(bool reserve)
@@ -28,3 +29,5 @@ void RealHardware::setScreen(std::vector<std::string> text, int selected)
 
     // Selected mean having '>' before the text
 }
+
+#endif

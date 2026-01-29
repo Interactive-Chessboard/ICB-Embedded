@@ -605,7 +605,7 @@ void test_invalid_piece()
 }
 
 
-void setup()
+void runTests()
 {
     UNITY_BEGIN();
 
@@ -626,4 +626,16 @@ void setup()
     UNITY_END();
 }
 
+#ifdef ARDUINO
+void setup()
+{
+    runTests();
+}
 void loop() {}
+
+#else
+int main()
+{
+    runTests();
+}
+#endif

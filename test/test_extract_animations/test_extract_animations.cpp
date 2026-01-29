@@ -710,8 +710,7 @@ void test_time_ms_key_not_found2()
     }
 }
 
-
-void setup()
+void runTests()
 {
     UNITY_BEGIN();
 
@@ -738,4 +737,15 @@ void setup()
     UNITY_END();
 }
 
+#ifdef ARDUINO
+void setup()
+{
+    runTests();
+}
 void loop() {}
+#else
+int main()
+{
+    runTests();
+}
+#endif

@@ -1,4 +1,5 @@
 // main.cpp
+#ifdef ARDUINO
 #include <Arduino.h>
 #include <chrono>
 #include <thread>
@@ -8,8 +9,8 @@
 #include "screen_selection/screen_selection.hpp"
 #include "game_clock/game_clock.hpp"
 #include "hardware.hpp"
+#include "real_hardware.hpp"
 #include "animations/animations.hpp"
-
 
 #ifndef UNIT_TEST
 void setup()
@@ -43,6 +44,9 @@ void loop()
   stop_clock_thread.store(true);
   clock_thread.join();
 }
+#else
+int main() {return 0;}
+#endif
 #endif
 
 // Note sur comment print in std::string

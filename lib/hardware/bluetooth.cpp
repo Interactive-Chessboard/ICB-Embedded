@@ -1,9 +1,7 @@
 // bluetooth.cpp
+#include "real_hardware.hpp"
 #include "hardware.hpp"
-
-
-// Init hardware instance
-IHardware* Hardware::instance_ = nullptr;
+#ifdef ARDUINO
 
 // Init bluetooth server and queues.
 BLEServer *pServer = NULL;
@@ -114,3 +112,5 @@ void RealHardware::sendBluetoothMessage(std::string msg)
 {
     send_queue.push(msg);
 }
+
+#endif

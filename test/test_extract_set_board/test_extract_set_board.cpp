@@ -176,7 +176,7 @@ void test_set_board_non_number_board()
 }
 
 
-void setup()
+void runTests()
 {
     UNITY_BEGIN();
 
@@ -189,4 +189,16 @@ void setup()
     UNITY_END();
 }
 
+
+#ifdef ARDUINO
+void setup()
+{
+    runTests();
+}
 void loop() {}
+#else
+int main()
+{
+    runTests();
+}
+#endif

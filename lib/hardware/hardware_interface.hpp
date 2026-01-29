@@ -1,0 +1,48 @@
+// hardware_interface.hpp
+#pragma once
+#include <cstdint>
+#include <vector>
+#include <string>
+#include <array>
+
+
+struct LedColor {
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
+    LedColor(int red = 0, int green = 0, int blue = 0) :
+             red(red), green(green), blue(blue) {}
+
+    bool operator==(const LedColor& other) const {
+        return red == other.red &&
+               green == other.green &&
+               blue == other.blue;
+    }
+};
+
+
+// Interface class
+class IHardware
+{
+public:
+    virtual ~IHardware() = default;
+
+    // bluetooth
+    virtual void bluetoothInit() = 0;
+    virtual std::string getBluetoothMessage() = 0;
+    virtual void sendBluetoothMessage(std::string) = 0;
+
+    // board
+    virtual uint64_t getBoardArr() = 0;
+
+    // lights
+    virtual void setLed(std::array<LedColor, 64>) = 0;
+    virtual void clearLed() = 0;
+
+    // screen
+    virtual void reserveScreen(bool) = 0;
+    virtual void setTimeScreen(std::vector<std::string>) = 0;
+    virtual void setScreen(std::vector<std::string>, int) = 0;
+    virtual bool detectSelectClick() = 0;
+    virtual bool detectStartClick() = 0;
+};

@@ -1,5 +1,6 @@
 // screen.cpp
-#include "hardware.hpp"
+#include "real_hardware.hpp"
+#ifdef ARDUINO
 
 
 bool RealHardware::detectSelectClick()
@@ -12,3 +13,5 @@ bool RealHardware::detectStartClick()
 {
     return false;
 }
+
+#endif

@@ -186,7 +186,7 @@ void setUp()
 }
 
 
-void setup()
+void runTests()
 {
     UNITY_BEGIN();
 
@@ -203,4 +203,15 @@ void setup()
 }
 
 
+#ifdef ARDUINO
+void setup()
+{
+    runTests();
+}
 void loop() {}
+#else
+int main()
+{
+    runTests();
+}
+#endif

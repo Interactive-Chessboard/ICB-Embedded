@@ -2,6 +2,9 @@
 #pragma once
 #include <array>
 #include <string>
+#include <atomic>
+#include <chrono>
+#include <thread>
 #include "hardware.hpp"
 
 

@@ -1,7 +1,7 @@
 // lights.cpp
-#include "hardware.hpp"
+#include "real_hardware.hpp"
+#ifdef ARDUINO
 
-std::array<LedColor, 64> current_global_light;
 
 void RealHardware::setLed(std::array<LedColor, 64> leds)
 {
@@ -23,3 +23,4 @@ void RealHardware::clearLed(void)
     return setLed(leds);
 }
 
+#endif
