@@ -144,7 +144,7 @@ void test_black_time_reaches_0()
 
 void test_time_white_in_hours()
 {
-    ClockSetting clock_settings(100, 100);
+    ClockSetting clock_settings(100, 0);
     std::atomic<bool> stop_clock_thread{false};
     clock_settings.time_white.fetch_sub(8);
 
@@ -162,7 +162,7 @@ void test_time_white_in_hours()
 
 void test_time_black_in_hours()
 {
-    ClockSetting clock_settings(160, 160);
+    ClockSetting clock_settings(160, 0);
     std::atomic<bool> stop_clock_thread{false};
     clock_settings.player_turn.store(Color::Black);
     clock_settings.time_black.fetch_sub(8);
@@ -178,6 +178,42 @@ void test_time_black_in_hours()
     TEST_ASSERT_EQUAL_STRING("Black Time: 2:39:59.9", hardware_mock.time_screen_calls.at(0).at(1).c_str());
 }
 
+
+void test_time_seconds_white()
+{
+    ClockSetting clock_settings(1, 0);
+    std::atomic<bool> stop_clock_thread{false};
+    clock_settings.time_white.fetch_sub(8);
+
+    std::thread clock_thread = std::thread(startGameClock, std::ref(clock_settings), std::ref(stop_clock_thread));
+    std::this_thread::sleep_for(std::chrono::milliseconds(5));
+
+    stop_clock_thread.store(true);
+    clock_thread.join();
+
+    MockHardware& hardware_mock = static_cast<MockHardware&>(Hardware::get());
+    TEST_ASSERT_EQUAL_STRING("White Time: 59.9", hardware_mock.time_screen_calls.at(0).at(0).c_str());
+    TEST_ASSERT_EQUAL_STRING("Black Time: 1:00.0", hardware_mock.time_screen_calls.at(0).at(1).c_str());
+}
+
+
+void test_time_seconds_black()
+{
+    ClockSetting clock_settings(1, 0);
+    std::atomic<bool> stop_clock_thread{false};
+    clock_settings.player_turn.store(Color::Black);
+    clock_settings.time_black.fetch_sub(8);
+
+    std::thread clock_thread = std::thread(startGameClock, std::ref(clock_settings), std::ref(stop_clock_thread));
+    std::this_thread::sleep_for(std::chrono::milliseconds(5));
+
+    stop_clock_thread.store(true);
+    clock_thread.join();
+
+    MockHardware& hardware_mock = static_cast<MockHardware&>(Hardware::get());
+    TEST_ASSERT_EQUAL_STRING("White Time: 1:00.0", hardware_mock.time_screen_calls.at(0).at(0).c_str());
+    TEST_ASSERT_EQUAL_STRING("Black Time: 59.9", hardware_mock.time_screen_calls.at(0).at(1).c_str());
+}
 
 // runs before each test
 void setUp()
@@ -196,8 +232,11 @@ void runTests()
     RUN_TEST(test_white_extra_time);
     RUN_TEST(test_black_extra_time);
     RUN_TEST(test_white_time_reaches_0);
+    RUN_TEST(test_black_time_reaches_0);
     RUN_TEST(test_time_white_in_hours);
     RUN_TEST(test_time_black_in_hours);
+    RUN_TEST(test_time_seconds_white);
+    RUN_TEST(test_time_seconds_black);
 
     UNITY_END();
 }

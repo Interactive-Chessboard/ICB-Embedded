@@ -36,13 +36,9 @@ void tick(ClockSetting& clock_settings, Color previous_iteration)
     {
         clock_settings.time_white.fetch_sub(1);
     }
-    else if (clock_settings.player_turn.load() == Color::Black)
-    {
-        clock_settings.time_black.fetch_sub(1);
-    }
     else
     {
-        clock_settings.active.store(false);
+        clock_settings.time_black.fetch_sub(1);
     }
 
     // Add extra time if changed turn

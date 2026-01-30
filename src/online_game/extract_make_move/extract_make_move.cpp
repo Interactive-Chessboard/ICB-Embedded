@@ -89,7 +89,6 @@ ChessGame getChessGame(const std::string& request)
             break;
         default:
             throw std::runtime_error("Error, invalid piece");
-            break;
         }
     }
 
