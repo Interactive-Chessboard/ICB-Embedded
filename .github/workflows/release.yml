@@ -1,0 +1,43 @@
+name: PlatformIO Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache PlatformIO
+        uses: actions/cache@v4
+        with:
+          path: ~/.platformio
+          key: platformio-${{ runner.os }}-${{ hashFiles('platformio.ini') }}
+
+      - name: Install PlatformIO
+        run: pip install --upgrade platformio
+
+      - name: Build firmware
+        run: |
+          pio run -e esp32s3-wroom-1-n16r8 \
+            --build-flags "-D FW_VERSION=\"${{ github.ref_name }}\""
+
+
+      - name: Rename firmware
+        run: |
+          cp .pio/build/esp32s3-wroom-1-n16r8/firmware.bin firmware-${{ github.ref_name }}.bin
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: firmware-${{ github.ref_name }}.bin

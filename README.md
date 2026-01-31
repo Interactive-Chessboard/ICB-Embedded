@@ -62,3 +62,17 @@ Now you can:
 Install Markdown Preview Mermaid Support to view the design graphs in docs/
 
 Read README.md file in test/
+
+
+
+## Precompiled downloads
+Download the firmware from the following link
+
+// TODO
+
+Run the following command from the firmware directory. Fill in the firware version
+```bash
+pio run -e esp32s3-wroom-1-n16r8 -t upload \
+  --upload-port /dev/ttyUSB0 \
+  --upload-file firmware-vx.x.x.bin
+```

@@ -12,10 +12,24 @@
 #include "real_hardware.hpp"
 #include "animations/animations.hpp"
 
+#ifndef FW_VERSION
+#define FW_VERSION "0.0.0"
+#endif
+
 #ifndef UNIT_TEST
 void setup()
 {
   Serial.begin(115200);
+
+  // temporary
+  delay(200); // allow serial to come up
+
+  Serial.println();
+  Serial.println("================================");
+  Serial.print("Firmware version: ");
+  Serial.println(FW_VERSION);
+  Serial.println("================================");
+
   Hardware::set(RealHardware::instance());
   Hardware::get().bluetoothInit();
   //delay(8000); //for debugging purposes
