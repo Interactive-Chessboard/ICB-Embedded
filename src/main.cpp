@@ -22,7 +22,7 @@ void setup()
   Serial.begin(115200);
 
   // temporary
-  delay(200); // allow serial to come up
+  delay(8000); // allow serial to come up
 
   Serial.println();
   Serial.println("================================");
