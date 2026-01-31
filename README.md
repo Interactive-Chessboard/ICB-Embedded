@@ -68,7 +68,7 @@ Read README.md file in test/
 ## Precompiled downloads
 Download the firmware from the following link
 
-// TODO
+[Download latest firmware release](https://github.com/Interactive-Chessboard/ICB-Embedded/releases/latest/download/icb-embedded-firmware.bin)
 
 Run the following command from the firmware directory. Fill in the firware version
 ```bash

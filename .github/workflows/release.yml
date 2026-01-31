@@ -38,9 +38,9 @@ jobs:
 
       - name: Rename firmware
         run: |
-          cp .pio/build/esp32s3-wroom-1-n16r8/firmware.bin firmware-${{ github.ref_name }}.bin
+          cp .pio/build/esp32s3-wroom-1-n16r8/firmware.bin icb-embedded-firmware.bin
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: firmware-${{ github.ref_name }}.bin
+          files: icb-embedded-firmware.bin
