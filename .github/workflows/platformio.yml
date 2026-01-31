@@ -1,0 +1,48 @@
+name: PlatformIO CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache PlatformIO
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.platformio
+          key: platformio-${{ runner.os }}-${{ hashFiles('platformio.ini') }}
+
+      - name: Install PlatformIO
+        run: pip install --upgrade platformio
+
+      - name: Show PlatformIO version
+        run: pio --version
+
+      # ---------- Tests ----------
+      - name: Run native unit tests
+        run: pio test -e native
+
+      # ---------- Firmware build ----------
+      - name: Build ESP32-S3 firmware
+        run: pio run -e esp32s3-wroom-1-n16r8
+
+      # ---------- Artifacts ----------
+      - name: Upload firmware binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: esp32s3-firmware
+          path: .pio/build/esp32s3-wroom-1-n16r8/*.bin
