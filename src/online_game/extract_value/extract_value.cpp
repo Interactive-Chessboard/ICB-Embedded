@@ -80,7 +80,7 @@ int extractTimeOut(const std::string &str)
     try
     {
         int timeout_s = stoi(extractValue(str, "timeout_s"));
-        timeout = timeout_s * 100;
+        timeout = timeout_s * 1000;
     }
     catch(const std::exception& e)
     {

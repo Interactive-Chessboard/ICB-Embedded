@@ -279,7 +279,7 @@ void test_valid_timeout()
         TEST_FAIL_MESSAGE("No exceptions were expected");
     }
     // timeout result in centiseconds
-    TEST_ASSERT_EQUAL(2000, value);
+    TEST_ASSERT_EQUAL(20000, value);
 }
 
 

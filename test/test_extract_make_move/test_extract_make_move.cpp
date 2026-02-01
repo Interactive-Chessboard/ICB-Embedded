@@ -47,7 +47,7 @@ void test_functional_make_move()
     TEST_ASSERT_EQUAL_LED_COLOR(LedColor(255, 0, 0), extract_make_move.illegal_moves_color);
     TEST_ASSERT_EQUAL(12, extract_make_move.past_move_from);
     TEST_ASSERT_EQUAL(28, extract_make_move.past_move_to);
-    TEST_ASSERT_EQUAL(6000, extract_make_move.timeout);
+    TEST_ASSERT_EQUAL(60000, extract_make_move.timeout);
 }
 
 
@@ -109,7 +109,7 @@ void test_functional_en_passant_make_move()
     TEST_ASSERT_EQUAL_LED_COLOR(LedColor(255, 0, 0), extract_make_move.illegal_moves_color);
     TEST_ASSERT_EQUAL(52, extract_make_move.past_move_from);
     TEST_ASSERT_EQUAL(36, extract_make_move.past_move_to);
-    TEST_ASSERT_EQUAL(6000, extract_make_move.timeout);
+    TEST_ASSERT_EQUAL(60000, extract_make_move.timeout);
 }
 
 
@@ -171,7 +171,7 @@ void test_functional_castling_make_move()
     TEST_ASSERT_EQUAL_LED_COLOR(LedColor(255, 0, 0), extract_make_move.illegal_moves_color);
     TEST_ASSERT_EQUAL(52, extract_make_move.past_move_from);
     TEST_ASSERT_EQUAL(36, extract_make_move.past_move_to);
-    TEST_ASSERT_EQUAL(6000, extract_make_move.timeout);
+    TEST_ASSERT_EQUAL(60000, extract_make_move.timeout);
 }
 
 

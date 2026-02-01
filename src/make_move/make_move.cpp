@@ -198,7 +198,7 @@ Move MakeMove::startOnline(const std::atomic<bool>& end_task_flag)
             Hardware::get().setLed(led_lights);
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
         timeout--;
     }
     throw std::runtime_error("Error, timeout reached or end task called");
@@ -239,7 +239,7 @@ Move MakeMove::startOffline(const std::atomic<bool>& active)
             std::array<LedColor, 64> led_lights = getBoardLights();
             Hardware::get().setLed(led_lights);
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     return Move{};
 }

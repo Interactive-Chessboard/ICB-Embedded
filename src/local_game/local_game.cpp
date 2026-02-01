@@ -86,7 +86,8 @@ void localGame(Settings game_settings, ClockSetting &clock_settings)
         timeout_reached = false;
         break;
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        // TODO set lights for pieces in the wrong place
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     if (timeout_reached)
         return;

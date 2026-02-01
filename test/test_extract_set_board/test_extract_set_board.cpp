@@ -35,7 +35,7 @@ void test_functional_set_board()
     TEST_ASSERT_EQUAL_LED_COLOR(LedColor(0, 0, 255), extract_set_board.color);
     uint64_t expected = std::stoull("18446462598732906495");
     TEST_ASSERT_UINT64_T(expected, extract_set_board.board);
-    TEST_ASSERT_EQUAL(6000, extract_set_board.timeout);
+    TEST_ASSERT_EQUAL(60000, extract_set_board.timeout);
 }
 
 
@@ -69,7 +69,7 @@ void test_functional_set_board2()
     TEST_ASSERT_EQUAL_LED_COLOR(LedColor(0, 0, 255), extract_set_board.color);
     uint64_t expected = std::stoull("189995");
     TEST_ASSERT_UINT64_T(expected, extract_set_board.board);
-    TEST_ASSERT_EQUAL(6000, extract_set_board.timeout);
+    TEST_ASSERT_EQUAL(60000, extract_set_board.timeout);
 }
 
 

@@ -7,14 +7,14 @@ std::string playAnimations(std::atomic<bool>& stop, const std::vector<Animation>
     for (auto& animation : animations)
     {
         Hardware::get().setLed(animation.leds);
-        for (int _ = 0; _ < animation.display_time_ms / 10; _++)
+        for (int _ = 0; _ < animation.display_time_ms; _++)
         {
             if (stop.load())
             {
                 Hardware::get().clearLed();
                 return "Error, stopped";
             }
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
     }
     Hardware::get().clearLed();
