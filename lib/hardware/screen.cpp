@@ -9,7 +9,7 @@ void RealHardware::reserveScreen(bool reserve)
 }
 
 
-void RealHardware::setTimeScreen(std::vector<std::string> text)
+void RealHardware::setTimeScreen(const std::vector<std::string>& text)
 {
     std::lock_guard<std::mutex> lock(screen_mutex);
 
@@ -20,7 +20,7 @@ void RealHardware::setTimeScreen(std::vector<std::string> text)
 }
 
 
-void RealHardware::setScreen(std::vector<std::string> text, int selected)
+void RealHardware::setScreen(const std::vector<std::string>& text, int selected)
 {
     std::lock_guard<std::mutex> lock(screen_mutex);
 

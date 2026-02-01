@@ -3,7 +3,7 @@
 #ifdef ARDUINO
 
 
-void RealHardware::setLed(std::array<LedColor, 64> leds)
+void RealHardware::setLed(const std::array<LedColor, 64>& leds)
 {
     if (leds == current_global_light)
         return;

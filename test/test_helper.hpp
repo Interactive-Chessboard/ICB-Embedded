@@ -50,6 +50,7 @@ class MockHardware : public IHardware
 {
 private:
     MockHardware() = default;
+    void handleOtaWrite(const std::string&) override {};
 
 public:
     static MockHardware& instance()
@@ -90,7 +91,7 @@ public:
     }
 
     std::vector<std::string> send_bluetooth_messages_queue;
-    void sendBluetoothMessage(std::string msg) override
+    void sendBluetoothMessage(const std::string& msg) override
     {
         send_bluetooth_messages_queue.push_back(std::move(msg));
     }
@@ -111,7 +112,7 @@ public:
     // ---------------- LEDs ----------------
 
     std::vector<std::array<LedColor, 64>> set_led_queue;
-    void setLed(std::array<LedColor, 64> led) override
+    void setLed(const std::array<LedColor, 64>& led) override
     {
         set_led_queue.push_back(led);
     }
@@ -127,7 +128,7 @@ public:
     }
 
     std::vector<std::vector<std::string>> time_screen_calls;
-    void setTimeScreen(std::vector<std::string> text) override
+    void setTimeScreen(const std::vector<std::string>& text) override
     {
         time_screen_calls.push_back(std::move(text));
     }
@@ -137,7 +138,7 @@ public:
         int selected;
     };
     std::vector<ScreenCall> screen_calls;
-    void setScreen(std::vector<std::string> text, int selected) override
+    void setScreen(const std::vector<std::string>& text, int selected) override
     {
         screen_calls.push_back({ std::move(text), selected });
     }

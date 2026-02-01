@@ -70,9 +70,3 @@ Download the firmware from the following link
 
 [Download latest firmware release](https://github.com/Interactive-Chessboard/ICB-Embedded/releases/latest/download/icb-embedded-firmware.bin)
 
-Run the following command from the firmware directory. Fill in the firware version
-```bash
-pio run -e esp32s3-wroom-1-n16r8 -t upload \
-  --upload-port /dev/ttyUSB0 \
-  --upload-file firmware-vx.x.x.bin
-```

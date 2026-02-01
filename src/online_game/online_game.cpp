@@ -70,7 +70,7 @@ std::string makeReturnMsg(const std::string& request_id, const std::string& stat
 }
 
 
-void runTask(ClockSetting &clock_settings, std::string request_type, std::string request, 
+void runTask(ClockSetting &clock_settings, std::string request_type, std::string request,
              std::string request_id, std::atomic<bool>& end_task_flag, std::atomic<bool>& task_running)
 {
     task_running = true;

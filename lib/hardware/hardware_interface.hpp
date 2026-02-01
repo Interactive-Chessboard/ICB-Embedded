@@ -24,25 +24,27 @@ struct LedColor {
 // Interface class
 class IHardware
 {
+private:
+    virtual void handleOtaWrite(const std::string&) = 0;
 public:
     virtual ~IHardware() = default;
 
     // bluetooth
     virtual void bluetoothInit() = 0;
     virtual std::string getBluetoothMessage() = 0;
-    virtual void sendBluetoothMessage(std::string) = 0;
+    virtual void sendBluetoothMessage(const std::string&) = 0;
 
     // board
     virtual uint64_t getBoardArr() = 0;
 
     // lights
-    virtual void setLed(std::array<LedColor, 64>) = 0;
+    virtual void setLed(const std::array<LedColor, 64>&) = 0;
     virtual void clearLed() = 0;
 
     // screen
     virtual void reserveScreen(bool) = 0;
-    virtual void setTimeScreen(std::vector<std::string>) = 0;
-    virtual void setScreen(std::vector<std::string>, int) = 0;
+    virtual void setTimeScreen(const std::vector<std::string>&) = 0;
+    virtual void setScreen(const std::vector<std::string>&, int) = 0;
     virtual bool detectSelectClick() = 0;
     virtual bool detectStartClick() = 0;
 };
