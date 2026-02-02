@@ -43,7 +43,7 @@ std::string makeMove(ClockSetting &clock_settings, const std::string& request, s
         return e.what();
     }
 
-    return "ok, \"move_from\": " + std::to_string(move_made.from_square) +
+    return "Ok, \"move_from\": " + std::to_string(move_made.from_square) +
            ", \"move_to\": " + std::to_string(move_made.to_square) + "\"";
 }
 
@@ -112,7 +112,7 @@ void onlineGame(ClockSetting &clock_settings)
             if (worker.joinable())
                 worker.join();
 
-            Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, "ok"));
+            Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, "Ok"));
             if (request_type == "close")
                 return;
 
@@ -134,7 +134,7 @@ void onlineGame(ClockSetting &clock_settings)
                                  std::ref(end_task_flag), std::ref(task_running_flag));
 
         else if (request_type == "available")
-            Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, "ok"));
+            Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, "Ok"));
 
         else
             Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, "Error, unknown request"));

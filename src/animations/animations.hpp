@@ -14,5 +14,5 @@ struct Animation {
 
 
 std::string playAnimations(std::atomic<bool>&, const std::vector<Animation>&);
-void playWinnerAnimation(ChessGame);
-void playStartUpAnimation(void);
+void playWinnerAnimation(ChessGame, int, int);
+void playStartUpAnimation(int);

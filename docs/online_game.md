@@ -40,7 +40,7 @@ This request is used by the webapp to verify the board has an established commun
 ```json
 {
     "id": 1,
-    "status": "ok"
+    "status": "Ok"
 }
 ```
 
@@ -78,7 +78,7 @@ The timeout error will have this format: `"status": "error, timedout"`.
 ```json
 {
     "id": 1,
-    "status": "ok",
+    "status": "Ok",
 }
 ```
 
@@ -124,7 +124,7 @@ Notice how the move doesn't contain a promotion field. The promotions will be de
 ```json
 {
     "id": 1,
-    "status": "ok",
+    "status": "Ok",
     "move_from": 12,
     "move_to": 28
 }
@@ -158,7 +158,7 @@ The animation request contains the following fields.
 ```json
 {
     "id": 1,
-    "status": "ok"
+    "status": "Ok"
 }
 ```
 
@@ -177,7 +177,7 @@ This request ends one of the tasks currently running. Since the server can only 
 ```json
 {
     "id": 1,
-    "status": "ok"
+    "status": "Ok"
 }
 ```
 
@@ -197,6 +197,6 @@ A termination works at any point, even if another task is in progress.
 ```json
 {
     "id": 1,
-    "status": "ok"
+    "status": "Ok"
 }
 ```

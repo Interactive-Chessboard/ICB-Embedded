@@ -111,5 +111,5 @@ void localGame(Settings game_settings, ClockSetting &clock_settings)
     {
         chess_game.winner = Chess::getClockWinner(clock_settings.time_white.load(), clock_settings.time_black.load(), chess_game);
     }
-    playWinnerAnimation(chess_game);
+    playWinnerAnimation(chess_game, 5, 1000);
 }

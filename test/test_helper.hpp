@@ -46,6 +46,20 @@ inline void TEST_ASSERT_CLOCK_TOLERANCE(const int &expected, const int &actual)
 }
 
 
+inline void TEST_ASSERT_LED_QUEUE(const std::vector<std::array<LedColor, 64>> &expected, const std::vector<std::array<LedColor, 64>> &actual)
+{
+    TEST_ASSERT_EQUAL(expected.size(), actual.size());
+    for (int i = 0; i < expected.size(); i++)
+    {
+        TEST_ASSERT_EQUAL(expected.at(i).size(), actual.at(i).size());
+        for (int j = 0; j < expected.at(i).size(); j++)
+        {
+            TEST_ASSERT_EQUAL_LED_COLOR(expected.at(i).at(j), actual.at(i).at(j));
+        }
+    }
+}
+
+
 class MockHardware : public IHardware
 {
 private:

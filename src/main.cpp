@@ -38,7 +38,7 @@ void setup()
 void loop()
 {
   // ---Start up animation---
-  playStartUpAnimation();
+  playStartUpAnimation(1000);
 
   // ---Game Settings---
   Settings game_settings = getGameSettings(); //REMOVE COMMENT WHEN IMPLEMENTED

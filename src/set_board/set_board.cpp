@@ -27,7 +27,7 @@ std::string SetBoard::startOnline(const std::atomic<bool>& end_task_flag)
         uint64_t current_board = Hardware::get().getBoardArr();
         if (current_board == board)
         {
-            return "ok";
+            return "Ok";
         }
 
         std::array<LedColor, 64> lights = lightUpDifference(current_board, board, color);
