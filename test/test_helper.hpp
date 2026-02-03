@@ -45,7 +45,7 @@ inline void TEST_ASSERT_CLOCK_TOLERANCE(const int &expected, const int &actual)
     TEST_ASSERT_LESS_OR_EQUAL(expected + 2, actual);
 }
 
-
+#include <iostream>
 inline void TEST_ASSERT_LED_QUEUE(const std::vector<std::array<LedColor, 64>> &expected, const std::vector<std::array<LedColor, 64>> &actual)
 {
     TEST_ASSERT_EQUAL(expected.size(), actual.size());
@@ -54,6 +54,9 @@ inline void TEST_ASSERT_LED_QUEUE(const std::vector<std::array<LedColor, 64>> &e
         TEST_ASSERT_EQUAL(expected.at(i).size(), actual.at(i).size());
         for (int j = 0; j < expected.at(i).size(); j++)
         {
+            //std::cout << int(expected.at(i).at(j).red) << " red " << int(actual.at(i).at(j).red) << "\n";
+            //std::cout << int(expected.at(i).at(j).green) << " green " << int(actual.at(i).at(j).green) << "\n";
+            //std::cout << int(expected.at(i).at(j).blue) <<  " blue " << int(actual.at(i).at(j).blue) << "\n";
             TEST_ASSERT_EQUAL_LED_COLOR(expected.at(i).at(j), actual.at(i).at(j));
         }
     }
@@ -126,9 +129,23 @@ public:
     // ---------------- LEDs ----------------
 
     std::vector<std::array<LedColor, 64>> set_led_queue;
-    void setLed(const std::array<LedColor, 64>& led) override
+    void setLed(const std::array<LedColor, 64>& leds) override
     {
-        set_led_queue.push_back(led);
+        bool skip = true;
+        if (set_led_queue.size() <= 0)
+            set_led_queue.push_back(leds);
+        else
+        {
+            bool all_equal = true;
+            std::array<LedColor, 64> old_leds = set_led_queue.back();
+            for (int i = 0; i < leds.size(); i++)
+            {
+                if (!(leds.at(i) == old_leds.at(i)))
+                    all_equal = false;
+            }
+            if (!all_equal) // Leds equivalent to the previous are not added to the list
+                set_led_queue.push_back(leds);
+        }
     }
 
     void clearLed() override {}

@@ -78,7 +78,4 @@ int main() {return 0;}
 // Add api call to get version number
 
 // TO DO
-// Over the air update
-
-// TO DO
 // Chess bot

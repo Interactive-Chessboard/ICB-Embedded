@@ -19,7 +19,7 @@ struct ExtractSetBoard
 class SetBoard
 {
 private:
-    LedColor color = (0, 0, 255);
+    LedColor color = LedColor(0, 0, 255);
     uint64_t board;
     std::array<LedColor, 64> lightUpDifference(uint64_t, uint64_t, LedColor);
 

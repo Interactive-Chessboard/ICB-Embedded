@@ -7,13 +7,10 @@ std::array<LedColor, 64> SetBoard::lightUpDifference(uint64_t current, uint64_t 
     std::array<LedColor, 64> result{};
     uint64_t diff = current ^ desired;
 
-    for (int i = 0; i < 64; ++i)
+    for (int i = 0; i < 64; i++)
     {
-        if (diff & (1ULL << i)) {
-            result[i] = color;
-        } else {
-            result[i] = LedColor();
-        }
+        int bit = 63 - i;
+        result[i] = (diff & (1ULL << bit)) ? color : LedColor();
     }
 
     return result;

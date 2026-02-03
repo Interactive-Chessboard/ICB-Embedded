@@ -76,21 +76,9 @@ ChessGame gameLoopMultiplayerOffline(ClockSetting &clock_settings)
 void localGame(Settings game_settings, ClockSetting &clock_settings)
 {
     // ---Init---
-    uint64_t starting_position = 0xffff00000000ffffULL;
-    int timeout_ms = 600000;
-    bool timeout_reached = true;
-    for (int i = 0; i < timeout_ms; i++)
-    {
-        if (starting_position == Hardware::get().getBoardArr())
-        {
-        timeout_reached = false;
-        break;
-        }
-        // TODO set lights for pieces in the wrong place
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    if (timeout_reached)
-        return;
+    SetBoard set_starting_pos(0xffff00000000ffffULL);
+    std::atomic<bool> start_set_board_active{true};
+    set_starting_pos.startOffline(start_set_board_active);
 
     // ---Start Loop---
     ChessGame chess_game;

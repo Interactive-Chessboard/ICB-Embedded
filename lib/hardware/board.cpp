@@ -5,6 +5,7 @@
 
 uint64_t RealHardware::getBoardArr()
 {
+    // Get bitboard
     return 0;
 }
 
