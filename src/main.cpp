@@ -12,36 +12,20 @@
 #include "real_hardware.hpp"
 #include "animations/animations.hpp"
 
-#ifndef FW_VERSION
-#define FW_VERSION "0.0.0"
-#endif
 
 #ifndef UNIT_TEST
 void setup()
 {
   Serial.begin(115200);
 
-  // temporary
-  delay(8000); // allow serial to come up
-
-  Serial.println();
-  Serial.println("================================");
-  Serial.print("Firmware version: ");
-  Serial.println(FW_VERSION);
-  Serial.println("================================");
-
-  Hardware::set(RealHardware::instance());
-  Hardware::get().bluetoothInit();
-  //delay(8000); //for debugging purposes
+  // ---Start up animation---
+  playStartUpAnimation(1000);
 }
 
 void loop()
 {
-  // ---Start up animation---
-  playStartUpAnimation(1000);
-
   // ---Game Settings---
-  Settings game_settings = getGameSettings(); //REMOVE COMMENT WHEN IMPLEMENTED
+  Settings game_settings = getGameSettings();
 
   // ---Start Game Clock---
   ClockSetting clock_settings(game_settings.game_time_min, game_settings.extra_time_sec);
@@ -62,20 +46,3 @@ void loop()
 int main() {return 0;}
 #endif
 #endif
-
-// Note sur comment print in std::string
-//Serial.println(msg.c_str());
-
-// Pour tester utilise
-// MockHardware mock;
-// Hardware::set(mock);
-
-
-// TO DO
-// Add unit tests
-
-// TO DO
-// Add api call to get version number
-
-// TO DO
-// Chess bot
