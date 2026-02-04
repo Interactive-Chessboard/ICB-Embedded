@@ -29,6 +29,10 @@ private:
 public:
     virtual ~IHardware() = default;
 
+    // Hardware
+    virtual std::string getFirmwareVersion() = 0;
+    virtual std::string getMacAddress() = 0;
+
     // bluetooth
     virtual void bluetoothInit() = 0;
     virtual std::string getBluetoothMessage() = 0;

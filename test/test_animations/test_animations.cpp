@@ -23,7 +23,7 @@ void test_animations()
     MockHardware& hardware_mock = static_cast<MockHardware&>(Hardware::get());
     std::vector<std::array<LedColor, 64>> expected_led_queue = {anim1.leds, anim2.leds};
     TEST_ASSERT_LED_QUEUE(expected_led_queue, hardware_mock.set_led_queue);
-    TEST_ASSERT_EQUAL_STRING("Ok", response.c_str());
+    TEST_ASSERT_EQUAL_STRING("ok", response.c_str());
 }
 
 

@@ -20,7 +20,7 @@
  * @param stop Atomic flag that can be set to true to interrupt playback.
  * @param animations Vector of animations to play in sequence.
  *
- * @return "Ok" if all animations were played successfully.
+ * @return "ok" if all animations were played successfully.
  * @return "Error, display time must be greater than 0" if any animation has
  *         display_time_ms <= 0.
  * @return "Error, stopped" if playback was interrupted via the stop flag.
@@ -45,7 +45,7 @@ std::string playAnimations(std::atomic<bool>& stop, const std::vector<Animation>
         }
     }
     Hardware::get().clearLed();
-    return "Ok";
+    return "ok";
 }
 
 

@@ -93,6 +93,17 @@ public:
     MockHardware& operator=(const MockHardware&) = delete;
 
     // ---------------- Bluetooth ----------------
+    std::string getFirmwareVersion() override
+    {
+        return "v1.2.3";
+    }
+
+    std::string getMacAddress() override
+    {
+        return "A4:CF:12:9B:00:12";
+    }
+
+    // ---------------- Bluetooth ----------------
 
     void bluetoothInit() override {}
 

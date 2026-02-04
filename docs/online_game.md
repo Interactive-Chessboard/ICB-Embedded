@@ -18,7 +18,7 @@ Here is a display of all available requests to allow our system to function with
 Elements will have a preditermined value that is either a string or an int. To keep communication simple we will only use these two data types.
 All request contain and ID and a request type for the embedded system to understand. A request will be answered by a response with the same ID.
 In the case of an invalid request for which ever reason, a status `"error, error_reason"` will be sent.
-If the request type is unknown or the format makes it so the system doesn't even know who can answer this request, `"error, unknown"` will be sent
+If the request type is unknown or the format makes it so the system doesn't even know who can answer this request, `"error, unknown"` will be sent.
 
 ```mermaid
 sequenceDiagram
@@ -26,8 +26,62 @@ sequenceDiagram
     Board->>+WebApp: Response N
 ```
 
-### Available request
+The request types are as following
+ - 2 Light request (Can always be sent to the board even during a task)
+ - 1. Ping : Request used to see if the board is connected and listening
+ - 2. Info : Sends the firmware version and the mac address
+ - 4 Heavy requests (Will be rejected is another heavy task is in progress)
+ - 4. Available : Allows the client to know if the board is available for a task
+ - 5. Set game : Used to let the board know the current position it is expected (bit board)
+ - 6. Make Move : Sends the position and expects the player to make a move
+ - 7. Animations : Sends the board an animation to display
+ - 2 Control request (Sent to interact with heavy requests in progress)
+ - 8. End task : Sends a request to terminate the current task
+ - 9. Close : Sends a request to terminate the current task and close the online mode on the board.
+
+
+### Ping pong
 This request is used by the webapp to verify the board has an established communication working.
+
+#### Request:
+```json
+{
+    "id": 1,
+    "type": "ping"
+}
+```
+#### Response:
+```json
+{
+    "id": 1,
+    "status": "pong"
+}
+```
+
+
+### Info
+This request is used by the webapp to verify the version of the board and determine if it requires an update and to verify the Mac address of the board to obtain a unique identifier
+
+#### Request:
+```json
+{
+    "id": 1,
+    "type": "info"
+}
+```
+#### Response:
+```json
+{
+    "id": 1,
+    "status": "ok",
+    "version": "v1.0.0",
+    "mac_address": "A4:CF:12:9B:00:12"
+}
+```
+
+
+### Available request
+This request is used by the webapp to verify the board is available to run a task.
 
 #### Request:
 ```json
@@ -40,7 +94,7 @@ This request is used by the webapp to verify the board has an established commun
 ```json
 {
     "id": 1,
-    "status": "Ok"
+    "status": "ok"
 }
 ```
 
@@ -78,7 +132,7 @@ The timeout error will have this format: `"status": "error, timedout"`.
 ```json
 {
     "id": 1,
-    "status": "Ok",
+    "status": "ok",
 }
 ```
 
@@ -124,7 +178,7 @@ Notice how the move doesn't contain a promotion field. The promotions will be de
 ```json
 {
     "id": 1,
-    "status": "Ok",
+    "status": "ok",
     "move_from": 12,
     "move_to": 28
 }
@@ -158,7 +212,7 @@ The animation request contains the following fields.
 ```json
 {
     "id": 1,
-    "status": "Ok"
+    "status": "ok"
 }
 ```
 
@@ -177,7 +231,7 @@ This request ends one of the tasks currently running. Since the server can only 
 ```json
 {
     "id": 1,
-    "status": "Ok"
+    "status": "ok"
 }
 ```
 
@@ -197,6 +251,6 @@ A termination works at any point, even if another task is in progress.
 ```json
 {
     "id": 1,
-    "status": "Ok"
+    "status": "ok"
 }
 ```

@@ -43,7 +43,7 @@ std::string makeMove(ClockSetting &clock_settings, const std::string& request, s
         return e.what();
     }
 
-    return "Ok, \"move_from\": " + std::to_string(move_made.from_square) +
+    return "ok, \"move_from\": " + std::to_string(move_made.from_square) +
            ", \"move_to\": " + std::to_string(move_made.to_square) + "\"";
 }
 
@@ -105,14 +105,28 @@ void onlineGame(ClockSetting &clock_settings)
         std::string request_id = extractValue(request, "id");
         std::string request_type = extractValue(request, "type");
 
-        // Handle close and end task request regardless of if task is running
+        if (request_type == "ping")
+        {
+            Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, "pong"));
+            continue;
+        }
+        if (request_type == "info")
+        {
+            std::string mac_address = Hardware::get().getMacAddress();
+            std::string version = Hardware::get().getFirmwareVersion();
+            std::string msg = "{\"id\": " + request_id + ", \"status\": \"ok\", \"version\": " +
+                               version + ", \"mac_address\": " + mac_address + "\"}";
+            Hardware::get().sendBluetoothMessage(msg);
+            continue;
+        }
+        // Control requests
         if (request_type == "close" || request_type == "end_task")
         {
             end_task_flag.store(true);
             if (worker.joinable())
                 worker.join();
 
-            Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, "Ok"));
+            Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, "ok"));
             if (request_type == "close")
                 return;
 
@@ -123,18 +137,18 @@ void onlineGame(ClockSetting &clock_settings)
         // Reject a request if a task is running
         if (task_running_flag)
         {
-            Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, "Error, other task in progress"));
+            Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, "Error, another task is in progress"));
             continue;
         }
 
-        // Start a new task
+        // Availabe request + 3 heavier request
         if (request_type == "set_board" || request_type == "make_move" ||
             request_type == "animation")
             worker = std::thread(runTask, std::ref(clock_settings), request_type, request, request_id,
                                  std::ref(end_task_flag), std::ref(task_running_flag));
 
         else if (request_type == "available")
-            Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, "Ok"));
+            Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, "ok"));
 
         else
             Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, "Error, unknown request"));

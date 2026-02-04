@@ -14,8 +14,14 @@
 #include <atomic>
 #include <array>
 #include <mutex>
+#include <cstdio>
 #include "esp_ota_ops.h"
 #include "hardware_interface.hpp"
+#include "esp_system.h"
+
+#ifndef FW_VERSION
+#define FW_VERSION "0.0.0"
+#endif
 
 #define MSG_SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define MSG_CHAR_UUID           "beb5483e-36e1-4688-b7f5-ea07361b26a8"
@@ -54,6 +60,9 @@ public:
 
     RealHardware(const RealHardware&) = delete;
     RealHardware& operator=(const RealHardware&) = delete;
+
+    std::string getFirmwareVersion() override;
+    std::string getMacAddress() override;
 
     void bluetoothInit() override;
     std::string getBluetoothMessage() override;
