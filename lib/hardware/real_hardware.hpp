@@ -78,6 +78,8 @@ public:
     void reserveScreen(bool r) override;
     void setTimeScreen(const std::vector<std::string>&) override;
     void setScreen(const std::vector<std::string>&, int) override;
+    void clearScreen() override;
+
     bool detectSelectClick() override;
     bool detectStartClick() override;
 };

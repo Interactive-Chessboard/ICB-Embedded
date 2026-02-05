@@ -9,6 +9,18 @@ void RealHardware::reserveScreen(bool reserve)
 }
 
 
+void RealHardware::clearScreen()
+{
+    std::lock_guard<std::mutex> lock(screen_mutex);
+
+    if (screen_reserved)
+        return;
+
+    // Clear screen
+
+}
+
+
 void RealHardware::setTimeScreen(const std::vector<std::string>& text)
 {
     std::lock_guard<std::mutex> lock(screen_mutex);
@@ -24,7 +36,7 @@ void RealHardware::setScreen(const std::vector<std::string>& text, int selected)
 {
     std::lock_guard<std::mutex> lock(screen_mutex);
 
-    if (selected >= text.size())
+    if (selected < 0 || selected >= text.size())
         return;
 
     // Selected mean having '>' before the text

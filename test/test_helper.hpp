@@ -185,6 +185,8 @@ public:
         screen_calls.push_back({ std::move(text), selected });
     }
 
+    void clearScreen() override {}
+
     // ---------------- Buttons ----------------
 
     std::deque<bool> select_click_queue;

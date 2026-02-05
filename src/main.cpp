@@ -17,6 +17,10 @@
 void setup()
 {
   Serial.begin(115200);
+  Hardware::set(RealHardware::instance());
+  Hardware::get().bluetoothInit();
+  Hardware::get().clearLed();
+  Hardware::get().clearScreen();
 
   // ---Start up animation---
   playStartUpAnimation(1000);

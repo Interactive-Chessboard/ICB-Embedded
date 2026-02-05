@@ -49,6 +49,9 @@ public:
     virtual void reserveScreen(bool) = 0;
     virtual void setTimeScreen(const std::vector<std::string>&) = 0;
     virtual void setScreen(const std::vector<std::string>&, int) = 0;
+    virtual void clearScreen() = 0;
+
+    // buttons
     virtual bool detectSelectClick() = 0;
     virtual bool detectStartClick() = 0;
 };
