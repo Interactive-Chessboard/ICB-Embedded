@@ -9,13 +9,13 @@ uint64_t to_uint64(const std::string &request)
         std::string value = extractValue(request, "board");
 
         if (!value.empty() && value[0] == '-')
-            throw std::runtime_error("Error, number must be a valid uint64");
+            throw std::runtime_error("error, number must be a valid uint64");
 
         return std::stoull(value);
     }
     catch (...)
     {
-        throw std::runtime_error("Error, number must be a valid uint64");
+        throw std::runtime_error("error, number must be a valid uint64");
     }
 }
 

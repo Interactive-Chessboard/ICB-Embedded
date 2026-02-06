@@ -201,7 +201,7 @@ Move MakeMove::startOnline(const std::atomic<bool>& end_task_flag)
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
         timeout--;
     }
-    throw std::runtime_error("Error, timeout reached or end task called");
+    throw std::runtime_error("error, timeout reached or end task called");
 }
 
 

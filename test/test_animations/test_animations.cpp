@@ -20,7 +20,8 @@ void test_animations()
     std::string response = playAnimations(stop_animations, animations);
 
     MockHardware& hardware_mock = static_cast<MockHardware&>(Hardware::get());
-    std::vector<std::array<LedColor, 64>> expected_led_queue = {anim1.leds, anim2.leds};
+    std::array<LedColor, 64> empty_leds;
+    std::vector<std::array<LedColor, 64>> expected_led_queue = {anim1.leds, anim2.leds, empty_leds};
     TEST_ASSERT_LED_QUEUE(expected_led_queue, hardware_mock.set_led_queue);
     TEST_ASSERT_EQUAL_STRING("ok", response.c_str());
 }
@@ -42,7 +43,7 @@ void test_animation_time_0()
     MockHardware& hardware_mock = static_cast<MockHardware&>(Hardware::get());
     std::vector<std::array<LedColor, 64>> expected_led_queue;
     TEST_ASSERT_LED_QUEUE(expected_led_queue, hardware_mock.set_led_queue);
-    TEST_ASSERT_EQUAL_STRING("Error, display time must be greater than 0", response.c_str());
+    TEST_ASSERT_EQUAL_STRING("error, display time must be greater than 0", response.c_str());
 }
 
 
@@ -65,9 +66,10 @@ void test_animation_stop()
     std::string response = future.get();
 
     MockHardware& hardware_mock = static_cast<MockHardware&>(Hardware::get());
-    std::vector<std::array<LedColor, 64>> expected_led_queue = {anim1.leds};
+    std::array<LedColor, 64> empty_leds;
+    std::vector<std::array<LedColor, 64>> expected_led_queue = {anim1.leds, empty_leds};
     TEST_ASSERT_LED_QUEUE(expected_led_queue, hardware_mock.set_led_queue);
-    TEST_ASSERT_EQUAL_STRING("Error, stopped", response.c_str());
+    TEST_ASSERT_EQUAL_STRING("error, stopped", response.c_str());
 }
 
 
@@ -86,6 +88,8 @@ std::vector<std::array<LedColor, 64>> winner_animation_helper()
         }
         led_queue.push_back(arr);
     }
+    std::array<LedColor, 64> empty_leds;
+    led_queue.push_back(empty_leds);
     return led_queue;
 }
 
@@ -221,7 +225,8 @@ void test_start_up_animation()
         LedColor(0, 0, 0), LedColor(0, 0, 0), LedColor(0, 0, 0), LedColor(0, 0, 0), LedColor(0, 0, 0), LedColor(0, 0, 0), LedColor(0, 0, 0), LedColor(0, 0, 0),
         LedColor(0, 0, 0), LedColor(0, 0, 0), LedColor(0, 0, 0), LedColor(0, 0, 0), LedColor(0, 0, 0), LedColor(0, 0, 0), LedColor(0, 0, 0), LedColor(0, 0, 0)
     };
-    std::vector<std::array<LedColor, 64>> expected_led_queue = {ring1, ring2, ring3, ring4, ring3, ring2, ring1};
+    std::array<LedColor, 64> empty_leds;
+    std::vector<std::array<LedColor, 64>> expected_led_queue = {ring1, ring2, ring3, ring4, ring3, ring2, ring1, empty_leds};
 
     TEST_ASSERT_LED_QUEUE(expected_led_queue, hardware_mock.set_led_queue);
 }

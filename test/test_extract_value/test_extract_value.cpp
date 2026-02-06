@@ -175,7 +175,7 @@ void test_extract_key_not_found()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, key not found", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, key not found", e.what());
     }
     catch (...)
     {
@@ -200,7 +200,7 @@ void test_extract_missing_semicolon()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, expecting semicolon after key", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, expecting semicolon after key", e.what());
     }
     catch (...)
     {
@@ -225,7 +225,7 @@ void test_extract_missing_closing_quotes()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, expecting closing quotes", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, expecting closing quotes", e.what());
     }
     catch (...)
     {
@@ -251,7 +251,7 @@ void test_extract_missing_closing_square_bracket()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, expecting square bracket", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, expecting square bracket", e.what());
     }
     catch (...)
     {
@@ -299,7 +299,7 @@ void test_timeout_not_number()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, timeout must be a valid number", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, timeout must be a valid number", e.what());
     }
     catch (...)
     {
@@ -324,7 +324,7 @@ void test_timeout_negative_number()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, timeout must be a valid positive number", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, timeout must be a valid positive number", e.what());
     }
     catch (...)
     {
@@ -349,7 +349,7 @@ void test_timeout_overflow()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, timeout must be a valid number", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, timeout must be a valid number", e.what());
     }
     catch (...)
     {
@@ -477,7 +477,7 @@ void test_invalid_active_clock_settings()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, expecting true (t) or false (f)", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, expecting true (t) or false (f)", e.what());
     }
     catch (...)
     {
@@ -509,7 +509,7 @@ void test_invalid_white_time_clock_settings()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, time values must be valid", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, time values must be valid", e.what());
     }
     catch (...)
     {
@@ -541,7 +541,7 @@ void test_overflow_black_time_clock_settings()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, time values must be valid", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, time values must be valid", e.what());
     }
     catch (...)
     {
@@ -573,7 +573,7 @@ void test_negative_extra_time_clock_settings()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, time values must be positive", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, time values must be positive", e.what());
     }
     catch (...)
     {
@@ -605,7 +605,7 @@ void test_invalid_run_down_color_clock_settings()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, invalid run down clock color", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, invalid run down clock color", e.what());
     }
     catch (...)
     {
@@ -657,7 +657,7 @@ void test_led_color_not_number()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, invalid LED color format", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, invalid LED color format", e.what());
     }
     catch (...)
     {
@@ -676,7 +676,7 @@ void test_led_color_fixed_string()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, invalid LED color format", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, invalid LED color format", e.what());
     }
     catch (...)
     {
@@ -695,7 +695,7 @@ void test_led_color_over_255()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, colors must be lower than 256", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, colors must be lower than 256", e.what());
     }
     catch (...)
     {
@@ -714,7 +714,7 @@ void test_led_color_negative()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, colors must be positive", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, colors must be positive", e.what());
     }
     catch (...)
     {
@@ -733,7 +733,7 @@ void test_led_color_no_brakets()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, invalid LED color format", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, invalid LED color format", e.what());
     }
     catch (...)
     {
@@ -752,7 +752,7 @@ void test_led_color_no_comma()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, invalid LED color format", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, invalid LED color format", e.what());
     }
     catch (...)
     {
@@ -771,7 +771,7 @@ void test_led_color_not_enough_values()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, invalid LED color format", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, invalid LED color format", e.what());
     }
     catch (...)
     {

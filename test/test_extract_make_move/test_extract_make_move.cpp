@@ -209,7 +209,7 @@ void test_too_many_castling()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, castling must be 4 characters long", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, castling must be 4 characters long", e.what());
     }
     catch (...)
     {
@@ -252,7 +252,7 @@ void test_not_enough_castling()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, castling must be 4 characters long", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, castling must be 4 characters long", e.what());
     }
     catch (...)
     {
@@ -295,7 +295,7 @@ void test_misplaced_castling_character()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, invalid castling character", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, invalid castling character", e.what());
     }
     catch (...)
     {
@@ -338,7 +338,7 @@ void test_invalid_castling_character()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, invalid castling character", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, invalid castling character", e.what());
     }
     catch (...)
     {
@@ -381,7 +381,7 @@ void test_invalid_en_passant()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, en passant must be a valid integer", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, en passant must be a valid integer", e.what());
     }
     catch (...)
     {
@@ -424,7 +424,7 @@ void test_invalid_number_en_passant()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, invalid en passant number", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, invalid en passant number", e.what());
     }
     catch (...)
     {
@@ -467,7 +467,7 @@ void test_invalid_color()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, invalid player color", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, invalid player color", e.what());
     }
     catch (...)
     {
@@ -510,7 +510,7 @@ void test_too_many_squares_in_board()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, board must be 64 characters long", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, board must be 64 characters long", e.what());
     }
     catch (...)
     {
@@ -553,7 +553,7 @@ void test_not_enough_squares_in_board()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, board must be 64 characters long", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, board must be 64 characters long", e.what());
     }
     catch (...)
     {
@@ -596,7 +596,7 @@ void test_invalid_piece()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, invalid piece", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, invalid piece", e.what());
     }
     catch (...)
     {

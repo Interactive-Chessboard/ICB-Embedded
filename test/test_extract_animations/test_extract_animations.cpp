@@ -129,7 +129,7 @@ void test_light_red_above_bounds()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, colors must be lower than 256", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, colors must be lower than 256", e.what());
     }
     catch (...)
     {
@@ -165,7 +165,7 @@ void test_light_green_above_bounds()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, colors must be lower than 256", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, colors must be lower than 256", e.what());
     }
     catch (...)
     {
@@ -201,7 +201,7 @@ void test_light_blue_above_bounds()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, colors must be lower than 256", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, colors must be lower than 256", e.what());
     }
     catch (...)
     {
@@ -237,7 +237,7 @@ void test_light_red_under_bounds()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, colors or timeout must be positive", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, colors or timeout must be positive", e.what());
     }
     catch (...)
     {
@@ -273,7 +273,7 @@ void test_light_green_under_bounds()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, colors or timeout must be positive", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, colors or timeout must be positive", e.what());
     }
     catch (...)
     {
@@ -309,7 +309,7 @@ void test_light_blue_under_bounds()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, colors or timeout must be positive", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, colors or timeout must be positive", e.what());
     }
     catch (...)
     {
@@ -345,7 +345,7 @@ void test_timeout_under_bounds()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, colors or timeout must be positive", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, colors or timeout must be positive", e.what());
     }
     catch (...)
     {
@@ -381,7 +381,7 @@ void test_light_red_non_number()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, colors or timeout must be a number", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, colors or timeout must be a number", e.what());
     }
     catch (...)
     {
@@ -417,7 +417,7 @@ void test_light_green_non_number()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, colors or timeout must be a number", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, colors or timeout must be a number", e.what());
     }
     catch (...)
     {
@@ -453,7 +453,7 @@ void test_light_blue_non_number()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, colors or timeout must be a number", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, colors or timeout must be a number", e.what());
     }
     catch (...)
     {
@@ -489,7 +489,7 @@ void test_timeout_non_number()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, colors or timeout must be a number", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, colors or timeout must be a number", e.what());
     }
     catch (...)
     {
@@ -525,7 +525,7 @@ void test_board_key_not_found()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, board key not found", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, board key not found", e.what());
     }
     catch (...)
     {
@@ -561,7 +561,7 @@ void test_invalid_board()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, invalid format", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, invalid format", e.what());
     }
     catch (...)
     {
@@ -598,7 +598,7 @@ void test_too_many_square()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, number of squares must be 64", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, number of squares must be 64", e.what());
     }
     catch (...)
     {
@@ -630,7 +630,7 @@ void test_not_enough_square()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, number of squares must be 64", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, number of squares must be 64", e.what());
     }
     catch (...)
     {
@@ -666,7 +666,7 @@ void test_time_ms_key_not_found()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, time_ms key not found", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, time_ms key not found", e.what());
     }
     catch (...)
     {
@@ -702,7 +702,7 @@ void test_time_ms_key_not_found2()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, : not found after time_ms", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, : not found after time_ms", e.what());
     }
     catch (...)
     {

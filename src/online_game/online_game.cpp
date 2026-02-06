@@ -86,7 +86,7 @@ void runTask(ClockSetting &clock_settings, std::string request_type, std::string
         status = animation(request, end_task_flag);
 
     else
-        status = "Error, unknown request";
+        status = "error, unknown request";
 
     Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, status));
     task_running = false;
@@ -137,7 +137,7 @@ void onlineGame(ClockSetting &clock_settings)
         // Reject a request if a task is running
         if (task_running_flag)
         {
-            Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, "Error, another task is in progress"));
+            Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, "error, another task is in progress"));
             continue;
         }
 
@@ -151,6 +151,6 @@ void onlineGame(ClockSetting &clock_settings)
             Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, "ok"));
 
         else
-            Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, "Error, unknown request"));
+            Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, "error, unknown request"));
     }
 }

@@ -21,9 +21,9 @@
  * @param animations Vector of animations to play in sequence.
  *
  * @return "ok" if all animations were played successfully.
- * @return "Error, display time must be greater than 0" if any animation has
+ * @return "error, display time must be greater than 0" if any animation has
  *         display_time_ms <= 0.
- * @return "Error, stopped" if playback was interrupted via the stop flag.
+ * @return "error, stopped" if playback was interrupted via the stop flag.
  */
 std::string playAnimations(std::atomic<bool>& stop, const std::vector<Animation>& animations)
 {
@@ -31,7 +31,7 @@ std::string playAnimations(std::atomic<bool>& stop, const std::vector<Animation>
     {
         if (animation.display_time_ms <= 0)
         {
-            return "Error, display time must be greater than 0";
+            return "error, display time must be greater than 0";
         }
         Hardware::get().setLed(animation.leds);
         for (int _ = 0; _ < animation.display_time_ms; _++)
@@ -39,7 +39,7 @@ std::string playAnimations(std::atomic<bool>& stop, const std::vector<Animation>
             if (stop.load())
             {
                 Hardware::get().clearLed();
-                return "Error, stopped";
+                return "error, stopped";
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }

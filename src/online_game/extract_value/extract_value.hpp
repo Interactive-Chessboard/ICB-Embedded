@@ -29,13 +29,13 @@
  *         - Objects and arrays are returned including enclosing braces/brackets.
  *
  * @throws std::runtime_error If any of the following conditions occur:
- *   - The key is not found ("Error, key not found").
+ *   - The key is not found ("error, key not found").
  *   - The ':' character is missing after the key
- *     ("Error, expecting semicolon after key").
+ *     ("error, expecting semicolon after key").
  *   - A quoted string value is missing a closing quote
- *     ("Error, expecting closing quotes").
+ *     ("error, expecting closing quotes").
  *   - An object or array value is missing its closing brace or bracket
- *     ("Error, expecting square bracket").
+ *     ("error, expecting square bracket").
  *
  * @note This function does not validate full JSON syntax and assumes the input
  *       roughly follows a JSON-like structure. It does not handle escaped quotes,
@@ -60,9 +60,9 @@ std::string extractValue(const std::string&, const std::string&);
  *
  * @throws std::runtime_error If any of the following conditions occur:
  *   - The `"timeout_s"` value cannot be parsed as an integer
- *     ("Error, timeout must be a valid number").
+ *     ("error, timeout must be a valid number").
  *   - The `"timeout_s"` value is zero or negative
- *     ("Error, timeout must be a valid positive number").
+ *     ("error, timeout must be a valid positive number").
  *
  * @note This function relies on extractValue() and inherits its limitations.
  *       It does not support floating-point values or full JSON validation.
@@ -92,13 +92,13 @@ int extractTimeOut(const std::string &str);
  *
  * Error handling:
  *  - Throws std::runtime_error with the following messages:
- *      * "Error, expecting true (t) or false (f)"
+ *      * "error, expecting true (t) or false (f)"
  *          - if the "active" field is not "t" or "f"
- *      * "Error, time values must be valid"
+ *      * "error, time values must be valid"
  *          - if any time field is missing, non-numeric, or causes conversion failure
- *      * "Error, time values must be positive"
+ *      * "error, time values must be positive"
  *          - if any time value is negative
- *      * "Error, invalid run down clock color"
+ *      * "error, invalid run down clock color"
  *          - if "run_down" is not "w" or "b"
  *
  * @param clock_settings Reference to the ClockSetting object to update.

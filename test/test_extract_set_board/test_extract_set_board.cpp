@@ -98,7 +98,7 @@ void test_set_board_overflow()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, number must be a valid uint64", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, number must be a valid uint64", e.what());
     }
     catch (...)
     {
@@ -132,7 +132,7 @@ void test_set_board_negative()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, number must be a valid uint64", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, number must be a valid uint64", e.what());
     }
     catch (...)
     {
@@ -167,7 +167,7 @@ void test_set_board_non_number_board()
     }
     catch (const std::runtime_error& e)
     {
-        TEST_ASSERT_EQUAL_STRING("Error, number must be a valid uint64", e.what());
+        TEST_ASSERT_EQUAL_STRING("error, number must be a valid uint64", e.what());
     }
     catch (...)
     {

@@ -7,7 +7,7 @@ ChessGame getChessGame(const std::string& request)
     ChessGame game;
 
     std::string castling_str = extractValue(request, "castling");
-    if (castling_str.length() != 4) throw std::runtime_error("Error, castling must be 4 characters long");
+    if (castling_str.length() != 4) throw std::runtime_error("error, castling must be 4 characters long");
     std::array<char, 4> expected = {'K', 'Q', 'k', 'q'};
     for (int i = 0; i < 4; i++)
     {
@@ -17,7 +17,7 @@ ChessGame getChessGame(const std::string& request)
         else if (castling == '.')
             game.castle.at(i) = '.';
         else
-            throw std::runtime_error("Error, invalid castling character");
+            throw std::runtime_error("error, invalid castling character");
     }
 
     int en_passant;
@@ -27,9 +27,9 @@ ChessGame getChessGame(const std::string& request)
     }
     catch(...)
     {
-        throw std::runtime_error("Error, en passant must be a valid integer");
+        throw std::runtime_error("error, en passant must be a valid integer");
     }
-    if (en_passant < -1 || en_passant >= 64) throw std::runtime_error("Error, invalid en passant number");
+    if (en_passant < -1 || en_passant >= 64) throw std::runtime_error("error, invalid en passant number");
     game.en_passant = en_passant;
 
     std::string player_turn = extractValue(extractValue(request, "clock"), "run_down");
@@ -39,11 +39,11 @@ ChessGame getChessGame(const std::string& request)
     else if (player_turn == "b")
         color = Color::Black;
     else
-        throw std::runtime_error("Error, invalid player color");
+        throw std::runtime_error("error, invalid player color");
     game.player_turn = color;
 
     std::string board_str = extractValue(request, "board");
-    if (board_str.length() != 64) throw std::runtime_error("Error, board must be 64 characters long");
+    if (board_str.length() != 64) throw std::runtime_error("error, board must be 64 characters long");
     for (int i = 0 ; i < 64; i++)
     {
         switch (board_str.at(i))
@@ -88,7 +88,7 @@ ChessGame getChessGame(const std::string& request)
             game.board.at(i) = Piece(Color::Black, PieceType::King);
             break;
         default:
-            throw std::runtime_error("Error, invalid piece");
+            throw std::runtime_error("error, invalid piece");
         }
     }
 
@@ -110,8 +110,8 @@ ExtractMakeMove extractMakeMove(const std::string& request)
     make_move.past_move_from = stoi(extractValue(past_move_str, "from"));
     make_move.past_move_to = stoi(extractValue(past_move_str, "to"));
 
-    if (make_move.past_move_from < -1 || make_move.past_move_from >= 64) throw std::runtime_error("Error, Invalid past move from value");
-    if (make_move.past_move_to < -1 || make_move.past_move_to >= 64) throw std::runtime_error("Error, Invalid past move to value");
+    if (make_move.past_move_from < -1 || make_move.past_move_from >= 64) throw std::runtime_error("error, Invalid past move from value");
+    if (make_move.past_move_to < -1 || make_move.past_move_to >= 64) throw std::runtime_error("error, Invalid past move to value");
 
     return make_move;
 }

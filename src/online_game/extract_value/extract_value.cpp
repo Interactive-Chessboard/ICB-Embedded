@@ -11,7 +11,7 @@ std::string extractValue(const std::string &str, const std::string &key)
     quotedKey += "\"";
 
     size_t pos = str.find(quotedKey);
-    if (pos == std::string::npos) throw std::runtime_error("Error, key not found");
+    if (pos == std::string::npos) throw std::runtime_error("error, key not found");
 
     pos += quotedKey.size();
 
@@ -20,7 +20,7 @@ std::string extractValue(const std::string &str, const std::string &key)
         pos++;
 
     // ---- Expect ':' ----
-    if (pos >= str.size() || str[pos] != ':') throw std::runtime_error("Error, expecting semicolon after key");
+    if (pos >= str.size() || str[pos] != ':') throw std::runtime_error("error, expecting semicolon after key");
     pos++;
 
     // ---- Skip whitespace ----
@@ -34,7 +34,7 @@ std::string extractValue(const std::string &str, const std::string &key)
     {
         size_t start = pos + 1;
         size_t end = str.find('"', start);
-        if (end == std::string::npos) throw std::runtime_error("Error, expecting closing quotes");
+        if (end == std::string::npos) throw std::runtime_error("error, expecting closing quotes");
         return str.substr(start, end - start);
     }
 
@@ -57,7 +57,7 @@ std::string extractValue(const std::string &str, const std::string &key)
             }
         }
 
-        if (i >= str.size()) throw std::runtime_error("Error, expecting square bracket");
+        if (i >= str.size()) throw std::runtime_error("error, expecting square bracket");
 
         return str.substr(pos, i - pos + 1);
     }
@@ -84,9 +84,9 @@ int extractTimeOut(const std::string &str)
     }
     catch(const std::exception& e)
     {
-        throw std::runtime_error("Error, timeout must be a valid number");
+        throw std::runtime_error("error, timeout must be a valid number");
     }
-    if (timeout <= 0) throw std::runtime_error("Error, timeout must be a valid positive number");
+    if (timeout <= 0) throw std::runtime_error("error, timeout must be a valid positive number");
     return timeout;
 }
 
@@ -107,7 +107,7 @@ void setClockSettings(ClockSetting &clock_settings, const std::string &request)
     if (active_str == "t")
         clock_settings.active.store(true);
     else
-        throw std::runtime_error("Error, expecting true (t) or false (f)");
+        throw std::runtime_error("error, expecting true (t) or false (f)");
 
     // Extract time
     int white, black, extra_time;
@@ -119,9 +119,9 @@ void setClockSettings(ClockSetting &clock_settings, const std::string &request)
     }
     catch(...)
     {
-        throw std::runtime_error("Error, time values must be valid");
+        throw std::runtime_error("error, time values must be valid");
     }
-    if (white < 0 || black < 0 || extra_time < 0) throw std::runtime_error("Error, time values must be positive");
+    if (white < 0 || black < 0 || extra_time < 0) throw std::runtime_error("error, time values must be positive");
     clock_settings.time_white.store(white);
     clock_settings.time_black.store(black);
     clock_settings.extra_time.store(extra_time);
@@ -134,7 +134,7 @@ void setClockSettings(ClockSetting &clock_settings, const std::string &request)
     else if (run_down == "b")
         clock_color = Color::Black;
     else
-        throw std::runtime_error("Error, invalid run down clock color");
+        throw std::runtime_error("error, invalid run down clock color");
     clock_settings.player_turn.store(clock_color);
     }
 }
@@ -146,10 +146,10 @@ LedColor getLedColor(const std::string &color_str)
     int parsed = std::sscanf(color_str.c_str(), "[%d, %d, %d]", &r, &g, &b);
 
     if (parsed != 3)
-        throw std::runtime_error("Error, invalid LED color format");
+        throw std::runtime_error("error, invalid LED color format");
     if (r > 255 || g > 255 || b > 255)
-        throw std::runtime_error("Error, colors must be lower than 256");
+        throw std::runtime_error("error, colors must be lower than 256");
     if (r < 0 || g < 0 || b < 0)
-        throw std::runtime_error("Error, colors must be positive");
+        throw std::runtime_error("error, colors must be positive");
     return LedColor(r, g, b);
 }
