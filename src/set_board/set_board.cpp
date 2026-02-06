@@ -24,6 +24,7 @@ std::string SetBoard::startOnline(const std::atomic<bool>& end_task_flag)
         uint64_t current_board = Hardware::get().getBoardArr();
         if (current_board == board)
         {
+            Hardware::get().clearLed();
             return "ok";
         }
 
@@ -32,7 +33,8 @@ std::string SetBoard::startOnline(const std::atomic<bool>& end_task_flag)
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
         timeout--;
     }
-    return "Error, timeout reached or end task called";
+    Hardware::get().clearLed();
+    return "error, timeout reached or end task called";
 }
 
 
@@ -42,10 +44,14 @@ void SetBoard::startOffline(const std::atomic<bool>& active)
     {
         uint64_t current_board = Hardware::get().getBoardArr();
         if (current_board == board)
+        {
+            Hardware::get().clearLed();
             return;
+        }
 
         std::array<LedColor, 64> lights = lightUpDifference(current_board, board, color);
         Hardware::get().setLed(lights);
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
+    Hardware::get().clearLed();
 }

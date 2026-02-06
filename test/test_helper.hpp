@@ -2,6 +2,7 @@
 #include <deque>
 #include <string>
 #include <vector>
+#include <future>
 #include "unity.h"
 #include "hardware.hpp"
 #include "chess.hpp"
@@ -159,7 +160,11 @@ public:
         }
     }
 
-    void clearLed() override {}
+    void clearLed() override
+    {
+        std::array<LedColor, 64> leds;
+        setLed(leds);
+    }
 
     // ---------------- Screen ----------------
 

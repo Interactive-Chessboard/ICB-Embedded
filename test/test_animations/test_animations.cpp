@@ -2,7 +2,6 @@
 
 // test_game_clock.cpp
 #include <unity.h>
-#include <future>
 #include "../test_helper.hpp"
 #include "animations/animations.hpp"
 
