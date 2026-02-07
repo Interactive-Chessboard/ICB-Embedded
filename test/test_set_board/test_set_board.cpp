@@ -119,8 +119,8 @@ void test_set_board_online()
         0xfff700080000ffffULL
     };
 
-    std::atomic<bool> end_task_flag{false};
-    std::string response = set_board.startOnline(end_task_flag);
+    std::atomic<bool> active{true};
+    std::string response = set_board.startOnline(active);
 
     std::array<LedColor, 64> leds1;
     leds1.at(12) = LedColor(20, 20, 200);
@@ -160,8 +160,8 @@ void test_set_board_online_extra_delay()
         0x2002094b82ee4200ULL
     };
 
-    std::atomic<bool> end_task_flag{false};
-    std::string response = set_board.startOnline(end_task_flag);
+    std::atomic<bool> active{true};
+    std::string response = set_board.startOnline(active);
 
     std::array<LedColor, 64> leds1;
     leds1.at(2) = LedColor(20, 20, 200);
@@ -199,11 +199,11 @@ void test_set_board_online_stop()
         0x1002094b82ee4200ULL
     };
 
-    std::atomic<bool> end_task_flag{false};
-    auto future = std::async(std::launch::async, &SetBoard::startOnline, &set_board, std::ref(end_task_flag));
+    std::atomic<bool> active{true};
+    auto future = std::async(std::launch::async, &SetBoard::startOnline, &set_board, std::ref(active));
     std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
-    end_task_flag.store(true);
+    active.store(false);
     std::string response = future.get();
 
     std::array<LedColor, 64> leds1;
@@ -234,8 +234,8 @@ void test_set_board_online_timeout()
         0x1002094b82ee4200ULL
     };
 
-    std::atomic<bool> end_task_flag{false};
-    std::string response = set_board.startOnline(end_task_flag);
+    std::atomic<bool> active{true};
+    std::string response = set_board.startOnline(active);
 
     std::array<LedColor, 64> leds1;
     leds1.at(2) = LedColor(12, 67, 203);

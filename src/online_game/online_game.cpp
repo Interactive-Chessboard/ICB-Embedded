@@ -2,7 +2,7 @@
 #include "online_game.hpp"
 
 
-std::string setBoard(ClockSetting &clock_settings, const std::string& request, std::atomic<bool>& end_task_flag)
+std::string setBoard(ClockSetting &clock_settings, const std::string& request, std::atomic<bool>& active)
 {
     ExtractSetBoard extract_set_board;
     try
@@ -15,11 +15,11 @@ std::string setBoard(ClockSetting &clock_settings, const std::string& request, s
         return e.what();
     }
     SetBoard set_board(extract_set_board);
-    return set_board.startOnline(end_task_flag);
+    return set_board.startOnline(active);
 }
 
 
-std::string makeMove(ClockSetting &clock_settings, const std::string& request, std::atomic<bool>& end_task_flag)
+std::string makeMove(ClockSetting &clock_settings, const std::string& request, std::atomic<bool>& active)
 {
     ExtractMakeMove extract_make_move;
     try
@@ -36,7 +36,7 @@ std::string makeMove(ClockSetting &clock_settings, const std::string& request, s
     Move move_made;
     try
     {
-        make_move.startOnline(end_task_flag);
+        make_move.startOnline(active);
     }
     catch (const std::runtime_error& e)
     {
@@ -48,7 +48,7 @@ std::string makeMove(ClockSetting &clock_settings, const std::string& request, s
 }
 
 
-std::string animation(const std::string& request, std::atomic<bool>& end_task_flag)
+std::string animation(const std::string& request, std::atomic<bool>& active)
 {
     std::string animation = extractValue(request, "animation");
     std::vector<Animation> animations;
@@ -60,7 +60,7 @@ std::string animation(const std::string& request, std::atomic<bool>& end_task_fl
     {
         return e.what();
     }
-    return playAnimations(end_task_flag, animations);
+    return playAnimations(active, animations);
 }
 
 
@@ -71,19 +71,19 @@ std::string makeReturnMsg(const std::string& request_id, const std::string& stat
 
 
 void runTask(ClockSetting &clock_settings, std::string request_type, std::string request,
-             std::string request_id, std::atomic<bool>& end_task_flag, std::atomic<bool>& task_running)
+             std::string request_id, std::atomic<bool>& active, std::atomic<bool>& task_running)
 {
     task_running = true;
     std::string status;
 
     if (request_type == "set_board")
-        status = setBoard(clock_settings, request, end_task_flag);
+        status = setBoard(clock_settings, request, active);
 
     else if (request_type == "make_move")
-        status = makeMove(clock_settings, request, end_task_flag);
+        status = makeMove(clock_settings, request, active);
 
     else if (request_type == "animation")
-        status = animation(request, end_task_flag);
+        status = animation(request, active);
 
     else
         status = "error, unknown request";
@@ -95,7 +95,7 @@ void runTask(ClockSetting &clock_settings, std::string request_type, std::string
 
 void onlineGame(ClockSetting &clock_settings)
 {
-    std::atomic<bool> end_task_flag{false};
+    std::atomic<bool> active{true};
     std::atomic<bool> task_running_flag{false};
     std::thread worker;
 
@@ -122,7 +122,7 @@ void onlineGame(ClockSetting &clock_settings)
         // Control requests
         if (request_type == "close" || request_type == "end_task")
         {
-            end_task_flag.store(true);
+            active.store(false);
             if (worker.joinable())
                 worker.join();
 
@@ -130,7 +130,7 @@ void onlineGame(ClockSetting &clock_settings)
             if (request_type == "close")
                 return;
 
-            end_task_flag.store(false);
+            active.store(true);
             continue;
         }
 
@@ -145,7 +145,7 @@ void onlineGame(ClockSetting &clock_settings)
         if (request_type == "set_board" || request_type == "make_move" ||
             request_type == "animation")
             worker = std::thread(runTask, std::ref(clock_settings), request_type, request, request_id,
-                                 std::ref(end_task_flag), std::ref(task_running_flag));
+                                 std::ref(active), std::ref(task_running_flag));
 
         else if (request_type == "available")
             Hardware::get().sendBluetoothMessage(makeReturnMsg(request_id, "ok"));

@@ -183,9 +183,9 @@ void MakeMove::construct()
 }
 
 
-Move MakeMove::startOnline(const std::atomic<bool>& end_task_flag)
+Move MakeMove::startOnline(const std::atomic<bool>& active)
 {
-    while (!end_task_flag.load() && timeout > 0)
+    while (active.load() && timeout > 0)
     {
         uint64_t bit_board_tick = Hardware::get().getBoardArr();
         bool changes = detectChangeTick(bit_board_tick);
