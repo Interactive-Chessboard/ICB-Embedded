@@ -70,7 +70,6 @@ public:
           timeout(e.timeout)
     {
         moves = Chess::generateLegalMoves(game);
-        construct();
     }
 
     // Offline game constructor
@@ -82,10 +81,8 @@ public:
           moves(moves),
           past_move_from(past_move_from),
           past_move_to(past_move_to)
-    {
-        construct();
-    }
+    {}
 
-    Move startOnline(const std::atomic<bool>&);
+    std::string startOnline(const std::atomic<bool>&);
     Move startOffline(const std::atomic<bool>&);
 };

@@ -110,8 +110,8 @@ ExtractMakeMove extractMakeMove(const std::string& request)
     make_move.past_move_from = stoi(extractValue(past_move_str, "from"));
     make_move.past_move_to = stoi(extractValue(past_move_str, "to"));
 
-    if (make_move.past_move_from < -1 || make_move.past_move_from >= 64) throw std::runtime_error("error, Invalid past move from value");
-    if (make_move.past_move_to < -1 || make_move.past_move_to >= 64) throw std::runtime_error("error, Invalid past move to value");
+    if (make_move.past_move_from < -1 || make_move.past_move_from >= 64) throw std::runtime_error("error, invalid past move from value");
+    if (make_move.past_move_to < -1 || make_move.past_move_to >= 64) throw std::runtime_error("error, invalid past move to value");
 
     return make_move;
 }

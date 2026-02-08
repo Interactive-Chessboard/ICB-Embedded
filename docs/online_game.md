@@ -172,8 +172,8 @@ Colors are added to customize play
 
 #### Response
 The board will return status ok the moment the board is in the proper state it wishes to be in. These errors are likely to happen
-Proper position not set: `"status": "error, position not set"`.
-The timeout error will have this format: `"status": "error, timedout"`.
+Proper position not set: `"status": "error, original position not set"`.
+The timeout error will have this format: `"status": "error, timeout reached or end task called"`.
 Notice how the move doesn't contain a promotion field. The promotions will be determined on the web app.
 ```json
 {

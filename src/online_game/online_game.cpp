@@ -33,18 +33,7 @@ std::string makeMove(ClockSetting &clock_settings, const std::string& request, s
     }
 
     MakeMove make_move(extract_make_move);
-    Move move_made;
-    try
-    {
-        make_move.startOnline(active);
-    }
-    catch (const std::runtime_error& e)
-    {
-        return e.what();
-    }
-
-    return "ok, \"move_from\": " + std::to_string(move_made.from_square) +
-           ", \"move_to\": " + std::to_string(move_made.to_square) + "\"";
+    return make_move.startOnline(active);
 }
 
 

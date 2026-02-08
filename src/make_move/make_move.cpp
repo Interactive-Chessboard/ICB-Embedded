@@ -178,17 +178,16 @@ std::array<LedColor, 64> MakeMove::getBoardLights()
 }
 
 
-void MakeMove::construct()
+std::string MakeMove::startOnline(const std::atomic<bool>& active)
 {
     original_bit_board = Chess::getGameBitBoard(game);
-    current_bit_board = original_bit_board;
+    current_bit_board = Hardware::get().getBoardArr();
+    if (original_bit_board != current_bit_board)
+        return "error, original position not set";
+
     std::array<LedColor, 64> led_lights = getBoardLights();
     Hardware::get().setLed(led_lights);
-}
 
-
-Move MakeMove::startOnline(const std::atomic<bool>& active)
-{
     while (active.load() && timeout > 0)
     {
         uint64_t bit_board_tick = Hardware::get().getBoardArr();
@@ -199,7 +198,9 @@ Move MakeMove::startOnline(const std::atomic<bool>& active)
             if (move_index >= 0)
             {
                 Hardware::get().clearLed();
-                return moves.at(move_index);
+                Move move_made = moves.at(move_index);
+                return "ok, \"move_from\": " + std::to_string(move_made.from_square) +
+                       ", \"move_to\": " + std::to_string(move_made.to_square) + "\"";
             }
             std::array<LedColor, 64> led_lights = getBoardLights();
             Hardware::get().setLed(led_lights);
@@ -209,7 +210,7 @@ Move MakeMove::startOnline(const std::atomic<bool>& active)
         timeout--;
     }
     Hardware::get().clearLed();
-    throw std::runtime_error("error, timeout reached or end task called");
+    return "error, timeout reached or end task called";
 }
 
 
@@ -233,6 +234,14 @@ Move MakeMove::returnMove(const std::atomic<bool>& active, int move_index)
 
 Move MakeMove::startOffline(const std::atomic<bool>& active)
 {
+    original_bit_board = Chess::getGameBitBoard(game);
+    current_bit_board = Hardware::get().getBoardArr();
+    if (original_bit_board != current_bit_board)
+        return Move{};
+
+    std::array<LedColor, 64> led_lights = getBoardLights();
+    Hardware::get().setLed(led_lights);
+
     while (active.load())
     {
         uint64_t bit_board_tick = Hardware::get().getBoardArr();
