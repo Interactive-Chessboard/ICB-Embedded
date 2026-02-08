@@ -55,6 +55,7 @@ inline void TEST_ASSERT_LED_QUEUE(const std::vector<std::array<LedColor, 64>> &e
         TEST_ASSERT_EQUAL(expected.at(i).size(), actual.at(i).size());
         for (int j = 0; j < expected.at(i).size(); j++)
         {
+            //std::cout << "Led: " << j << "\n";
             //std::cout << int(expected.at(i).at(j).red) << " red " << int(actual.at(i).at(j).red) << "\n";
             //std::cout << int(expected.at(i).at(j).green) << " green " << int(actual.at(i).at(j).green) << "\n";
             //std::cout << int(expected.at(i).at(j).blue) <<  " blue " << int(actual.at(i).at(j).blue) << "\n";

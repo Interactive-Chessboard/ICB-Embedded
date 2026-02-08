@@ -37,10 +37,10 @@ private:
     std::unordered_set<int> illegal_lifted;
     std::unordered_set<int> illegal_placed;
 
-    LedColor past_move_color = (0, 0, 255);
-    LedColor lifted_square_color = (0, 230, 0);
-    LedColor legal_moves_color = (0, 255, 0);
-    LedColor illegal_moves_color = (255, 0, 0);
+    LedColor past_move_color = LedColor(0, 0, 255);
+    LedColor lifted_square_color = LedColor(0, 230, 0);
+    LedColor legal_moves_color = LedColor(0, 255, 0);
+    LedColor illegal_moves_color = LedColor(255, 0, 0);
 
     int past_move_from;
     int past_move_to;

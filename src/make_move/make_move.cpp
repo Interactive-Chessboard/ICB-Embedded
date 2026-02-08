@@ -45,7 +45,6 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
         int bit_diff = __builtin_ctzll(diff);
         int index = 63 - bit_diff;
         bool placed_bool = (tick_bit_board >> bit_diff) & 1ULL;
-        std::cout << "index " << index << " placed bool " << placed_bool << std::endl;
 
         // Valid lifted player pieced
         bool valid_player_lift = false;
@@ -55,9 +54,9 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
         int special_move_placed_index = false;
         for (Move move : moves)
         {
-            if (!placed_bool && move.from_square == index)
+            if (!placed_bool && move.from_square == index && lifted == -1)
                 valid_player_lift = true;
-            else if (!placed_bool && move.to_square == index)
+            else if (!placed_bool && move.to_square == index && move.from_square == lifted)
                 valid_opponent_lift = true;
             else if (placed_bool && move.to_square == index && move.from_square == lifted)
                 valid_placed_move = true;
@@ -97,12 +96,12 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
         }
         else
         {
-            // Lift first piece if no pieces are lifted
-            if (lifted == -1 && valid_player_lift)
+            // Lift piece if no pieces are lifted
+            if (valid_player_lift)
                 lifted = index;
 
             // Lift opponent if a piece has been lifted
-            else if (lifted != -1 && valid_opponent_lift)
+            else if (valid_opponent_lift)
                 lifted_opponent = index;
 
             // Lift special move
@@ -182,8 +181,9 @@ std::array<LedColor, 64> MakeMove::getBoardLights()
 void MakeMove::construct()
 {
     original_bit_board = Chess::getGameBitBoard(game);
-    std::cout << original_bit_board << std::endl;
     current_bit_board = original_bit_board;
+    std::array<LedColor, 64> led_lights = getBoardLights();
+    Hardware::get().setLed(led_lights);
 }
 
 
@@ -197,7 +197,10 @@ Move MakeMove::startOnline(const std::atomic<bool>& active)
         {
             int move_index = calculateMoveTick();
             if (move_index >= 0)
+            {
+                Hardware::get().clearLed();
                 return moves.at(move_index);
+            }
             std::array<LedColor, 64> led_lights = getBoardLights();
             Hardware::get().setLed(led_lights);
         }
@@ -205,6 +208,7 @@ Move MakeMove::startOnline(const std::atomic<bool>& active)
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
         timeout--;
     }
+    Hardware::get().clearLed();
     throw std::runtime_error("error, timeout reached or end task called");
 }
 
@@ -229,7 +233,6 @@ Move MakeMove::returnMove(const std::atomic<bool>& active, int move_index)
 
 Move MakeMove::startOffline(const std::atomic<bool>& active)
 {
-    std::cout << "start" << "\n";
     while (active.load())
     {
         uint64_t bit_board_tick = Hardware::get().getBoardArr();
@@ -259,6 +262,7 @@ Move MakeMove::startOffline(const std::atomic<bool>& active)
             int move_index = calculateMoveTick();
             if (move_index >= 0)
             {
+                Hardware::get().clearLed();
                 return returnMove(active, move_index);
             }
             std::array<LedColor, 64> led_lights = getBoardLights();
@@ -266,5 +270,6 @@ Move MakeMove::startOffline(const std::atomic<bool>& active)
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
+    Hardware::get().clearLed();
     return Move{};
 }
