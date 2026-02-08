@@ -1,6 +1,6 @@
 // make_move.cpp
 #include "make_move.hpp"
-
+#include <iostream>
 
 std::pair<bool, bool> MakeMove::determineSpecialMoveLift(Move move, int lifted)
 {
@@ -40,9 +40,12 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
     if (diff == 0)
         return false;
 
-    while (diff) {
-        int index = __builtin_ctzll(diff);
-        bool placed_bool = (tick_bit_board >> index) & 1ULL;
+    while (diff)
+    {
+        int bit_diff = __builtin_ctzll(diff);
+        int index = 63 - bit_diff;
+        bool placed_bool = (tick_bit_board >> bit_diff) & 1ULL;
+        std::cout << "index " << index << " placed bool " << placed_bool << std::endl;
 
         // Valid lifted player pieced
         bool valid_player_lift = false;
@@ -56,8 +59,8 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
                 valid_player_lift = true;
             else if (!placed_bool && move.to_square == index)
                 valid_opponent_lift = true;
-            else if (placed_bool && move.to_square == index && move.to_square == lifted)
-                valid_placed_move;
+            else if (placed_bool && move.to_square == index && move.from_square == lifted)
+                valid_placed_move = true;
             else if (lifted == move.from_square && move.special_move)
             {
                 std::pair<bool, bool> special_move = determineSpecialMoveLift(move, lifted);
@@ -179,6 +182,7 @@ std::array<LedColor, 64> MakeMove::getBoardLights()
 void MakeMove::construct()
 {
     original_bit_board = Chess::getGameBitBoard(game);
+    std::cout << original_bit_board << std::endl;
     current_bit_board = original_bit_board;
 }
 
@@ -225,12 +229,33 @@ Move MakeMove::returnMove(const std::atomic<bool>& active, int move_index)
 
 Move MakeMove::startOffline(const std::atomic<bool>& active)
 {
+    std::cout << "start" << "\n";
     while (active.load())
     {
         uint64_t bit_board_tick = Hardware::get().getBoardArr();
         bool changes = detectChangeTick(bit_board_tick);
         if (changes)
         {
+            std::cout << "changes" << std::endl;
+            std::cout << "bit_board_tick " << bit_board_tick << " lif" << lifted << " placed" << placed << std::endl;
+            std::cout << "lifted " << lifted << std::endl;
+            std::cout << "lifted_opponent " << lifted_opponent << std::endl;
+            std::cout << "lifted_special " << lifted_special << std::endl;
+            std::cout << "placed " << placed << std::endl;
+            std::cout << "placed_special " << placed_special << std::endl;
+            std::cout << "illegal_lifted: ";
+            for (int val : illegal_lifted)
+            {
+                std::cout << val << " ";
+            }
+            std::cout << std::endl;
+
+            std::cout << "illegal_placed: ";
+            for (int val : illegal_placed)
+            {
+                std::cout << val << " ";
+            }
+            std::cout << std::endl;
             int move_index = calculateMoveTick();
             if (move_index >= 0)
             {

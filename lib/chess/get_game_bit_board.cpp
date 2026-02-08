@@ -8,7 +8,7 @@ uint64_t Chess::getGameBitBoard(ChessGame game)
     for (int i = 0; i < 64; i++)
     {
         if (game.board.at(i) != Piece())
-            bit_board |= (1ULL << i);
+            bit_board |= (1ULL << (63 - i));
     }
     return bit_board;
 }

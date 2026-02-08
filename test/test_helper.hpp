@@ -46,7 +46,7 @@ inline void TEST_ASSERT_CLOCK_TOLERANCE(const int &expected, const int &actual)
     TEST_ASSERT_LESS_OR_EQUAL(expected + 2, actual);
 }
 
-#include <iostream>
+//#include <iostream>
 inline void TEST_ASSERT_LED_QUEUE(const std::vector<std::array<LedColor, 64>> &expected, const std::vector<std::array<LedColor, 64>> &actual)
 {
     TEST_ASSERT_EQUAL(expected.size(), actual.size());

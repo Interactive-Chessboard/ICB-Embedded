@@ -1,6 +1,4 @@
-// test_animations.cpp
-
-// test_game_clock.cpp
+// test_set_board
 #include <unity.h>
 #include "../test_helper.hpp"
 #include "set_board/set_board.hpp"
@@ -249,6 +247,40 @@ void test_set_board_online_timeout()
 }
 
 
+void test_set_board_wrong_move()
+{
+    SetBoard set_board(0xfff700080000ffffULL);
+
+    MockHardware& hardware_mock = static_cast<MockHardware&>(Hardware::get());
+    hardware_mock.get_board_arr_queue = {
+        0xffff00000000ffffULL,
+        0xfff700000000ffffULL,
+        0x7ff700000000ffffULL,
+        0xfff700000000ffffULL,
+        0xfff700080000ffffULL
+    };
+
+    std::atomic<bool> active{true};
+    set_board.startOffline(active);
+
+    std::array<LedColor, 64> leds1;
+    leds1.at(12) = LedColor(0, 0, 255);
+    leds1.at(28) = LedColor(0, 0, 255);
+
+    std::array<LedColor, 64> leds2;
+    leds2.at(28) = LedColor(0, 0, 255);
+
+    std::array<LedColor, 64> leds3;
+    leds3.at(0) = LedColor(0, 0, 255);
+    leds3.at(28) = LedColor(0, 0, 255);
+
+    std::array<LedColor, 64> leds4;
+
+    std::vector<std::array<LedColor, 64>> expected_led_queue = {leds1, leds2, leds3, leds2, leds4};
+    TEST_ASSERT_LED_QUEUE(expected_led_queue, hardware_mock.set_led_queue);
+}
+
+
 // runs before each test
 void setUp()
 {
@@ -267,6 +299,7 @@ void runTests()
     RUN_TEST(test_set_board_online_extra_delay);
     RUN_TEST(test_set_board_online_stop);
     RUN_TEST(test_set_board_online_timeout);
+    RUN_TEST(test_set_board_wrong_move);
 
     UNITY_END();
 }
