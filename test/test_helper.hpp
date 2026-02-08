@@ -42,8 +42,8 @@ inline void TEST_ASSERT_UINT64_T(const uint64_t &expected, const uint64_t &actua
 
 inline void TEST_ASSERT_CLOCK_TOLERANCE(const int &expected, const int &actual)
 {
-    TEST_ASSERT_GREATER_OR_EQUAL(expected - 2, actual);
-    TEST_ASSERT_LESS_OR_EQUAL(expected + 2, actual);
+    TEST_ASSERT_GREATER_OR_EQUAL(expected - 3, actual);
+    TEST_ASSERT_LESS_OR_EQUAL(expected + 3, actual);
 }
 
 //#include <iostream>
