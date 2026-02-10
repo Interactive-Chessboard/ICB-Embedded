@@ -50,7 +50,6 @@ private:
 
     int timeout;
 
-    void construct();
     std::pair<bool, bool> determineSpecialMoveLift(Move, int);
     bool detectChangeTick(uint64_t);
     int calculateMoveTick();

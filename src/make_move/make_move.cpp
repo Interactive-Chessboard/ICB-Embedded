@@ -54,13 +54,13 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
         int special_move_placed_index = false;
         for (Move move : moves)
         {
-            if (!placed_bool && move.from_square == index && lifted == -1)
+            if (!placed_bool && move.from_square == index && lifted == -1) // To do. valid if not placed, lifted = -1 and piece is its own
                 valid_player_lift = true;
-            else if (!placed_bool && move.to_square == index && move.from_square == lifted)
+            else if (!placed_bool && move.to_square == index && move.from_square == lifted) // To do, valid if not placed, opponent lifted = 1 and piece opponent
                 valid_opponent_lift = true;
-            else if (placed_bool && move.to_square == index && move.from_square == lifted)
+            else if (placed_bool && move.to_square == index && move.from_square == lifted) // To do. Call move place, valid if lifted and placed are a legal move
                 valid_placed_move = true;
-            else if (lifted == move.from_square && move.special_move)
+            else if (lifted == move.from_square && move.special_move) // To do seperate en passant and castle logic
             {
                 std::pair<bool, bool> special_move = determineSpecialMoveLift(move, lifted);
                 special_move_lift_index = special_move.first;
@@ -149,8 +149,10 @@ std::array<LedColor, 64> MakeMove::getBoardLights()
 {
     std::array<LedColor, 64> lights;
     // Light past move first (can be overriden)
-    lights.at(past_move_from) = past_move_color;
-    lights.at(past_move_to) = past_move_color;
+    if (past_move_from >= 0 && past_move_from < 64)
+        lights.at(past_move_from) = past_move_color;
+    if (past_move_to >= 0 && past_move_from < 64)
+        lights.at(past_move_to) = past_move_color;
 
     // Light illegal moves
     for (int val : illegal_lifted)
