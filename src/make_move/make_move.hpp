@@ -29,13 +29,17 @@ class MakeMove
 private:
     ChessGame game;
     std::vector<Move> moves;
+
     int lifted = -1;
     int lifted_opponent = -1;
-    int lifted_special = -1;
     int placed = -1;
-    int placed_special = -1;
+    int lifted_castle = -1;
+    int placed_castle = -1;
     std::unordered_set<int> illegal_lifted;
     std::unordered_set<int> illegal_placed;
+
+    std::unordered_set<int> valid_lifted;
+    std::unordered_set<int> valid_lifted_opponent;
 
     LedColor past_move_color = LedColor(0, 0, 255);
     LedColor lifted_square_color = LedColor(0, 230, 0);
@@ -50,7 +54,8 @@ private:
 
     int timeout;
 
-    std::pair<bool, bool> determineSpecialMoveLift(Move, int);
+    void initialize();
+    std::pair<bool, bool> determineCastle(Move, int);
     bool detectChangeTick(uint64_t);
     int calculateMoveTick();
     std::array<LedColor, 64> getBoardLights();
@@ -68,7 +73,7 @@ public:
           illegal_moves_color(e.illegal_moves_color),
           timeout(e.timeout)
     {
-        moves = Chess::generateLegalMoves(game);
+        initialize();
     }
 
     // Offline game constructor
@@ -80,7 +85,9 @@ public:
           moves(moves),
           past_move_from(past_move_from),
           past_move_to(past_move_to)
-    {}
+    {
+        initialize();
+    }
 
     std::string startOnline(const std::atomic<bool>&);
     Move startOffline(const std::atomic<bool>&);

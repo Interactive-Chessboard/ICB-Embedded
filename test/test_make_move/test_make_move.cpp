@@ -770,6 +770,7 @@ void runTests()
     //RUN_TEST(test_make_move_simultaneous_lift_opponent_smaller_index); // TO DO, feature not implemented (I think). Players should be able to lift the captured piece before their own
     //RUN_TEST(test_make_move_simultaneous_lift_opponent_bigger_index); // TO DO, feature not implemented (I think). Players should be able to lift the captured piece before their own
     //RUN_TEST(test_make_move_lift_capture_piece_before_lifted_piece); // TO DO, feature not implemented (I think). Players should be able to lift the captured piece before their own
+    //RUN_TEST(test_make_move_lift_capture_piece_before_other_piece); // TO DO,
     //RUN_TEST(test_make_move_white_king_castle);
     //RUN_TEST(test_make_move_white_queen_castle);
     //RUN_TEST(test_make_move_black_king_castle);

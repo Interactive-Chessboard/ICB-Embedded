@@ -2,7 +2,7 @@
 #include "make_move.hpp"
 #include <iostream>
 
-std::pair<bool, bool> MakeMove::determineSpecialMoveLift(Move move, int lifted)
+std::pair<bool, bool> MakeMove::determineCastle(Move move, int lifted)
 {
     // White King castle
     if (lifted == 4 && move.from_square == 4 && move.to_square == 6)
@@ -20,16 +20,6 @@ std::pair<bool, bool> MakeMove::determineSpecialMoveLift(Move move, int lifted)
     if (lifted == 60 && move.from_square == 60 && move.to_square == 58)
         return {56, 59};
 
-    int diff = move.to_square - move.from_square;
-    // Right en passant both colors
-    if (diff == 9 || diff == -7)
-        return {move.to_square + 1, -1};
-
-    // Left en passant both colors
-    if (diff == 7 || diff == -9)
-        return {move.to_square - 1, -1};
-
-
     return {-1, -1};
 }
 
@@ -45,26 +35,34 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
         int bit_diff = __builtin_ctzll(diff);
         int index = 63 - bit_diff;
         bool placed_bool = (tick_bit_board >> bit_diff) & 1ULL;
+        diff &= diff - 1;
 
-        // Valid lifted player pieced
-        bool valid_player_lift = false;
-        bool valid_opponent_lift = false;
+        // Lift piece if no pieces are lifted
+        if (lifted == -1 && !placed_bool && valid_lifted.find(index) != valid_lifted.end())
+        {
+            lifted = index;
+            continue;
+        }
+
+        // Lift opponent if a piece has been lifted
+        if (lifted_opponent == -1 && !placed_bool && valid_lifted_opponent.find(index) != valid_lifted_opponent.end())
+        {
+            lifted_opponent = index;
+            continue;
+        }
+
         bool valid_placed_move = false;
-        int special_move_lift_index = false;
-        int special_move_placed_index = false;
+        int castle_move_lift_index = false;
+        int castle_move_placed_index = false;
         for (Move move : moves)
         {
-            if (!placed_bool && move.from_square == index && lifted == -1) // To do. valid if not placed, lifted = -1 and piece is its own
-                valid_player_lift = true;
-            else if (!placed_bool && move.to_square == index && move.from_square == lifted) // To do, valid if not placed, opponent lifted = 1 and piece opponent
-                valid_opponent_lift = true;
-            else if (placed_bool && move.to_square == index && move.from_square == lifted) // To do. Call move place, valid if lifted and placed are a legal move
+            if (placed_bool && move.to_square == index && move.from_square == lifted)
                 valid_placed_move = true;
             else if (lifted == move.from_square && move.special_move) // To do seperate en passant and castle logic
             {
-                std::pair<bool, bool> special_move = determineSpecialMoveLift(move, lifted);
-                special_move_lift_index = special_move.first;
-                special_move_placed_index = special_move.second;
+                std::pair<bool, bool> special_move = determineCastle(move, lifted);
+                castle_move_lift_index = special_move.first;
+                castle_move_placed_index = special_move.second;
             }
         }
 
@@ -74,17 +72,17 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
             if (valid_placed_move)
                 placed = index;
 
-            // Place special move
-            else if (special_move_placed_index == index)
-                placed_special = index;
+            // Place castle
+            else if (castle_move_placed_index == index)
+                placed_castle = index;
 
             // Place back lifted piece
             else if (lifted == index)
                 lifted = -1;
 
-            // Place back special move
-            else if (lifted_special == index)
-                lifted_special = -1;
+            // Place back castle move
+            else if (lifted_castle == index)
+                lifted_castle = -1;
 
             // Place back illegally lifted
             else if (illegal_lifted.find(index) != illegal_lifted.end())
@@ -96,21 +94,13 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
         }
         else
         {
-            // Lift piece if no pieces are lifted
-            if (valid_player_lift)
-                lifted = index;
+            // Lift castle move
+            if (castle_move_lift_index == index)
+                lifted_castle = index;
 
-            // Lift opponent if a piece has been lifted
-            else if (valid_opponent_lift)
-                lifted_opponent = index;
-
-            // Lift special move
-            else if (special_move_lift_index == index)
-                special_move_lift_index = index;
-
-            // Lift from special placed
-            else if (placed_special == index)
-                placed_special = -1;
+            // Lift from castle placed
+            else if (placed_castle == index)
+                placed_castle = -1;
 
             // Lifted from illegal placed
             else if (illegal_placed.find(index) != illegal_placed.end())
@@ -120,8 +110,6 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
             else
                 illegal_lifted.insert(index);
         }
-
-        diff &= diff - 1;
     }
     current_bit_board = tick_bit_board;
     return true;
@@ -137,8 +125,8 @@ int MakeMove::calculateMoveTick()
     for (int i = 0; i < moves.size(); i++)
     {
         // Lifted and placed piece correspond to a move and the bit board corresponds to that moves result as well
-        if (moves[i].from_square == lifted && moves[i].to_square == placed &&
-            current_bit_board == Chess::getGameBitBoard(moves[i].chess_game))
+        if (moves.at(i).from_square == lifted && moves.at(i).to_square == placed &&
+            current_bit_board == Chess::getGameBitBoard(moves.at(i).chess_game))
             return i;
     }
     return -1;
@@ -177,6 +165,40 @@ std::array<LedColor, 64> MakeMove::getBoardLights()
         }
     }
     return lights;
+}
+
+
+void MakeMove::initialize()
+{
+    if (moves.size() == 0)
+        moves = Chess::generateLegalMoves(game);
+
+    Color opponent_color = game.player_turn == Color::White ? Color::Black : Color::White;
+
+    for (Move move : moves)
+    {
+        if (game.board.at(move.to_square).color == opponent_color)
+            valid_lifted_opponent.insert(move.to_square);
+
+        // Add en passant piece to
+        if (move.special_move)
+        {
+            int diff = move.to_square - move.from_square;
+            // Right en passant both colors
+            if (diff == 9 || diff == -7)
+                valid_lifted_opponent.insert(move.to_square + 1);
+
+            // Left en passant both colors
+            if (diff == 7 || diff == -9)
+                valid_lifted_opponent.insert(move.to_square - 1);
+        }
+    }
+
+    for (int i = 0; i < game.board.size(); i++)
+    {
+        if (game.board.at(i).color == game.player_turn)
+            valid_lifted.insert(i);
+    }
 }
 
 
@@ -254,9 +276,9 @@ Move MakeMove::startOffline(const std::atomic<bool>& active)
             std::cout << "bit_board_tick " << bit_board_tick << " lif" << lifted << " placed" << placed << std::endl;
             std::cout << "lifted " << lifted << std::endl;
             std::cout << "lifted_opponent " << lifted_opponent << std::endl;
-            std::cout << "lifted_special " << lifted_special << std::endl;
+            std::cout << "lifted_special " << lifted_castle << std::endl;
             std::cout << "placed " << placed << std::endl;
-            std::cout << "placed_special " << placed_special << std::endl;
+            std::cout << "placed_special " << placed_castle << std::endl;
             std::cout << "illegal_lifted: ";
             for (int val : illegal_lifted)
             {
