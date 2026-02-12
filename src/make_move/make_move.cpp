@@ -112,6 +112,21 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
         }
     }
     current_bit_board = tick_bit_board;
+    if (lifted == -1 || lifted_opponent == -1)
+        return true;
+
+    // Remove opponent lifted if it doesn't match with current lifted
+    bool check = false;
+    for (Move move : moves)
+    {
+        if (move.from_square == lifted && move.to_square == lifted_opponent)
+            check = true;
+    }
+    if (!check)
+    {
+        illegal_lifted.insert(lifted_opponent);
+        lifted_opponent = -1;
+    }
     return true;
 }
 
