@@ -2,7 +2,42 @@
 #include "make_move.hpp"
 #include <iostream>
 
-std::pair<bool, bool> MakeMove::determineCastle(Move move, int lifted)
+
+void MakeMove::initialize()
+{
+    if (moves.size() == 0)
+        moves = Chess::generateLegalMoves(game);
+
+    Color opponent_color = game.player_turn == Color::White ? Color::Black : Color::White;
+
+    for (Move move : moves)
+    {
+        if (game.board.at(move.to_square).color == opponent_color)
+            valid_lifted_opponent.insert(move.to_square);
+
+        // Add en passant piece to
+        if (move.special_move)
+        {
+            int diff = move.to_square - move.from_square;
+            // Right en passant both colors
+            if (diff == 9 || diff == -7)
+                valid_lifted_opponent.insert(move.to_square + 1);
+
+            // Left en passant both colors
+            if (diff == 7 || diff == -9)
+                valid_lifted_opponent.insert(move.to_square - 1);
+        }
+    }
+
+    for (int i = 0; i < game.board.size(); i++)
+    {
+        if (game.board.at(i).color == game.player_turn)
+            valid_lifted.insert(i);
+    }
+}
+
+
+std::pair<int, int> MakeMove::determineCastle(Move move, int lifted)
 {
     // White King castle
     if (lifted == 4 && move.from_square == 4 && move.to_square == 6)
@@ -26,16 +61,52 @@ std::pair<bool, bool> MakeMove::determineCastle(Move move, int lifted)
 
 bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
 {
+    struct BitChange
+    {
+        int index;
+        bool placed;
+    };
+
     uint64_t diff = current_bit_board ^ tick_bit_board;
     if (diff == 0)
         return false;
 
-    while (diff)
+    std::vector<BitChange> changes;
+    uint64_t temp_diff = diff;
+    while (temp_diff)
     {
-        int bit_diff = __builtin_ctzll(diff);
+        int bit_diff = __builtin_ctzll(temp_diff);
         int index = 63 - bit_diff;
         bool placed_bool = (tick_bit_board >> bit_diff) & 1ULL;
-        diff &= diff - 1;
+
+        changes.push_back({index, placed_bool});
+        temp_diff &= temp_diff - 1;
+    }
+
+    std::sort(changes.begin(), changes.end(),
+        [](const BitChange& a, const BitChange& b)
+        {
+            auto priority = [](const BitChange& c)
+            {
+                // Highest priority: king lifts for castle
+                if (!c.placed && (c.index == 4 || c.index == 60))
+                    return 0;
+
+                // Normal lifts
+                if (!c.placed)
+                    return 1;
+
+                // Lowest pirority: placing
+                return 2;
+            };
+
+            return priority(a) < priority(b);
+        });
+
+    for (const BitChange& change : changes)
+    {
+        int index = change.index;
+        bool placed_bool = change.placed;
 
         // Lift piece if no pieces are lifted
         if (lifted == -1 && !placed_bool && valid_lifted.find(index) != valid_lifted.end())
@@ -52,28 +123,28 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
         }
 
         bool valid_placed_move = false;
-        int castle_move_lift_index = false;
-        int castle_move_placed_index = false;
+        std::unordered_map<int, int> castle_moves_index; // m[lift] = placed
         for (Move move : moves)
         {
-            if (placed_bool && move.to_square == index && move.from_square == lifted)
+            //std::cout << "mf " << move.from_square << " mt " << move.to_square << " s " << move.special_move << std::endl;
+            if (placed == -1 && placed_bool && move.to_square == index && move.from_square == lifted)
                 valid_placed_move = true;
-            else if (lifted == move.from_square && move.special_move) // To do seperate en passant and castle logic
+            else if (lifted == move.from_square && move.special_move)
             {
-                std::pair<bool, bool> special_move = determineCastle(move, lifted);
-                castle_move_lift_index = special_move.first;
-                castle_move_placed_index = special_move.second;
+                std::pair<int, int> special_move = determineCastle(move, lifted);
+                castle_moves_index[special_move.first] = special_move.second;
+                std::cout << "s1: " << special_move.first << " s2: " << special_move.second << std::endl;
             }
         }
 
         if (placed_bool)
         {
             // Place piece at a valid position
-            if (valid_placed_move)
+            if (valid_placed_move && castle_moves_index[lifted_castle] != index)
                 placed = index;
 
             // Place castle
-            else if (castle_move_placed_index == index)
+            else if (castle_moves_index[lifted_castle] == index)
                 placed_castle = index;
 
             // Place back lifted piece
@@ -95,7 +166,7 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
         else
         {
             // Lift castle move
-            if (castle_move_lift_index == index)
+            if (castle_moves_index.find(index) != castle_moves_index.end())
                 lifted_castle = index;
 
             // Lift from castle placed
@@ -169,6 +240,7 @@ std::array<LedColor, 64> MakeMove::getBoardLights()
         lights.at(lifted) = lifted_square_color;
         lights.at(lifted_opponent) = legal_moves_color;
     }
+
     // Display legal moves
     else if (lifted != -1 && placed == -1)
     {
@@ -179,41 +251,14 @@ std::array<LedColor, 64> MakeMove::getBoardLights()
                 lights.at(move.to_square) = legal_moves_color;
         }
     }
+
+    // Move complete, with lingering clean up to do
+    else if (lifted != -1 && placed != -1)
+    {
+        lights.at(lifted) = legal_moves_color;
+        lights.at(placed) = legal_moves_color;
+    }
     return lights;
-}
-
-
-void MakeMove::initialize()
-{
-    if (moves.size() == 0)
-        moves = Chess::generateLegalMoves(game);
-
-    Color opponent_color = game.player_turn == Color::White ? Color::Black : Color::White;
-
-    for (Move move : moves)
-    {
-        if (game.board.at(move.to_square).color == opponent_color)
-            valid_lifted_opponent.insert(move.to_square);
-
-        // Add en passant piece to
-        if (move.special_move)
-        {
-            int diff = move.to_square - move.from_square;
-            // Right en passant both colors
-            if (diff == 9 || diff == -7)
-                valid_lifted_opponent.insert(move.to_square + 1);
-
-            // Left en passant both colors
-            if (diff == 7 || diff == -9)
-                valid_lifted_opponent.insert(move.to_square - 1);
-        }
-    }
-
-    for (int i = 0; i < game.board.size(); i++)
-    {
-        if (game.board.at(i).color == game.player_turn)
-            valid_lifted.insert(i);
-    }
 }
 
 
@@ -291,9 +336,9 @@ Move MakeMove::startOffline(const std::atomic<bool>& active)
             std::cout << "bit_board_tick " << bit_board_tick << " lif" << lifted << " placed" << placed << std::endl;
             std::cout << "lifted " << lifted << std::endl;
             std::cout << "lifted_opponent " << lifted_opponent << std::endl;
-            std::cout << "lifted_special " << lifted_castle << std::endl;
+            std::cout << "lifted_castle " << lifted_castle << std::endl;
             std::cout << "placed " << placed << std::endl;
-            std::cout << "placed_special " << placed_castle << std::endl;
+            std::cout << "placed_castle " << placed_castle << std::endl;
             std::cout << "illegal_lifted: ";
             for (int val : illegal_lifted)
             {

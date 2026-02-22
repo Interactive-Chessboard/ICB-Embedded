@@ -479,6 +479,7 @@ std::vector<Move> enPassantMoves(ChessGame chess_game)
             move.chess_game.board[chess_game.en_passant] = Piece(Color::White, PieceType::Pawn);
             move.chess_game.board[chess_game.en_passant - 7] = Piece();
             move.chess_game.board[chess_game.en_passant - 8] = Piece();
+            move.special_move = true;
             moves.push_back(move);
         }
         if (chess_game.board[chess_game.en_passant - 9] == Piece(Color::White, PieceType::Pawn))
@@ -489,6 +490,7 @@ std::vector<Move> enPassantMoves(ChessGame chess_game)
             move.chess_game.board[chess_game.en_passant] = Piece(Color::White, PieceType::Pawn);
             move.chess_game.board[chess_game.en_passant - 9] = Piece();
             move.chess_game.board[chess_game.en_passant - 8] = Piece();
+            move.special_move = true;
             moves.push_back(move);
         }
     }
@@ -502,6 +504,7 @@ std::vector<Move> enPassantMoves(ChessGame chess_game)
             move.chess_game.board[chess_game.en_passant] = Piece(Color::Black, PieceType::Pawn);
             move.chess_game.board[chess_game.en_passant + 7] = Piece();
             move.chess_game.board[chess_game.en_passant + 8] = Piece();
+            move.special_move = true;
             moves.push_back(move);
         }
         if (chess_game.board[chess_game.en_passant + 9] == Piece(Color::Black, PieceType::Pawn))
@@ -512,6 +515,7 @@ std::vector<Move> enPassantMoves(ChessGame chess_game)
             move.chess_game.board[chess_game.en_passant] = Piece(Color::Black, PieceType::Pawn);
             move.chess_game.board[chess_game.en_passant + 9] = Piece();
             move.chess_game.board[chess_game.en_passant + 8] = Piece();
+            move.special_move = true;
             moves.push_back(move);
         }
     }
@@ -539,6 +543,7 @@ std::vector<Move> castleMoves(ChessGame chess_game)
             move.chess_game.board[5] = Piece(Color::White, PieceType::Rook);
             move.chess_game.board[6] = Piece(Color::White, PieceType::King);
             move.chess_game.board[7] = Piece();
+            move.special_move = true;
             moves.push_back(move);
         }
 
@@ -558,6 +563,7 @@ std::vector<Move> castleMoves(ChessGame chess_game)
             move.chess_game.board[2] = Piece(Color::White, PieceType::King);
             move.chess_game.board[3] = Piece(Color::White, PieceType::Rook);
             move.chess_game.board[4] = Piece();
+            move.special_move = true;
             moves.push_back(move);
         }
 
@@ -576,6 +582,7 @@ std::vector<Move> castleMoves(ChessGame chess_game)
             move.chess_game.board[61] = Piece(Color::Black, PieceType::Rook);
             move.chess_game.board[62] = Piece(Color::Black, PieceType::King);
             move.chess_game.board[63] = Piece();
+            move.special_move = true;
             moves.push_back(move);
         }
 
@@ -595,6 +602,7 @@ std::vector<Move> castleMoves(ChessGame chess_game)
             move.chess_game.board[58] = Piece(Color::Black, PieceType::King);
             move.chess_game.board[59] = Piece(Color::Black, PieceType::Rook);
             move.chess_game.board[60] = Piece();
+            move.special_move = true;
             moves.push_back(move);
         }
     return moves;

@@ -2,6 +2,8 @@
 #pragma once
 #include <atomic>
 #include <string>
+#include <algorithm>
+#include <unordered_map>
 #include <stdexcept>
 #include <vector>
 #include <utility>
@@ -42,7 +44,7 @@ private:
     std::unordered_set<int> valid_lifted_opponent;
 
     LedColor past_move_color = LedColor(0, 0, 255);
-    LedColor lifted_square_color = LedColor(0, 230, 0);
+    LedColor lifted_square_color = LedColor(255, 255, 0);
     LedColor legal_moves_color = LedColor(0, 255, 0);
     LedColor illegal_moves_color = LedColor(255, 0, 0);
 
@@ -55,7 +57,7 @@ private:
     int timeout;
 
     void initialize();
-    std::pair<bool, bool> determineCastle(Move, int);
+    std::pair<int, int> determineCastle(Move, int);
     bool detectChangeTick(uint64_t);
     int calculateMoveTick();
     std::array<LedColor, 64> getBoardLights();
