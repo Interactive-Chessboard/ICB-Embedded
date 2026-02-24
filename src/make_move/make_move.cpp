@@ -16,16 +16,16 @@ void MakeMove::initialize()
             valid_lifted_opponent.insert(move.to_square);
 
         // Add en passant piece to
-        if (move.special_move)
+        if (move.move_type == MoveType::En_Passant)
         {
             int diff = move.to_square - move.from_square;
             // Right en passant both colors
             if (diff == 9 || diff == -7)
-                valid_lifted_opponent.insert(move.to_square + 1);
+                valid_lifted_opponent.insert(move.from_square + 1);
 
             // Left en passant both colors
-            if (diff == 7 || diff == -9)
-                valid_lifted_opponent.insert(move.to_square - 1);
+            else if (diff == 7 || diff == -9)
+                valid_lifted_opponent.insert(move.from_square - 1);
         }
     }
 
@@ -115,7 +115,7 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
             continue;
         }
 
-        // Lift opponent if a piece has been lifted
+        // Lift opponent piece if no opponent pieces are lifted
         if (lifted_opponent == -1 && !placed_bool && valid_lifted_opponent.find(index) != valid_lifted_opponent.end())
         {
             lifted_opponent = index;
@@ -126,10 +126,10 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
         std::unordered_map<int, int> castle_moves_index; // m[lift] = placed
         for (Move move : moves)
         {
-            //std::cout << "mf " << move.from_square << " mt " << move.to_square << " s " << move.special_move << std::endl;
+            //std::cout << "mf " << move.from_square << " mt " << move.to_square << " s " << move.move_type << std::endl;
             if (placed == -1 && placed_bool && move.to_square == index && move.from_square == lifted)
                 valid_placed_move = true;
-            else if (lifted == move.from_square && move.special_move)
+            else if (lifted == move.from_square && move.move_type == MoveType::Castle)
             {
                 std::pair<int, int> special_move = determineCastle(move, lifted);
                 castle_moves_index[special_move.first] = special_move.second;
@@ -190,8 +190,20 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
     bool check = false;
     for (Move move : moves)
     {
-        if (move.from_square == lifted && move.to_square == lifted_opponent)
+        if (move.move_type == MoveType::Normal && move.from_square == lifted && move.to_square == lifted_opponent)
             check = true;
+
+        else if (move.move_type == MoveType::En_Passant && move.from_square == lifted)
+        {
+            int diff = move.to_square - move.from_square;
+            // Right en passant both colors
+            if (move.from_square + 1 == lifted_opponent && (diff == 9 || diff == -7))
+                check = true;
+
+            // Left en passant both colors
+            else if (move.from_square - 1 == lifted_opponent && (diff == 7 || diff == -9))
+                check = true;
+        }
     }
     if (!check)
     {
@@ -234,8 +246,17 @@ std::array<LedColor, 64> MakeMove::getBoardLights()
     for (int val : illegal_placed)
         lights.at(val) = illegal_moves_color;
 
-    // Move is almost completed
+    // Move is almost completed, exclude en passant
+    bool almost_complete = false;
     if (lifted != -1 && lifted_opponent != -1 && placed == -1)
+    {
+        for (Move move : moves)
+        {
+            if (move.from_square == lifted && move.to_square == lifted_opponent)
+                almost_complete = true;
+        }
+    }
+    if (almost_complete)
     {
         lights.at(lifted) = lifted_square_color;
         lights.at(lifted_opponent) = legal_moves_color;

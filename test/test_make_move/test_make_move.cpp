@@ -1501,6 +1501,61 @@ void test_make_move_castle_simultaneous_lift_king_larger_index()
 }
 
 
+void test_make_move_white_left_en_passant()
+{
+    ChessGame game; // r1bq1rk1/3n2bn/p2p2p1/1p1PppPp/4P3/2N1BP1P/PP1QN1B1/R3K2R w KQ f6 0 15
+    game.player_turn = Color::White;
+    game.board = {
+        Piece{Color::White, PieceType::Rook}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::King}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Rook},
+        Piece{Color::White, PieceType::Pawn}, Piece{Color::White, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Queen}, Piece{Color::White, PieceType::Knight}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Bishop}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Knight}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Bishop}, Piece{Color::White, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Pawn},
+        Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::White, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn},
+        Piece{Color::Black, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Knight}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Bishop}, Piece{Color::Black, PieceType::Knight},
+        Piece{Color::Black, PieceType::Rook}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Bishop}, Piece{Color::Black, PieceType::Queen}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Rook}, Piece{Color::Black, PieceType::King}, Piece{Color::Nil, PieceType::Nil}
+    };
+    game.castle = {'K', 'Q', '.', '.'};
+    game.en_passant = 45;
+    game.winner = Winner::Nil;
+
+    std::vector<Move> legal_moves = Chess::generateLegalMoves(game);
+    int past_move_from = 53;
+    int past_move_to = 37;
+
+    MockHardware& hardware_mock = static_cast<MockHardware&>(Hardware::get());
+    hardware_mock.get_board_arr_queue = {
+        0x89da2d085f9213b6ULL, // start
+        0x89da2d085d9213b6ULL, // lift attacking pawn
+        0x89da2d08599213b6ULL, // lift opponent pawn
+        0x89da2d08599613b6ULL, // place attacking pawn
+    };
+
+    MakeMove make_move(game, legal_moves, past_move_from, past_move_to);
+
+    std::atomic<bool> active{true};
+    Move move = make_move.startOffline(active);
+
+    TEST_ASSERT_EQUAL(38, move.from_square);
+    TEST_ASSERT_EQUAL(45, move.to_square);
+
+    std::array<LedColor, 64> leds1;
+    leds1.at(53) = LedColor(0, 0, 255);
+    leds1.at(37) = LedColor(0, 0, 255);
+
+    std::array<LedColor, 64> leds2;
+    leds2.at(53) = LedColor(0, 0, 255);
+    leds2.at(37) = LedColor(0, 0, 255);
+    leds2.at(38) = LedColor(255, 255, 0);
+    leds2.at(45) = LedColor(0, 255, 0);
+
+    std::array<LedColor, 64> leds3;
+
+    std::vector<std::array<LedColor, 64>> expected_led_queue = {leds1, leds2, leds3};
+    TEST_ASSERT_LED_QUEUE(expected_led_queue, hardware_mock.set_led_queue);
+}
+
+
 // runs before each test
 void setUp()
 {
@@ -1540,7 +1595,7 @@ void runTests()
     RUN_TEST(test_make_move_castle_simultaneous_lift_king_smaller_index);
     RUN_TEST(test_make_move_castle_simultaneous_lift_king_larger_index);
     //RUN_TEST(test_make_move_white_right_en_passant);
-    //RUN_TEST(test_make_move_white_left_en_passant);
+    RUN_TEST(test_make_move_white_left_en_passant);
     //RUN_TEST(test_make_move_white_en_passant_simultaneous_lift);
     //RUN_TEST(test_make_move_black_right_en_passant);
     //RUN_TEST(test_make_move_black_left_en_passant);

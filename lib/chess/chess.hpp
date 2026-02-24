@@ -42,6 +42,13 @@ enum class BotStrength {
 };
 
 
+enum class MoveType {
+    Normal,
+    En_Passant,
+    Castle
+};
+
+
 struct Piece {
     Color color;
     PieceType piece_type;
@@ -108,11 +115,11 @@ struct Move
     int from_square;
     int to_square;
     Piece promotion;
-    bool special_move;
+    MoveType move_type;
     ChessGame chess_game;
 
-    Move(int from = -1, int to = -1, Piece promo = Piece(), ChessGame cg = ChessGame())
-        : from_square(from), to_square(to), promotion(promo), chess_game(cg) {}
+    Move(int from = -1, int to = -1, Piece promo = Piece(), MoveType mt = MoveType::Normal, ChessGame cg = ChessGame())
+        : from_square(from), to_square(to), promotion(promo), move_type(mt), chess_game(cg) {}
 };
 
 
