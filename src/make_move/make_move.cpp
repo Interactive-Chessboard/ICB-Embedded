@@ -147,6 +147,10 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
             else if (castle_moves_index[lifted_castle] == index)
                 placed_castle = index;
 
+            // Place lifted opponent
+            else if (lifted_opponent == index)
+                lifted_opponent = -1;
+
             // Place back lifted piece
             else if (lifted == index)
                 lifted = -1;
