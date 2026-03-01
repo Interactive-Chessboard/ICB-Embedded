@@ -123,24 +123,27 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
         }
 
         bool valid_placed_move = false;
-        std::unordered_map<int, int> castle_moves_index; // m[lift] = placed
+        std::unordered_map<int, int> castle_moves_index;
         for (Move move : moves)
         {
-            //std::cout << "mf " << move.from_square << " mt " << move.to_square << " s " << move.move_type << std::endl;
             if (placed == -1 && placed_bool && move.to_square == index && move.from_square == lifted)
                 valid_placed_move = true;
+
             else if (lifted == move.from_square && move.move_type == MoveType::Castle)
             {
                 std::pair<int, int> special_move = determineCastle(move, lifted);
                 castle_moves_index[special_move.first] = special_move.second;
-                std::cout << "s1: " << special_move.first << " s2: " << special_move.second << std::endl;
             }
         }
 
         if (placed_bool)
         {
+            // Place back illegally lifted
+            if (illegal_lifted.find(index) != illegal_lifted.end())
+                illegal_lifted.erase(index);
+
             // Place piece at a valid position
-            if (valid_placed_move && castle_moves_index[lifted_castle] != index)
+            else if (valid_placed_move && castle_moves_index[lifted_castle] != index)
                 placed = index;
 
             // Place castle
@@ -149,19 +152,37 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
 
             // Place lifted opponent
             else if (lifted_opponent == index)
+            {
                 lifted_opponent = -1;
+                if (illegal_lifted.size() == 1)
+                {
+                    int potential_lifted_opponent = *illegal_lifted.begin();
+                    if (valid_lifted_opponent.find(potential_lifted_opponent) != valid_lifted_opponent.end())
+                    {
+                        lifted_opponent = potential_lifted_opponent;
+                        illegal_lifted.erase(potential_lifted_opponent);
+                    }
+                }
+            }
 
             // Place back lifted piece
             else if (lifted == index)
+            {
                 lifted = -1;
+                if (illegal_lifted.size() == 1)
+                {
+                    int potential_lifted = *illegal_lifted.begin();
+                    if (valid_lifted.find(potential_lifted) != valid_lifted.end())
+                    {
+                        lifted = potential_lifted;
+                        illegal_lifted.erase(potential_lifted);
+                    }
+                }
+            }
 
             // Place back castle move
             else if (lifted_castle == index)
                 lifted_castle = -1;
-
-            // Place back illegally lifted
-            else if (illegal_lifted.find(index) != illegal_lifted.end())
-                illegal_lifted.erase(index);
 
             // Else placed illegally
             else
@@ -169,17 +190,17 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
         }
         else
         {
+            // Lifted from illegal placed
+            if (illegal_placed.find(index) != illegal_placed.end())
+                illegal_placed.erase(index);
+
             // Lift castle move
-            if (castle_moves_index.find(index) != castle_moves_index.end())
+            else if (castle_moves_index.find(index) != castle_moves_index.end())
                 lifted_castle = index;
 
             // Lift from castle placed
             else if (placed_castle == index)
                 placed_castle = -1;
-
-            // Lifted from illegal placed
-            else if (illegal_placed.find(index) != illegal_placed.end())
-                illegal_placed.erase(index);
 
             // If previous conditions aren't met, lift is illegal
             else
