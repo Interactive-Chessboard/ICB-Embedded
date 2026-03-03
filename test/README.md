@@ -24,6 +24,11 @@ Run a single folder at a time
 pio test -e native -f folder_name
 ```
 
+Verbose testing which prints results to terminal (enables std::cout)
+```bash
+pio test -e native -f test_make_move -v
+```
+
 ## Coverage
 See unit code coverage (main and hardware library are excluded since coverage is based on native tests)
 

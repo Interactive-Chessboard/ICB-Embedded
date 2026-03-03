@@ -2380,6 +2380,398 @@ void test_make_move_opponent_lifted_not_match_lifted()
 }
 
 
+void test_make_move_illegal_lifted()
+{
+    ChessGame game; // r1b1r1k1/pp1n1pp1/1qpp1n1p/b7/2PP1P1B/2NB2N1/PP4PP/R2Q1RK1 w - - 2 14
+    game.player_turn = Color::White;
+    game.board = {
+        Piece{Color::White, PieceType::Rook}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Queen}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Rook}, Piece{Color::White, PieceType::King}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::White, PieceType::Pawn}, Piece{Color::White, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Pawn}, Piece{Color::White, PieceType::Pawn},
+        Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Knight}, Piece{Color::White, PieceType::Bishop}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Knight}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Pawn}, Piece{Color::White, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Bishop},
+        Piece{Color::Black, PieceType::Bishop}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Queen}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Knight}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Pawn},
+        Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Knight}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::Black, PieceType::Rook}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Bishop}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Rook}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::King}, Piece{Color::Nil, PieceType::Nil}
+    };
+    game.castle = {'.', '.', '.', '.'};
+    game.en_passant = -1;
+    game.winner = Winner::Nil;
+
+    std::vector<Move> legal_moves = Chess::generateLegalMoves(game);
+    int past_move_from = 59;
+    int past_move_to = 41;
+
+    MockHardware& hardware_mock = static_cast<MockHardware&>(Hardware::get());
+    hardware_mock.get_board_arr_queue = {
+        0x96c332358075d6aaULL, // start
+        0x96c332358075d6a8ULL, // lift opponent king
+        0x96c322358075d6a8ULL, // lift bishop
+        0x96c322358075d6aaULL, // place opponent king
+        0xd6c322358075d6aaULL, // place bishop
+    };
+
+    MakeMove make_move(game, legal_moves, past_move_from, past_move_to);
+
+    std::atomic<bool> active{true};
+    Move move = make_move.startOffline(active);
+
+    TEST_ASSERT_EQUAL(19, move.from_square);
+    TEST_ASSERT_EQUAL(1, move.to_square);
+
+    std::array<LedColor, 64> leds1;
+    leds1.at(59) = LedColor(0, 0, 255);
+    leds1.at(41) = LedColor(0, 0, 255);
+
+    std::array<LedColor, 64> leds2;
+    leds2.at(59) = LedColor(0, 0, 255);
+    leds2.at(41) = LedColor(0, 0, 255);
+    leds2.at(62) = LedColor(255, 0, 0);
+
+    std::array<LedColor, 64> leds3;
+    leds3.at(59) = LedColor(0, 0, 255);
+    leds3.at(41) = LedColor(0, 0, 255);
+    leds3.at(62) = LedColor(255, 0, 0);
+    leds3.at(19) = LedColor(255, 255, 0);
+    for (Move move : legal_moves)
+    {
+        if (move.from_square == 19)
+            leds3.at(move.to_square) = LedColor(0, 255, 0);
+    }
+
+    std::array<LedColor, 64> leds4;
+    leds4.at(59) = LedColor(0, 0, 255);
+    leds4.at(41) = LedColor(0, 0, 255);
+    leds4.at(19) = LedColor(255, 255, 0);
+    for (Move move : legal_moves)
+    {
+        if (move.from_square == 19)
+            leds4.at(move.to_square) = LedColor(0, 255, 0);
+    }
+
+    std::array<LedColor, 64> leds5;
+
+    std::vector<std::array<LedColor, 64>> expected_led_queue = {leds1, leds2, leds3, leds4, leds5};
+    TEST_ASSERT_LED_QUEUE(expected_led_queue, hardware_mock.set_led_queue);
+}
+
+
+void test_make_move_multiple_illegal_lifted()
+{
+    ChessGame game; // r1b1r1k1/pp1n1pp1/1qpp1n1p/b7/2PP1P1B/2NB2N1/PP4PP/R2Q1RK1 w - - 2 14
+    game.player_turn = Color::White;
+    game.board = {
+        Piece{Color::White, PieceType::Rook}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Queen}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Rook}, Piece{Color::White, PieceType::King}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::White, PieceType::Pawn}, Piece{Color::White, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Pawn}, Piece{Color::White, PieceType::Pawn},
+        Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Knight}, Piece{Color::White, PieceType::Bishop}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Knight}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Pawn}, Piece{Color::White, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Bishop},
+        Piece{Color::Black, PieceType::Bishop}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Queen}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Knight}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Pawn},
+        Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Knight}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::Black, PieceType::Rook}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Bishop}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Rook}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::King}, Piece{Color::Nil, PieceType::Nil}
+    };
+    game.castle = {'.', '.', '.', '.'};
+    game.en_passant = -1;
+    game.winner = Winner::Nil;
+
+    std::vector<Move> legal_moves = Chess::generateLegalMoves(game);
+    int past_move_from = 59;
+    int past_move_to = 41;
+
+    MockHardware& hardware_mock = static_cast<MockHardware&>(Hardware::get());
+    hardware_mock.get_board_arr_queue = {
+        0x96c332358075d6aaULL, // start
+        0x96c332358075d6a8ULL, // lift opponent king
+        0x96c332358035d6a8ULL, // lift opponent queen
+        0x96c322358035d6a8ULL, // lift bishop
+        0x96c322358031d6a8ULL, // lift opponent knight
+        0x96c322358071d6a8ULL, // place opponent queen
+        0x96c322358071d6aaULL, // place opponent king
+        0xd6c322358071d6aaULL, // place bishop
+        0xd6c322358075d6aaULL, // place opponent knight
+    };
+
+    MakeMove make_move(game, legal_moves, past_move_from, past_move_to);
+
+    std::atomic<bool> active{true};
+    Move move = make_move.startOffline(active);
+
+    TEST_ASSERT_EQUAL(19, move.from_square);
+    TEST_ASSERT_EQUAL(1, move.to_square);
+
+    std::array<LedColor, 64> leds1;
+    leds1.at(59) = LedColor(0, 0, 255);
+    leds1.at(41) = LedColor(0, 0, 255);
+
+    std::array<LedColor, 64> leds2;
+    leds2.at(59) = LedColor(0, 0, 255);
+    leds2.at(41) = LedColor(0, 0, 255);
+    leds2.at(62) = LedColor(255, 0, 0);
+
+    std::array<LedColor, 64> leds3;
+    leds3.at(59) = LedColor(0, 0, 255);
+    leds3.at(62) = LedColor(255, 0, 0);
+    leds3.at(41) = LedColor(255, 0, 0);
+
+    std::array<LedColor, 64> leds4;
+    leds4.at(59) = LedColor(0, 0, 255);
+    leds4.at(62) = LedColor(255, 0, 0);
+    leds4.at(41) = LedColor(255, 0, 0);
+    leds4.at(19) = LedColor(255, 255, 0);
+    for (Move move : legal_moves)
+    {
+        if (move.from_square == 19)
+            leds4.at(move.to_square) = LedColor(0, 255, 0);
+    }
+
+    std::array<LedColor, 64> leds5;
+    leds5.at(59) = LedColor(0, 0, 255);
+    leds5.at(62) = LedColor(255, 0, 0);
+    leds5.at(41) = LedColor(255, 0, 0);
+    leds5.at(45) = LedColor(255, 0, 0);
+    leds5.at(19) = LedColor(255, 255, 0);
+    for (Move move : legal_moves)
+    {
+        if (move.from_square == 19)
+            leds5.at(move.to_square) = LedColor(0, 255, 0);
+    }
+
+    std::array<LedColor, 64> leds6;
+    leds6.at(59) = LedColor(0, 0, 255);
+    leds6.at(41) = LedColor(0, 0, 255);
+    leds6.at(62) = LedColor(255, 0, 0);
+    leds6.at(45) = LedColor(255, 0, 0);
+    leds6.at(19) = LedColor(255, 255, 0);
+    for (Move move : legal_moves)
+    {
+        if (move.from_square == 19)
+            leds6.at(move.to_square) = LedColor(0, 255, 0);
+    }
+
+    std::array<LedColor, 64> leds7;
+    leds7.at(59) = LedColor(0, 0, 255);
+    leds7.at(41) = LedColor(0, 0, 255);
+    leds7.at(45) = LedColor(255, 0, 0);
+    leds7.at(19) = LedColor(255, 255, 0);
+    for (Move move : legal_moves)
+    {
+        if (move.from_square == 19)
+            leds7.at(move.to_square) = LedColor(0, 255, 0);
+    }
+
+    std::array<LedColor, 64> leds8;
+    leds8.at(59) = LedColor(0, 0, 255);
+    leds8.at(41) = LedColor(0, 0, 255);
+    leds8.at(45) = LedColor(255, 0, 0);
+    leds8.at(19) = LedColor(0, 255, 0);
+    leds8.at(1) = LedColor(0, 255, 0);
+
+    std::array<LedColor, 64> leds9;
+
+    std::vector<std::array<LedColor, 64>> expected_led_queue = {leds1, leds2, leds3, leds4, leds5, leds6, leds7, leds8, leds9};
+    TEST_ASSERT_LED_QUEUE(expected_led_queue, hardware_mock.set_led_queue);
+}
+
+
+void test_make_move_illegal_placed()
+{
+    ChessGame game; // r1b1r1k1/pp1n1pp1/1qpp1n1p/b7/2PP1P1B/2NB2N1/PP4PP/R2Q1RK1 w - - 2 14
+    game.player_turn = Color::White;
+    game.board = {
+        Piece{Color::White, PieceType::Rook}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Queen}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Rook}, Piece{Color::White, PieceType::King}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::White, PieceType::Pawn}, Piece{Color::White, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Pawn}, Piece{Color::White, PieceType::Pawn},
+        Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Knight}, Piece{Color::White, PieceType::Bishop}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Knight}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Pawn}, Piece{Color::White, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Bishop},
+        Piece{Color::Black, PieceType::Bishop}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Queen}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Knight}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Pawn},
+        Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Knight}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::Black, PieceType::Rook}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Bishop}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Rook}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::King}, Piece{Color::Nil, PieceType::Nil}
+    };
+    game.castle = {'.', '.', '.', '.'};
+    game.en_passant = -1;
+    game.winner = Winner::Nil;
+
+    std::vector<Move> legal_moves = Chess::generateLegalMoves(game);
+    int past_move_from = 59;
+    int past_move_to = 41;
+
+    MockHardware& hardware_mock = static_cast<MockHardware&>(Hardware::get());
+    hardware_mock.get_board_arr_queue = {
+        0x96c332358075d6aaULL, // start
+        0x92c332358075d6aaULL, // lift rook
+        0x92cb32358075d6aaULL, // place rook wrong place
+        0x92c332358075d6aaULL, // re-lift rook
+        0x92c732358075d6aaULL, // place rook
+    };
+
+    MakeMove make_move(game, legal_moves, past_move_from, past_move_to);
+
+    std::atomic<bool> active{true};
+    Move move = make_move.startOffline(active);
+
+    TEST_ASSERT_EQUAL(5, move.from_square);
+    TEST_ASSERT_EQUAL(13, move.to_square);
+
+    std::array<LedColor, 64> leds1;
+    leds1.at(59) = LedColor(0, 0, 255);
+    leds1.at(41) = LedColor(0, 0, 255);
+
+    std::array<LedColor, 64> leds2;
+    leds2.at(59) = LedColor(0, 0, 255);
+    leds2.at(41) = LedColor(0, 0, 255);
+    leds2.at(5) = LedColor(255, 255, 0);
+    for (Move move : legal_moves)
+    {
+        if (move.from_square == 5)
+            leds2.at(move.to_square) = LedColor(0, 255, 0);
+    }
+
+    std::array<LedColor, 64> leds3;
+    leds3.at(59) = LedColor(0, 0, 255);
+    leds3.at(41) = LedColor(0, 0, 255);
+    leds3.at(12) = LedColor(255, 0, 0);
+    leds3.at(5) = LedColor(255, 255, 0);
+    for (Move move : legal_moves)
+    {
+        if (move.from_square == 5)
+            leds3.at(move.to_square) = LedColor(0, 255, 0);
+    }
+
+    std::array<LedColor, 64> leds4;
+
+    std::vector<std::array<LedColor, 64>> expected_led_queue = {leds1, leds2, leds3, leds2, leds4};
+    TEST_ASSERT_LED_QUEUE(expected_led_queue, hardware_mock.set_led_queue);
+}
+
+
+void test_make_move_multiple_illegal_placed()
+{
+    ChessGame game; // r1b1r1k1/pp1n1pp1/1qpp1n1p/b7/2PP1P1B/2NB2N1/PP4PP/R2Q1RK1 w - - 2 14
+    game.player_turn = Color::White;
+    game.board = {
+        Piece{Color::White, PieceType::Rook}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Queen}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Rook}, Piece{Color::White, PieceType::King}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::White, PieceType::Pawn}, Piece{Color::White, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Pawn}, Piece{Color::White, PieceType::Pawn},
+        Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Knight}, Piece{Color::White, PieceType::Bishop}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Knight}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Pawn}, Piece{Color::White, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Bishop},
+        Piece{Color::Black, PieceType::Bishop}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Queen}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Knight}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Pawn},
+        Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Knight}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::Black, PieceType::Rook}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Bishop}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Rook}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::King}, Piece{Color::Nil, PieceType::Nil}
+    };
+    game.castle = {'.', '.', '.', '.'};
+    game.en_passant = -1;
+    game.winner = Winner::Nil;
+
+    std::vector<Move> legal_moves = Chess::generateLegalMoves(game);
+    int past_move_from = 59;
+    int past_move_to = 41;
+
+    MockHardware& hardware_mock = static_cast<MockHardware&>(Hardware::get());
+    hardware_mock.get_board_arr_queue = {
+        0x96c332358075d6aaULL, // start
+        0x96c332358075d6a8ULL, // lift opponent king
+        0x96c322358075d6a8ULL, // lift bishop
+        0x96c322358075d6acULL, // place opponent king wrong place
+        0x96c32235c075d6acULL, // place bishop wrong place
+        0x96c32235c075d6a8ULL, // lift opponent king
+        0x96c32235c075d6aaULL, // place opponent king
+        0x96c322358075d6aaULL, // lift bishop
+        0xd6c322358075d6aaULL, // place bishop
+    };
+
+    MakeMove make_move(game, legal_moves, past_move_from, past_move_to);
+
+    std::atomic<bool> active{true};
+    Move move = make_move.startOffline(active);
+
+    TEST_ASSERT_EQUAL(19, move.from_square);
+    TEST_ASSERT_EQUAL(1, move.to_square);
+
+    std::array<LedColor, 64> leds1;
+    leds1.at(59) = LedColor(0, 0, 255);
+    leds1.at(41) = LedColor(0, 0, 255);
+
+    std::array<LedColor, 64> leds2;
+    leds2.at(59) = LedColor(0, 0, 255);
+    leds2.at(41) = LedColor(0, 0, 255);
+    leds2.at(62) = LedColor(255, 0, 0);
+
+    std::array<LedColor, 64> leds3;
+    leds3.at(59) = LedColor(0, 0, 255);
+    leds3.at(41) = LedColor(0, 0, 255);
+    leds3.at(62) = LedColor(255, 0, 0);
+    leds3.at(19) = LedColor(255, 255, 0);
+    for (Move move : legal_moves)
+    {
+        if (move.from_square == 19)
+            leds3.at(move.to_square) = LedColor(0, 255, 0);
+    }
+
+    std::array<LedColor, 64> leds4;
+    leds4.at(59) = LedColor(0, 0, 255);
+    leds4.at(41) = LedColor(0, 0, 255);
+    leds4.at(62) = LedColor(255, 0, 0);
+    leds4.at(61) = LedColor(255, 0, 0);
+    leds4.at(19) = LedColor(255, 255, 0);
+    for (Move move : legal_moves)
+    {
+        if (move.from_square == 19)
+            leds4.at(move.to_square) = LedColor(0, 255, 0);
+    }
+
+    std::array<LedColor, 64> leds5;
+    leds5.at(59) = LedColor(0, 0, 255);
+    leds5.at(41) = LedColor(0, 0, 255);
+    leds5.at(62) = LedColor(255, 0, 0);
+    leds5.at(61) = LedColor(255, 0, 0);
+    leds5.at(33) = LedColor(255, 0, 0);
+    leds5.at(19) = LedColor(255, 255, 0);
+    for (Move move : legal_moves)
+    {
+        if (move.from_square == 19)
+            leds5.at(move.to_square) = LedColor(0, 255, 0);
+    }
+
+    std::array<LedColor, 64> leds6;
+    leds6.at(59) = LedColor(0, 0, 255);
+    leds6.at(41) = LedColor(0, 0, 255);
+    leds6.at(62) = LedColor(255, 0, 0);
+    leds6.at(33) = LedColor(255, 0, 0);
+    leds6.at(19) = LedColor(255, 255, 0);
+    for (Move move : legal_moves)
+    {
+        if (move.from_square == 19)
+            leds6.at(move.to_square) = LedColor(0, 255, 0);
+    }
+
+    std::array<LedColor, 64> leds7;
+    leds7.at(59) = LedColor(0, 0, 255);
+    leds7.at(41) = LedColor(0, 0, 255);
+    leds7.at(33) = LedColor(255, 0, 0);
+    leds7.at(19) = LedColor(255, 255, 0);
+    for (Move move : legal_moves)
+    {
+        if (move.from_square == 19)
+            leds7.at(move.to_square) = LedColor(0, 255, 0);
+    }
+
+    std::array<LedColor, 64> leds8;
+    leds8.at(59) = LedColor(0, 0, 255);
+    leds8.at(41) = LedColor(0, 0, 255);
+    leds8.at(19) = LedColor(255, 255, 0);
+    for (Move move : legal_moves)
+    {
+        if (move.from_square == 19)
+            leds8.at(move.to_square) = LedColor(0, 255, 0);
+    }
+
+    std::array<LedColor, 64> leds9;
+
+    std::vector<std::array<LedColor, 64>> expected_led_queue = {leds1, leds2, leds3, leds4, leds5, leds6, leds7, leds8, leds9};
+    TEST_ASSERT_LED_QUEUE(expected_led_queue, hardware_mock.set_led_queue);
+}
+
+
 // runs before each test
 void setUp()
 {
@@ -2433,11 +2825,10 @@ void runTests()
     RUN_TEST(test_make_move_lift_two_opponent_pieces);
     RUN_TEST(test_make_move_lift_two_opponent_pieces_place_down_other);
     RUN_TEST(test_make_move_opponent_lifted_not_match_lifted);
-    //RUN_TEST(test_make_move_illegal_lifted);
-    //RUN_TEST(test_make_move_multiple_illegal_lifted);
-    //RUN_TEST(test_make_move_illegal_placed);
-    //RUN_TEST(test_make_move_multiple_illegal_placed);
-    //RUN_TEST(test_make_move_illegal_move_overrides_past_move);
+    RUN_TEST(test_make_move_illegal_lifted);
+    RUN_TEST(test_make_move_multiple_illegal_lifted);
+    RUN_TEST(test_make_move_illegal_placed);
+    RUN_TEST(test_make_move_multiple_illegal_placed);
 
     UNITY_END();
 }

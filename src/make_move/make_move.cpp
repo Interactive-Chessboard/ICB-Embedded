@@ -186,7 +186,7 @@ bool MakeMove::detectChangeTick(uint64_t tick_bit_board)
 
             // Else placed illegally
             else
-                illegal_lifted.insert(index);
+                illegal_placed.insert(index);
         }
         else
         {
