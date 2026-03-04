@@ -17,9 +17,7 @@ bool Chess::isInCheck(ChessGame chess_game, int square)
         }
     }
     if (square == -1)
-    {
         return false;
-    }
 
     // Look for black pawns attacking a white king
     if (chess_game.player_turn == Color::White)

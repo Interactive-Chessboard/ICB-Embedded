@@ -3,6 +3,9 @@
 #include <string>
 #include <vector>
 #include <future>
+#include <sstream>
+#include <array>
+#include <cctype>
 #include "unity.h"
 #include "hardware.hpp"
 #include "chess.hpp"
@@ -225,4 +228,122 @@ void setUpMockHardware()
     static MockHardware& mock_hardware = MockHardware::instance();
     mock_hardware.reset();
     Hardware::set(mock_hardware);
+}
+
+
+ChessGame chessgameFromFen(const std::string& fen)
+{
+    ChessGame game; // default = starting position
+
+    std::istringstream iss(fen);
+
+    std::string board_part, turn_part, castle_part, ep_part;
+    int halfmove, fullmove;
+
+    // FEN must have at least 4 fields
+    if (!(iss >> board_part >> turn_part >> castle_part >> ep_part))
+        return game;
+
+    // Optional halfmove/fullmove — ignore if missing
+    iss >> halfmove >> fullmove;
+
+    // -------- Parse board --------
+    std::array<Piece, 64> new_board{};
+    int index = 56; // start at rank 8 (a8)
+
+    for (char c : board_part)
+    {
+        if (c == '/')
+        {
+            index -= 16; // move down one rank
+            continue;
+        }
+
+        if (std::isdigit(c))
+        {
+            int empty = c - '0';
+            for (int i = 0; i < empty; ++i)
+            {
+                if (index < 0 || index >= 64) return game;
+                new_board[index++] = Piece();
+            }
+        }
+        else
+        {
+            if (index < 0 || index >= 64) return game;
+
+            Color color = std::isupper(c) ? Color::White : Color::Black;
+            char lower = std::tolower(c);
+
+            PieceType type;
+
+            switch (lower)
+            {
+                case 'p': type = PieceType::Pawn; break;
+                case 'r': type = PieceType::Rook; break;
+                case 'n': type = PieceType::Knight; break;
+                case 'b': type = PieceType::Bishop; break;
+                case 'q': type = PieceType::Queen; break;
+                case 'k': type = PieceType::King; break;
+                default: return game; // invalid char
+            }
+
+            new_board[index++] = Piece(color, type);
+        }
+    }
+
+    if (index != 8) return game; // must end exactly at h1
+
+    // -------- Parse turn --------
+    if (turn_part == "w")
+        game.player_turn = Color::White;
+    else if (turn_part == "b")
+        game.player_turn = Color::Black;
+    else
+        return game;
+
+    // -------- Parse castling --------
+    game.castle = {'.', '.', '.', '.'};
+
+    if (castle_part != "-")
+    {
+        for (char c : castle_part)
+        {
+            switch (c)
+            {
+                case 'K': game.castle[0] = 'K'; break;
+                case 'Q': game.castle[1] = 'Q'; break;
+                case 'k': game.castle[2] = 'k'; break;
+                case 'q': game.castle[3] = 'q'; break;
+                default: return game;
+            }
+        }
+    }
+
+    // -------- Parse en passant --------
+    if (ep_part == "-")
+    {
+        game.en_passant = -1;
+    }
+    else
+    {
+        if (ep_part.size() != 2) return game;
+
+        char file = ep_part[0];
+        char rank = ep_part[1];
+
+        if (file < 'a' || file > 'h') return game;
+        if (rank < '1' || rank > '8') return game;
+
+        int file_index = file - 'a';
+        int rank_index = rank - '1';
+
+        game.en_passant = rank_index * 8 + file_index;
+    }
+
+    // If we reached here, board is valid
+    game.board = new_board;
+    game.winner = Chess::calculateEndGame(game, Chess::generateLegalMoves(game));
+
+    return game;
 }
