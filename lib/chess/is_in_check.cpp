@@ -198,7 +198,6 @@ bool Chess::isInCheck(ChessGame chess_game, int square)
         up += 8;
     }
 
-
     // King
     int king_moves_left[3] = {square - 9, square - 1, square + 7}; // king moves (not magic numbers)
     int king_moves_right[3] = {square - 7, square + 1, square + 9};
