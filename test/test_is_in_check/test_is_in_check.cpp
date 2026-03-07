@@ -1,4 +1,4 @@
-// test_is_in_check
+// test_is_in_check.cpp
 #include <unity.h>
 #include "../test_helper.hpp"
 #include "chess.hpp"
