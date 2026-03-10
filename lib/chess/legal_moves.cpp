@@ -2,114 +2,114 @@
 #include "chess.hpp"
 
 
-std::vector<Move> whitePawnMoves(std::array<Piece, 64> board, int index)
+void whitePawnMoves(std::array<Piece, 64> board, std::vector<Move>& moves, int index)
 {
-    std::vector<Move> moves;
-    moves.reserve(10);
+    std::vector<Move> pawn_moves;
+    pawn_moves.reserve(3);
     // Invalid
     if (index >= 56 && index <= 63)
     {
-        return moves;
+        return;
     }
 
     // Double move
     if (index >= 8 && index <= 15 && board[index + 8].piece_type == PieceType::Nil && board[index + 16].piece_type == PieceType::Nil)
     {
-        moves.push_back(Move(index, index + 16));
+        pawn_moves.push_back(Move(index, index + 16));
     }
 
     // Move up
     if (board[index + 8].piece_type == PieceType::Nil)
     {
-        moves.push_back(Move(index, index + 8));
+        pawn_moves.push_back(Move(index, index + 8));
     }
 
     // Diagonal left
     if ((index + 7) % 8 != 7 && board[index + 7].color == Color::Black)
     {
-        moves.push_back(Move(index, index + 7));
+        pawn_moves.push_back(Move(index, index + 7));
     }
 
     // Diagonal right
     if ((index + 9) % 8 != 0 && board[index + 9].color == Color::Black)
     {
-        moves.push_back(Move(index, index + 9));
+        pawn_moves.push_back(Move(index, index + 9));
     }
 
     // Promotion
     if (index >= 48 && index <= 55)
     {
-        std::vector<Move> new_moves;
-        new_moves.reserve(4);
-        for (auto move : moves)
+        std::vector<Move> promo_moves;
+        promo_moves.reserve(pawn_moves.size() * 4);
+        for (auto move : pawn_moves)
         {
-            new_moves.push_back(Move(move.from_square, move.to_square, Piece(Color::White, PieceType::Queen)));
-            new_moves.push_back(Move(move.from_square, move.to_square, Piece(Color::White, PieceType::Knight)));
-            new_moves.push_back(Move(move.from_square, move.to_square, Piece(Color::White, PieceType::Bishop)));
-            new_moves.push_back(Move(move.from_square, move.to_square, Piece(Color::White, PieceType::Rook)));
+            promo_moves.push_back(Move(move.from_square, move.to_square, Piece(Color::White, PieceType::Queen)));
+            promo_moves.push_back(Move(move.from_square, move.to_square, Piece(Color::White, PieceType::Knight)));
+            promo_moves.push_back(Move(move.from_square, move.to_square, Piece(Color::White, PieceType::Bishop)));
+            promo_moves.push_back(Move(move.from_square, move.to_square, Piece(Color::White, PieceType::Rook)));
         }
-        return new_moves;
+        moves.insert(moves.end(), promo_moves.begin(), promo_moves.end());
+        return;
     }
-    return moves;
+    moves.insert(moves.end(), pawn_moves.begin(), pawn_moves.end());
 }
 
 
-std::vector<Move> blackPawnMoves(std::array<Piece, 64> board, int index)
+void blackPawnMoves(std::array<Piece, 64> board, std::vector<Move>& moves, int index)
 {
-    std::vector<Move> moves;
-    moves.reserve(10);
+    std::vector<Move> pawn_moves;
+    pawn_moves.reserve(3);
     // Invalid
     if (index >= 0 && index <= 7)
     {
-        return moves;
+        return;
     }
 
     // Double move
     if (index >= 48 && index <= 55 && board[index - 8].piece_type == PieceType::Nil && board[index - 16].piece_type == PieceType::Nil)
     {
-        moves.push_back(Move(index, index - 16));
+        pawn_moves.push_back(Move(index, index - 16));
     }
 
     // Move up
     if (board[index - 8].piece_type == PieceType::Nil)
     {
-        moves.push_back(Move(index, index - 8));
+        pawn_moves.push_back(Move(index, index - 8));
     }
 
     // Diagonal right
     if ((index - 7) % 8 != 0 && board[index - 7].color == Color::White)
     {
-        moves.push_back(Move(index, index - 7));
+        pawn_moves.push_back(Move(index, index - 7));
     }
 
     // Diagonal left
     if ((index - 9) % 8 != 7 && board[index - 9].color == Color::White)
     {
-        moves.push_back(Move(index, index - 9));
+        pawn_moves.push_back(Move(index, index - 9));
     }
 
     // Promotion
     if (index >= 8 && index <= 15)
     {
-        std::vector<Move> new_moves;
-        moves.reserve(4);
-        for (auto move : moves)
+        std::vector<Move> promo_moves;
+        promo_moves.reserve(pawn_moves.size() * 4);
+        for (auto move : pawn_moves)
         {
-            new_moves.push_back(Move(move.from_square, move.to_square, Piece(Color::Black, PieceType::Queen)));
-            new_moves.push_back(Move(move.from_square, move.to_square, Piece(Color::Black, PieceType::Knight)));
-            new_moves.push_back(Move(move.from_square, move.to_square, Piece(Color::Black, PieceType::Bishop)));
-            new_moves.push_back(Move(move.from_square, move.to_square, Piece(Color::Black, PieceType::Rook)));
+            promo_moves.push_back(Move(move.from_square, move.to_square, Piece(Color::Black, PieceType::Queen)));
+            promo_moves.push_back(Move(move.from_square, move.to_square, Piece(Color::Black, PieceType::Knight)));
+            promo_moves.push_back(Move(move.from_square, move.to_square, Piece(Color::Black, PieceType::Bishop)));
+            promo_moves.push_back(Move(move.from_square, move.to_square, Piece(Color::Black, PieceType::Rook)));
         }
-        return new_moves;
+        moves.insert(moves.end(), promo_moves.begin(), promo_moves.end());
+        return;
     }
-    return moves;
+    moves.insert(moves.end(), pawn_moves.begin(), pawn_moves.end());
 }
 
 
-std::vector<Move> knightMoves(std::array<Piece, 64> board, int index)
+void knightMoves(std::array<Piece, 64> board, std::vector<Move>& moves, int index)
 {
-    std::vector<Move> moves;
-    moves.reserve(10);
     Color piece_color = board[index].color;
 
     int knight_moves_left[4] = {index - 17, index - 10, index + 6, index + 15}; // kight moves (not magic numbers)
@@ -127,14 +127,11 @@ std::vector<Move> knightMoves(std::array<Piece, 64> board, int index)
             moves.push_back(Move(index, knight_moves_right[i]));
         }
     }
-    return moves;
 }
 
 
-std::vector<Move> bishopMoves(std::array<Piece, 64> board, int index)
+void bishopMoves(std::array<Piece, 64> board, std::vector<Move>& moves, int index)
 {
-    std::vector<Move> moves;
-    moves.reserve(10);
     Color piece_color = board[index].color;
 
     // bottom left
@@ -216,14 +213,11 @@ std::vector<Move> bishopMoves(std::array<Piece, 64> board, int index)
         }
         up_right_index += 9;
     }
-    return moves;
 }
 
 
-std::vector<Move> rookMoves(std::array<Piece, 64> board, int index)
+void rookMoves(std::array<Piece, 64> board, std::vector<Move>& moves, int index)
 {
-    std::vector<Move> moves;
-    moves.reserve(10);
     Color piece_color = board[index].color;
 
     // left
@@ -305,14 +299,11 @@ std::vector<Move> rookMoves(std::array<Piece, 64> board, int index)
         }
         up_index += 8;
     }
-    return moves;
 }
 
 
-std::vector<Move> kingMoves(std::array<Piece, 64> board, int index)
+void kingMoves(std::array<Piece, 64> board, std::vector<Move>& moves, int index)
 {
-    std::vector<Move> moves;
-    moves.reserve(10);
     Color piece_color = board[index].color;
 
     int king_moves_left[3] = {index - 9, index - 1, index + 7}; // king moves (not magic numbers)
@@ -339,11 +330,10 @@ std::vector<Move> kingMoves(std::array<Piece, 64> board, int index)
             moves.push_back(Move(index, king_moves[i]));
         }
     }
-    return moves;
 }
 
 
-Move updateBoard(ChessGame chess_game, Move move)
+void updateBoard(ChessGame chess_game, Move &move)
 {
     // Make move
     if (move.promotion != Piece())
@@ -358,7 +348,7 @@ Move updateBoard(ChessGame chess_game, Move move)
 
     // En passant flags
     chess_game.en_passant = -1;
-    if (chess_game.player_turn == Color::White && (move.to_square - move.from_square) == 16 && 
+    if (chess_game.player_turn == Color::White && (move.to_square - move.from_square) == 16 &&
         chess_game.board[move.to_square] == Piece(Color::White, PieceType::Pawn) &&
         ((chess_game.board[move.to_square - 1] == Piece(Color::Black, PieceType::Pawn) && move.to_square - 1 >= 24) ||
         (chess_game.board[move.to_square + 1] == Piece(Color::Black, PieceType::Pawn) && move.to_square + 1 < 32)))
@@ -366,7 +356,7 @@ Move updateBoard(ChessGame chess_game, Move move)
         chess_game.en_passant = move.to_square - 8;
     }
 
-    if (chess_game.player_turn == Color::Black && (move.to_square - move.from_square) == -16 && 
+    if (chess_game.player_turn == Color::Black && (move.to_square - move.from_square) == -16 &&
         chess_game.board[move.to_square] == Piece(Color::Black, PieceType::Pawn) &&
         ((chess_game.board[move.to_square - 1] == Piece(Color::White, PieceType::Pawn) && move.to_square - 1 >= 32) ||
         (chess_game.board[move.to_square + 1] == Piece(Color::White, PieceType::Pawn) && move.to_square + 1 < 39)))
@@ -404,15 +394,11 @@ Move updateBoard(ChessGame chess_game, Move move)
     }
 
     move.chess_game = chess_game;
-    return move;
 }
 
 
-std::vector<Move> generatePseudoLegalMoves(ChessGame chess_game)
+void generatePseudoLegalMoves(ChessGame chess_game, std::vector<Move>& pseudo_moves)
 {
-    std::vector<Move> pseudo_moves;
-    pseudo_moves.reserve(50);
-
     // Normal moves
     for (int i = 0; i < 64; i++)
     {
@@ -421,54 +407,45 @@ std::vector<Move> generatePseudoLegalMoves(ChessGame chess_game)
         {
             continue;
         }
-        std::vector<Move> new_moves;
-        new_moves.reserve(50);
-        std::vector<Move> new_moves2;
-        new_moves2.reserve(10);
+
         switch (piece.piece_type)
         {
         case PieceType::Pawn:
-            new_moves = piece.color == Color::White ? whitePawnMoves(chess_game.board, i) : blackPawnMoves(chess_game.board, i);
+            if (piece.color == Color::White)
+                whitePawnMoves(chess_game.board, pseudo_moves, i);
+            else
+                blackPawnMoves(chess_game.board, pseudo_moves, i);
             break;
         case PieceType::Knight:
-            new_moves = knightMoves(chess_game.board, i);
+            knightMoves(chess_game.board, pseudo_moves, i);
             break;
         case PieceType::Bishop:
-            new_moves = bishopMoves(chess_game.board, i);
+            bishopMoves(chess_game.board, pseudo_moves, i);
             break;
         case PieceType::Rook:
-            new_moves = rookMoves(chess_game.board, i);
+            rookMoves(chess_game.board, pseudo_moves, i);
             break;
         case PieceType::Queen:
-            new_moves = rookMoves(chess_game.board, i);
-            new_moves2 = bishopMoves(chess_game.board, i);
-            new_moves.insert(new_moves.end(), new_moves2.begin(), new_moves2.end());
+            rookMoves(chess_game.board, pseudo_moves, i);
+            bishopMoves(chess_game.board, pseudo_moves, i);
             break;
         case PieceType::King:
-            new_moves = kingMoves(chess_game.board, i);
+            kingMoves(chess_game.board, pseudo_moves, i);
             break;
         default:
             break;
         }
-        pseudo_moves.insert(pseudo_moves.end(), new_moves.begin(), new_moves.end());
     }
 
-    std::vector<Move> complete_pseudo_moves;
-    complete_pseudo_moves.reserve(50);
-    for (auto move : pseudo_moves)
+    for (auto &move : pseudo_moves)
     {
-        Move update_move = updateBoard(chess_game, move);
-        complete_pseudo_moves.push_back(update_move);
+        updateBoard(chess_game, move);
     }
-
-    return complete_pseudo_moves;
 }
 
 
-std::vector<Move> enPassantMoves(ChessGame chess_game)
+void enPassantMoves(ChessGame chess_game, std::vector<Move>& moves)
 {
-    std::vector<Move> moves;
-    moves.reserve(1);
     if (chess_game.player_turn == Color::White)
     {
         if (chess_game.board[chess_game.en_passant - 7] == Piece(Color::White, PieceType::Pawn))
@@ -519,93 +496,88 @@ std::vector<Move> enPassantMoves(ChessGame chess_game)
             moves.push_back(move);
         }
     }
-    return moves;
 }
 
 
-std::vector<Move> castleMoves(ChessGame chess_game)
+void castleMoves(ChessGame chess_game, std::vector<Move>& moves)
 {
-    std::vector<Move> moves;
-    moves.reserve(2);
-
     // King side castle white
     if (chess_game.player_turn == Color::White && chess_game.castle[0] == 'K' &&
         chess_game.board[5] == Piece() && chess_game.board[6] == Piece() &&
         !Chess::isInCheck(chess_game, 4) && !Chess::isInCheck(chess_game, 5) && !Chess::isInCheck(chess_game, 6))
-        {
-            Move move = Move(4, 6);
-            move.chess_game = chess_game;
-            move.chess_game.en_passant = -1;
-            move.chess_game.castle[0] = '.';
-            move.chess_game.castle[1] = '.';
-            move.chess_game.player_turn = Color::Black;
-            move.chess_game.board[4] = Piece();
-            move.chess_game.board[5] = Piece(Color::White, PieceType::Rook);
-            move.chess_game.board[6] = Piece(Color::White, PieceType::King);
-            move.chess_game.board[7] = Piece();
-            move.move_type = MoveType::Castle;
-            moves.push_back(move);
-        }
+    {
+        Move move = Move(4, 6);
+        move.chess_game = chess_game;
+        move.chess_game.en_passant = -1;
+        move.chess_game.castle[0] = '.';
+        move.chess_game.castle[1] = '.';
+        move.chess_game.player_turn = Color::Black;
+        move.chess_game.board[4] = Piece();
+        move.chess_game.board[5] = Piece(Color::White, PieceType::Rook);
+        move.chess_game.board[6] = Piece(Color::White, PieceType::King);
+        move.chess_game.board[7] = Piece();
+        move.move_type = MoveType::Castle;
+        moves.push_back(move);
+    }
 
     // Queen side castle black
     if (chess_game.player_turn == Color::White && chess_game.castle[1] == 'Q' &&
         chess_game.board[3] == Piece() && chess_game.board[2] == Piece() && chess_game.board[1] == Piece() &&
         !Chess::isInCheck(chess_game, 4) && !Chess::isInCheck(chess_game, 3) && !Chess::isInCheck(chess_game, 2))
-        {
-            Move move = Move(4, 2);
-            move.chess_game = chess_game;
-            move.chess_game.en_passant = -1;
-            move.chess_game.castle[0] = '.';
-            move.chess_game.castle[1] = '.';
-            move.chess_game.player_turn = Color::Black;
-            move.chess_game.board[0] = Piece();
-            move.chess_game.board[1] = Piece();
-            move.chess_game.board[2] = Piece(Color::White, PieceType::King);
-            move.chess_game.board[3] = Piece(Color::White, PieceType::Rook);
-            move.chess_game.board[4] = Piece();
-            move.move_type = MoveType::Castle;
-            moves.push_back(move);
-        }
+    {
+        Move move = Move(4, 2);
+        move.chess_game = chess_game;
+        move.chess_game.en_passant = -1;
+        move.chess_game.castle[0] = '.';
+        move.chess_game.castle[1] = '.';
+        move.chess_game.player_turn = Color::Black;
+        move.chess_game.board[0] = Piece();
+        move.chess_game.board[1] = Piece();
+        move.chess_game.board[2] = Piece(Color::White, PieceType::King);
+        move.chess_game.board[3] = Piece(Color::White, PieceType::Rook);
+        move.chess_game.board[4] = Piece();
+        move.move_type = MoveType::Castle;
+        moves.push_back(move);
+    }
 
     // King side castle black
     if (chess_game.player_turn == Color::Black && chess_game.castle[2] == 'k' &&
         chess_game.board[61] == Piece() && chess_game.board[62] == Piece() &&
         !Chess::isInCheck(chess_game, 60) && !Chess::isInCheck(chess_game, 61) && !Chess::isInCheck(chess_game, 62))
-        {
-            Move move = Move(60, 62);
-            move.chess_game = chess_game;
-            move.chess_game.en_passant = -1;
-            move.chess_game.castle[2] = '.';
-            move.chess_game.castle[3] = '.';
-            move.chess_game.player_turn = Color::White;
-            move.chess_game.board[60] = Piece();
-            move.chess_game.board[61] = Piece(Color::Black, PieceType::Rook);
-            move.chess_game.board[62] = Piece(Color::Black, PieceType::King);
-            move.chess_game.board[63] = Piece();
-            move.move_type = MoveType::Castle;
-            moves.push_back(move);
-        }
+    {
+        Move move = Move(60, 62);
+        move.chess_game = chess_game;
+        move.chess_game.en_passant = -1;
+        move.chess_game.castle[2] = '.';
+        move.chess_game.castle[3] = '.';
+        move.chess_game.player_turn = Color::White;
+        move.chess_game.board[60] = Piece();
+        move.chess_game.board[61] = Piece(Color::Black, PieceType::Rook);
+        move.chess_game.board[62] = Piece(Color::Black, PieceType::King);
+        move.chess_game.board[63] = Piece();
+        move.move_type = MoveType::Castle;
+        moves.push_back(move);
+    }
 
     // Queen side castle black
     if (chess_game.player_turn == Color::Black && chess_game.castle[3] == 'q' &&
         chess_game.board[57] == Piece() && chess_game.board[58] == Piece() && chess_game.board[59] == Piece() &&
         !Chess::isInCheck(chess_game, 58) && !Chess::isInCheck(chess_game, 59) && !Chess::isInCheck(chess_game, 60))
-        {
-            Move move = Move(60, 58);
-            move.chess_game = chess_game;
-            move.chess_game.en_passant = -1;
-            move.chess_game.castle[2] = '.';
-            move.chess_game.castle[3] = '.';
-            move.chess_game.player_turn = Color::White;
-            move.chess_game.board[56] = Piece();
-            move.chess_game.board[57] = Piece();
-            move.chess_game.board[58] = Piece(Color::Black, PieceType::King);
-            move.chess_game.board[59] = Piece(Color::Black, PieceType::Rook);
-            move.chess_game.board[60] = Piece();
-            move.move_type = MoveType::Castle;
-            moves.push_back(move);
-        }
-    return moves;
+    {
+        Move move = Move(60, 58);
+        move.chess_game = chess_game;
+        move.chess_game.en_passant = -1;
+        move.chess_game.castle[2] = '.';
+        move.chess_game.castle[3] = '.';
+        move.chess_game.player_turn = Color::White;
+        move.chess_game.board[56] = Piece();
+        move.chess_game.board[57] = Piece();
+        move.chess_game.board[58] = Piece(Color::Black, PieceType::King);
+        move.chess_game.board[59] = Piece(Color::Black, PieceType::Rook);
+        move.chess_game.board[60] = Piece();
+        move.move_type = MoveType::Castle;
+        moves.push_back(move);
+    }
 }
 
 
@@ -613,20 +585,22 @@ std::vector<Move> Chess::generateLegalMoves(ChessGame chess_game)
 {
 
     // Pseudo legal moves
-    std::vector<Move> pseudo_moves = generatePseudoLegalMoves(chess_game);
-    pseudo_moves.reserve(50);
+    std::vector<Move> pseudo_moves;
+    pseudo_moves.reserve(30);
+    generatePseudoLegalMoves(chess_game, pseudo_moves);
 
     // En passant
     std::vector<Move> en_passant_moves;
     en_passant_moves.reserve(1);
     if (chess_game.en_passant != -1)
     {
-        en_passant_moves = enPassantMoves(chess_game);
+        enPassantMoves(chess_game, pseudo_moves);
     }
-    pseudo_moves.insert(pseudo_moves.end(), en_passant_moves.begin(), en_passant_moves.end());
 
     // Add Castle Moves
-    std::vector<Move> moves = castleMoves(chess_game);
+    std::vector<Move> moves;
+    moves.reserve(25);
+    castleMoves(chess_game, moves);
 
     // Verify move is legal
     for (auto move : pseudo_moves)
