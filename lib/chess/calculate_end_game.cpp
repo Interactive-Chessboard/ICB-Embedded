@@ -1,14 +1,14 @@
 // calculate_end_game.cpp
 #include "chess.hpp"
 
-Winner Chess::calculateEndGame(ChessGame chess_game, std::vector<Move> legal_moves)
+Winner Chess::calculateEndGame(const ChessGame &chess_game, int legal_moves_size)
 {
     bool in_check = Chess::isInCheck(chess_game);
-    if (legal_moves.size() <= 0 && in_check)
+    if (legal_moves_size <= 0 && in_check)
     {
         return (chess_game.player_turn == Color::White) ? Winner::Black : Winner::White;
     }
-    else if (legal_moves.size() <= 0)
+    else if (legal_moves_size <= 0)
     {
         return Winner::Draw;
     }

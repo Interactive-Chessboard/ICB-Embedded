@@ -2,7 +2,7 @@
 #include "chess.hpp"
 
 
-void whitePawnMoves(std::array<Piece, 64> board, std::vector<Move>& moves, int index)
+void whitePawnMoves(const std::array<Piece, 64> &board, std::vector<Move>& moves, int index)
 {
     std::vector<Move> pawn_moves;
     pawn_moves.reserve(3);
@@ -55,7 +55,7 @@ void whitePawnMoves(std::array<Piece, 64> board, std::vector<Move>& moves, int i
 }
 
 
-void blackPawnMoves(std::array<Piece, 64> board, std::vector<Move>& moves, int index)
+void blackPawnMoves(const std::array<Piece, 64> &board, std::vector<Move>& moves, int index)
 {
     std::vector<Move> pawn_moves;
     pawn_moves.reserve(3);
@@ -108,7 +108,7 @@ void blackPawnMoves(std::array<Piece, 64> board, std::vector<Move>& moves, int i
 }
 
 
-void knightMoves(std::array<Piece, 64> board, std::vector<Move>& moves, int index)
+void knightMoves(const std::array<Piece, 64> &board, std::vector<Move>& moves, int index)
 {
     Color piece_color = board[index].color;
 
@@ -130,7 +130,7 @@ void knightMoves(std::array<Piece, 64> board, std::vector<Move>& moves, int inde
 }
 
 
-void bishopMoves(std::array<Piece, 64> board, std::vector<Move>& moves, int index)
+void bishopMoves(const std::array<Piece, 64> &board, std::vector<Move>& moves, int index)
 {
     Color piece_color = board[index].color;
 
@@ -216,7 +216,7 @@ void bishopMoves(std::array<Piece, 64> board, std::vector<Move>& moves, int inde
 }
 
 
-void rookMoves(std::array<Piece, 64> board, std::vector<Move>& moves, int index)
+void rookMoves(const std::array<Piece, 64> &board, std::vector<Move>& moves, int index)
 {
     Color piece_color = board[index].color;
 
@@ -302,7 +302,7 @@ void rookMoves(std::array<Piece, 64> board, std::vector<Move>& moves, int index)
 }
 
 
-void kingMoves(std::array<Piece, 64> board, std::vector<Move>& moves, int index)
+void kingMoves(const std::array<Piece, 64> &board, std::vector<Move>& moves, int index)
 {
     Color piece_color = board[index].color;
 
@@ -397,7 +397,7 @@ void updateBoard(ChessGame chess_game, Move &move)
 }
 
 
-void generatePseudoLegalMoves(ChessGame chess_game, std::vector<Move>& pseudo_moves)
+void generatePseudoLegalMoves(const ChessGame &chess_game, std::vector<Move>& pseudo_moves)
 {
     // Normal moves
     for (int i = 0; i < 64; i++)
@@ -444,7 +444,7 @@ void generatePseudoLegalMoves(ChessGame chess_game, std::vector<Move>& pseudo_mo
 }
 
 
-void enPassantMoves(ChessGame chess_game, std::vector<Move>& moves)
+void enPassantMoves(const ChessGame &chess_game, std::vector<Move>& moves)
 {
     if (chess_game.player_turn == Color::White)
     {
@@ -499,7 +499,7 @@ void enPassantMoves(ChessGame chess_game, std::vector<Move>& moves)
 }
 
 
-void castleMoves(ChessGame chess_game, std::vector<Move>& moves)
+void castleMoves(const ChessGame &chess_game, std::vector<Move>& moves)
 {
     // King side castle white
     if (chess_game.player_turn == Color::White && chess_game.castle[0] == 'K' &&
@@ -581,7 +581,7 @@ void castleMoves(ChessGame chess_game, std::vector<Move>& moves)
 }
 
 
-std::vector<Move> Chess::generateLegalMoves(ChessGame chess_game)
+std::vector<Move> Chess::generateLegalMoves(const ChessGame &chess_game)
 {
 
     // Pseudo legal moves

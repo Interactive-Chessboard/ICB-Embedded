@@ -338,7 +338,7 @@ ChessGame chessgameFromFen(const std::string& fen)
 
     // If we reached here, board is valid
     game.board = new_board;
-    game.winner = Chess::calculateEndGame(game, Chess::generateLegalMoves(game));
+    game.winner = Chess::calculateEndGame(game, Chess::generateLegalMoves(game).size());
 
     return game;
 }
