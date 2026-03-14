@@ -1305,6 +1305,153 @@ void test_make_move_castle_simultaneous_lift_king_larger_index()
 }
 
 
+void test_make_move_place_back_lifted_castle()
+{
+    ChessGame game = chessgameFromFen("r1bq1rk1/3n1pbn/p2p2p1/1p1Pp2p/4P1P1/2N1BP1P/PP1QN1B1/R3K2R w KQ - 0 14");
+
+    std::vector<Move> legal_moves = Chess::generateLegalMoves(game);
+    int past_move_from = 49;
+    int past_move_to = 33;
+
+    MockHardware& hardware_mock = static_cast<MockHardware&>(Hardware::get());
+    hardware_mock.get_board_arr_queue = {
+        0x89da2d0a599217b6ULL, // start
+        0x81da2d0a599217b6ULL, // lift king
+        0x80da2d0a599217b6ULL, // lift rook
+        0x81da2d0a599217b6ULL, // place back rook
+        0x80da2d0a599217b6ULL, // re-lift rook
+        0x82da2d0a599217b6ULL, // place king
+        0x86da2d0a599217b6ULL, // place rook
+    };
+
+    MakeMove make_move(game, legal_moves, past_move_from, past_move_to);
+
+    std::atomic<bool> active{true};
+    Move move = make_move.startOffline(active);
+
+    TEST_ASSERT_EQUAL(4, move.from_square);
+    TEST_ASSERT_EQUAL(6, move.to_square);
+
+    std::array<LedColor, 64> leds1;
+    leds1.at(49) = LedColor(0, 0, 255);
+    leds1.at(33) = LedColor(0, 0, 255);
+
+    std::array<LedColor, 64> leds2;
+    leds2.at(49) = LedColor(0, 0, 255);
+    leds2.at(33) = LedColor(0, 0, 255);
+    leds2.at(4) = LedColor(255, 255, 0);
+    for (Move move : legal_moves)
+    {
+        if (move.from_square == 4)
+            leds2.at(move.to_square) = LedColor(0, 255, 0);
+    }
+
+    std::array<LedColor, 64> leds3;
+    leds3.at(49) = LedColor(0, 0, 255);
+    leds3.at(33) = LedColor(0, 0, 255);
+    leds3.at(4) = LedColor(0, 255, 0);
+    leds3.at(6) = LedColor(0, 255, 0);
+
+    std::array<LedColor, 64> leds4;
+
+    std::vector<std::array<LedColor, 64>> expected_led_queue = {leds1, leds2, leds3, leds4};
+    TEST_ASSERT_LED_QUEUE(expected_led_queue, hardware_mock.set_led_queue);
+}
+
+void test_make_move_lift_placed_castle()
+{
+    ChessGame game = chessgameFromFen("r1bq1rk1/3n1pbn/p2p2p1/1p1Pp2p/4P1P1/2N1BP1P/PP1QN1B1/R3K2R w KQ - 0 14");
+
+    std::vector<Move> legal_moves = Chess::generateLegalMoves(game);
+    int past_move_from = 49;
+    int past_move_to = 33;
+
+    MockHardware& hardware_mock = static_cast<MockHardware&>(Hardware::get());
+    hardware_mock.get_board_arr_queue = {
+        0x89da2d0a599217b6ULL, // start
+        0x81da2d0a599217b6ULL, // lift king
+        0x80da2d0a599217b6ULL, // lift rook
+        0x84da2d0a599217b6ULL, // place rook
+        0x80da2d0a599217b6ULL, // lift placed rook
+        0x84da2d0a599217b6ULL, // re-place rook
+        0x86da2d0a599217b6ULL, // place king
+    };
+
+    MakeMove make_move(game, legal_moves, past_move_from, past_move_to);
+
+    std::atomic<bool> active{true};
+    Move move = make_move.startOffline(active);
+
+    TEST_ASSERT_EQUAL(4, move.from_square);
+    TEST_ASSERT_EQUAL(6, move.to_square);
+
+    std::array<LedColor, 64> leds1;
+    leds1.at(49) = LedColor(0, 0, 255);
+    leds1.at(33) = LedColor(0, 0, 255);
+
+    std::array<LedColor, 64> leds2;
+    leds2.at(49) = LedColor(0, 0, 255);
+    leds2.at(33) = LedColor(0, 0, 255);
+    leds2.at(4) = LedColor(255, 255, 0);
+    for (Move move : legal_moves)
+    {
+        if (move.from_square == 4)
+            leds2.at(move.to_square) = LedColor(0, 255, 0);
+    }
+
+
+    std::array<LedColor, 64> leds3;
+
+    std::vector<std::array<LedColor, 64>> expected_led_queue = {leds1, leds2, leds3};
+    TEST_ASSERT_LED_QUEUE(expected_led_queue, hardware_mock.set_led_queue);
+}
+
+
+void test_make_move_castle_simultaneous_place()
+{
+    ChessGame game = chessgameFromFen("r1bq1rk1/3n1pbn/p2p2p1/1p1Pp2p/4P1P1/2N1BP1P/PP1QN1B1/R3K2R w KQ - 0 14");
+
+    std::vector<Move> legal_moves = Chess::generateLegalMoves(game);
+    int past_move_from = 49;
+    int past_move_to = 33;
+
+    MockHardware& hardware_mock = static_cast<MockHardware&>(Hardware::get());
+    hardware_mock.get_board_arr_queue = {
+        0x89da2d0a599217b6ULL, // start
+        0x81da2d0a599217b6ULL, // lift king
+        0x80da2d0a599217b6ULL, // lift rook
+        0x86da2d0a599217b6ULL, // place both
+    };
+
+    MakeMove make_move(game, legal_moves, past_move_from, past_move_to);
+
+    std::atomic<bool> active{true};
+    Move move = make_move.startOffline(active);
+
+    TEST_ASSERT_EQUAL(4, move.from_square);
+    TEST_ASSERT_EQUAL(6, move.to_square);
+
+    std::array<LedColor, 64> leds1;
+    leds1.at(49) = LedColor(0, 0, 255);
+    leds1.at(33) = LedColor(0, 0, 255);
+
+    std::array<LedColor, 64> leds2;
+    leds2.at(49) = LedColor(0, 0, 255);
+    leds2.at(33) = LedColor(0, 0, 255);
+    leds2.at(4) = LedColor(255, 255, 0);
+    for (Move move : legal_moves)
+    {
+        if (move.from_square == 4)
+            leds2.at(move.to_square) = LedColor(0, 255, 0);
+    }
+
+    std::array<LedColor, 64> leds3;
+
+    std::vector<std::array<LedColor, 64>> expected_led_queue = {leds1, leds2, leds3};
+    TEST_ASSERT_LED_QUEUE(expected_led_queue, hardware_mock.set_led_queue);
+}
+
+
 void test_make_move_white_right_en_passant()
 {
     ChessGame game = chessgameFromFen("r1bq1rk1/6bn/pn1p2p1/1p1PPp1p/4P1P1/2N1B2P/PP1QN1B1/R3K2R w KQ f6 0 16");
@@ -2307,6 +2454,9 @@ void runTests()
     RUN_TEST(test_make_move_castle_complete_king_before_lift_rook);
     RUN_TEST(test_make_move_castle_simultaneous_lift_king_smaller_index);
     RUN_TEST(test_make_move_castle_simultaneous_lift_king_larger_index);
+    RUN_TEST(test_make_move_place_back_lifted_castle);
+    RUN_TEST(test_make_move_lift_placed_castle);
+    RUN_TEST(test_make_move_castle_simultaneous_place);
     RUN_TEST(test_make_move_white_right_en_passant);
     RUN_TEST(test_make_move_white_left_en_passant);
     RUN_TEST(test_make_move_white_en_passant_simultaneous_lift);

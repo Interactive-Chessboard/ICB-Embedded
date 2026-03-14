@@ -49,7 +49,6 @@ inline void TEST_ASSERT_CLOCK_TOLERANCE(const int &expected, const int &actual)
     TEST_ASSERT_LESS_OR_EQUAL(expected + 3, actual);
 }
 
-//#include <iostream>
 inline void TEST_ASSERT_LED_QUEUE(const std::vector<std::array<LedColor, 64>> &expected, const std::vector<std::array<LedColor, 64>> &actual)
 {
     TEST_ASSERT_EQUAL(expected.size(), actual.size());
@@ -58,10 +57,6 @@ inline void TEST_ASSERT_LED_QUEUE(const std::vector<std::array<LedColor, 64>> &e
         TEST_ASSERT_EQUAL(expected.at(i).size(), actual.at(i).size());
         for (int j = 0; j < expected.at(i).size(); j++)
         {
-            //std::cout << "\nLed: " << j << "\n";
-            //std::cout << int(expected.at(i).at(j).red) << " red " << int(actual.at(i).at(j).red) << "\n";
-            //std::cout << int(expected.at(i).at(j).green) << " green " << int(actual.at(i).at(j).green) << "\n";
-            //std::cout << int(expected.at(i).at(j).blue) <<  " blue " << int(actual.at(i).at(j).blue) << "\n";
             TEST_ASSERT_EQUAL_LED_COLOR(expected.at(i).at(j), actual.at(i).at(j));
         }
     }

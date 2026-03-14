@@ -1,6 +1,5 @@
 // make_move.cpp
 #include "make_move.hpp"
-#include <iostream>
 
 
 void MakeMove::initialize()
@@ -378,26 +377,6 @@ Move MakeMove::startOffline(const std::atomic<bool>& active)
         bool changes = detectChangeTick(bit_board_tick);
         if (changes)
         {
-            std::cout << "changes" << std::endl;
-            std::cout << "bit_board_tick " << bit_board_tick << " lif" << lifted << " placed" << placed << std::endl;
-            std::cout << "lifted " << lifted << std::endl;
-            std::cout << "lifted_opponent " << lifted_opponent << std::endl;
-            std::cout << "lifted_castle " << lifted_castle << std::endl;
-            std::cout << "placed " << placed << std::endl;
-            std::cout << "placed_castle " << placed_castle << std::endl;
-            std::cout << "illegal_lifted: ";
-            for (int val : illegal_lifted)
-            {
-                std::cout << val << " ";
-            }
-            std::cout << std::endl;
-
-            std::cout << "illegal_placed: ";
-            for (int val : illegal_placed)
-            {
-                std::cout << val << " ";
-            }
-            std::cout << std::endl;
             int move_index = calculateMoveTick();
             if (move_index >= 0)
             {
