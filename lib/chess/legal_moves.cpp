@@ -25,13 +25,13 @@ void whitePawnMoves(const std::array<Piece, 64> &board, std::vector<Move>& moves
     }
 
     // Diagonal left
-    if ((index + 7) % 8 != 7 && board[index + 7].color == Color::Black)
+    if (index + 7 < 64 && (index + 7) % 8 != 7 && board[index + 7].color == Color::Black)
     {
         pawn_moves.push_back(Move(index, index + 7));
     }
 
     // Diagonal right
-    if ((index + 9) % 8 != 0 && board[index + 9].color == Color::Black)
+    if (index + 9 < 64 && (index + 9) % 8 != 0 && board[index + 9].color == Color::Black)
     {
         pawn_moves.push_back(Move(index, index + 9));
     }
@@ -78,13 +78,13 @@ void blackPawnMoves(const std::array<Piece, 64> &board, std::vector<Move>& moves
     }
 
     // Diagonal right
-    if ((index - 7) % 8 != 0 && board[index - 7].color == Color::White)
+    if (index - 7 >= 0 && (index - 7) % 8 != 0 && board[index - 7].color == Color::White)
     {
         pawn_moves.push_back(Move(index, index - 7));
     }
 
     // Diagonal left
-    if ((index - 9) % 8 != 7 && board[index - 9].color == Color::White)
+    if (index - 9 >= 0 && (index - 9) % 8 != 7 && board[index - 9].color == Color::White)
     {
         pawn_moves.push_back(Move(index, index - 9));
     }
