@@ -13,6 +13,14 @@
 #include "screen_selection/screen_selection.hpp"
 
 
+/**
+ * @struct ExtractMakeMove
+ * @brief Bundle of data used to start a MakeMove session.
+ *
+ * Contains the current game state, LED color settings for board feedback,
+ * the previous move (for highlighting), and a timeout value. Passed to
+ * MakeMove to configure online move detection.
+ */
 struct ExtractMakeMove
 {
     ChessGame game;
@@ -26,6 +34,50 @@ struct ExtractMakeMove
 };
 
 
+/**
+ * @class MakeMove
+ * @brief Interprets physical board interactions to determine a legal chess move.
+ *
+ * This class monitors a hardware chessboard represented as a 64-bit bitboard and
+ * translates piece lifts and placements into a validated move within a given
+ * ChessGame state. It is designed for use with an electronic or sensor-based board
+ * where piece presence is detected per square and LED feedback can guide the user.
+ *
+ * Core responsibilities:
+ * - Tracks the current game position and all legal moves for the side to move.
+ * - Observes real-time board changes (piece lifts/placements) from hardware.
+ * - Distinguishes valid interactions from illegal ones.
+ * - Supports special moves including castling, en passant, and promotion.
+ * - Provides visual feedback via LEDs (legal targets, illegal actions, past move).
+ * - Determines when a complete legal move has been performed on the board.
+ *
+ * Interaction model:
+ * - A move is inferred from a sequence of square state changes rather than an
+ *   explicit command.
+ * - The class maintains internal state for lifted pieces, captured pieces,
+ *   partially completed moves, and illegal actions.
+ * - Only when the physical board matches the resulting position of a legal move
+ *   is that move accepted.
+ *
+ * Modes of operation:
+ * - Online mode: Returns a serialized description of the move and enforces a timeout.
+ * - Offline mode: Returns the Move object directly and optionally handles promotion
+ *   selection via an external screen interface.
+ *
+ * Visual feedback:
+ * - Highlights the previous move.
+ * - Shows the currently lifted piece.
+ * - Displays legal destination squares.
+ * - Marks illegal lifts or placements.
+ * - Indicates near-completion states (e.g., capture sequences).
+ *
+ * Preconditions:
+ * - The physical board state must initially match the provided game position.
+ * - Legal moves must correspond to the current player to move.
+ *
+ * This class does not modify the game state itself; it only detects and returns
+ * a move that can then be applied externally.
+ */
 class MakeMove
 {
 private:

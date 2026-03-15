@@ -25,4 +25,3 @@
  * @throws std::runtime_error If the board value is not a valid uint64_t.
  */
 ExtractSetBoard extractSetBoard(const std::string&);
-

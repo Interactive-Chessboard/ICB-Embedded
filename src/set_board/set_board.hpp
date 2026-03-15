@@ -8,6 +8,13 @@
 #include "hardware.hpp"
 
 
+/**
+ * @struct ExtractSetBoard
+ * @brief Bundle of data used to start a SetBoard session.
+ *
+ * Contains the target board bitboard, LED color for highlighting differences,
+ * and a timeout value. Passed to SetBoard to configure online board setup.
+ */
 struct ExtractSetBoard
 {
     LedColor color;
@@ -16,6 +23,17 @@ struct ExtractSetBoard
 };
 
 
+/**
+ * @class SetBoard
+ * @brief Guides the user to match the physical board to a target position.
+ *
+ * Continuously compares the current hardware board state to a desired bitboard.
+ * Squares that differ are highlighted with LEDs so the user can place or remove
+ * pieces accordingly. Completes once the board matches the target position.
+ *
+ * Supports online mode (with timeout and status string) and offline mode
+ * (runs until complete or cancelled).
+ */
 class SetBoard
 {
 private:
