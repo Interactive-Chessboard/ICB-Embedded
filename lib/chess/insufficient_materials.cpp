@@ -3,7 +3,7 @@
 
 
 // Insufficient materials is only king, knight + king, bishop + king or knight + bishop + king
-bool Chess::insufficientMaterials(const ChessGame &chess_game, Color color)
+bool Chess::insufficientMaterials(const ChessGame& chess_game, Color color)
 {
     int bishop_count = 0;
     int knight_count = 0;

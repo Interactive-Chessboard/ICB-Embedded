@@ -62,7 +62,7 @@ void tick(ClockSetting& clock_settings, Color previous_iteration)
 }
 
 
-void startGameClock(ClockSetting &clock_settings, std::atomic<bool> &stop_clock_loop)
+void startGameClock(ClockSetting& clock_settings, const std::atomic<bool>& stop_clock_loop)
 {
     using clock = std::chrono::steady_clock;
     constexpr std::chrono::milliseconds interval(1);

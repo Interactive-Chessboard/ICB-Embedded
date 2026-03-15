@@ -9,12 +9,19 @@
 #include <limits.h>
 
 
+/**
+ * @brief Represents the color (side) in a chess game.
+ */
 enum class Color {
     White,
     Black,
     Nil
 };
 
+
+/**
+ * @brief Types of chess pieces.
+ */
 enum class PieceType {
     Pawn,
     Rook,
@@ -26,6 +33,9 @@ enum class PieceType {
 };
 
 
+/**
+ * @brief Final result of a chess game.
+ */
 enum class Winner {
     White,
     Black,
@@ -34,14 +44,9 @@ enum class Winner {
 };
 
 
-enum class BotStrength {
-    Easy,
-    Medium,
-    Hard,
-    Impossible
-};
-
-
+/**
+ * @brief Special categories of chess moves.
+ */
 enum class MoveType {
     Normal,
     En_Passant,
@@ -49,6 +54,12 @@ enum class MoveType {
 };
 
 
+/**
+ * @brief Represents a chess piece on the board.
+ *
+ * A piece is defined by its color and type. A piece with both
+ * fields set to Nil represents an empty square.
+ */
 struct Piece {
     Color color;
     PieceType piece_type;
@@ -62,6 +73,21 @@ struct Piece {
     }
 };
 
+
+/**
+ * @brief Represents the complete state of a chess game.
+ *
+ * This structure contains all information required to uniquely
+ * describe a position and continue the game, including:
+ *
+ * - Board layout
+ * - Player to move
+ * - Castling rights
+ * - En passant target square
+ * - Game result (if finished)
+ *
+ * The board is stored as a 64-element array indexed from 0–63.
+ */
 struct ChessGame
 {
     Color player_turn{Color::White};
@@ -120,6 +146,14 @@ struct Move
 
     Move(int from = -1, int to = -1, Piece promo = Piece(), MoveType mt = MoveType::Normal, ChessGame cg = ChessGame())
         : from_square(from), to_square(to), promotion(promo), move_type(mt), chess_game(cg) {}
+};
+
+
+enum class BotStrength {
+    Easy,
+    Medium,
+    Hard,
+    Impossible
 };
 
 

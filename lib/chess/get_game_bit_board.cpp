@@ -2,7 +2,7 @@
 #include "chess.hpp"
 
 
-uint64_t Chess::getGameBitBoard(const ChessGame &game)
+uint64_t Chess::getGameBitBoard(const ChessGame& game)
 {
     uint64_t bit_board = 0;
     for (int i = 0; i < 64; i++)

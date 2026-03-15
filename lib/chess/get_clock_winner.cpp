@@ -2,7 +2,7 @@
 #include "chess.hpp"
 
 
-Winner Chess::getClockWinner(int time_white, int time_black, const ChessGame &chess_game)
+Winner Chess::getClockWinner(int time_white, int time_black, const ChessGame& chess_game)
 {
     if (time_white <= 0 && !insufficientMaterials(chess_game, Color::Black))
     {

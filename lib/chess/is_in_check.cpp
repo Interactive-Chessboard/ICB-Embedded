@@ -2,7 +2,7 @@
 #include "chess.hpp"
 
 
-bool Chess::isInCheck(const ChessGame &chess_game, int square)
+bool Chess::isInCheck(const ChessGame& chess_game, int square)
 {
     // Find the king
     if (square == -1)

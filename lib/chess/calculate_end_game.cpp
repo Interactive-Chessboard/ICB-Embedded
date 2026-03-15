@@ -1,7 +1,7 @@
 // calculate_end_game.cpp
 #include "chess.hpp"
 
-Winner Chess::calculateEndGame(const ChessGame &chess_game, int legal_moves_size)
+Winner Chess::calculateEndGame(const ChessGame& chess_game, int legal_moves_size)
 {
     bool in_check = Chess::isInCheck(chess_game);
     if (legal_moves_size <= 0 && in_check)
