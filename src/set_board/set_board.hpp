@@ -6,6 +6,7 @@
 #include <chrono>
 #include <thread>
 #include "hardware.hpp"
+#include "chess.hpp"
 
 
 /**
@@ -17,8 +18,10 @@
  */
 struct ExtractSetBoard
 {
-    LedColor color;
-    uint64_t board;
+    ChessGame game;
+    LedColor past_move_color;
+    int past_move_from;
+    int past_move_to;
     int timeout;
 };
 
@@ -37,14 +40,20 @@ struct ExtractSetBoard
 class SetBoard
 {
 private:
-    LedColor color = LedColor(0, 0, 255);
-    uint64_t board;
+    ChessGame game;
+    LedColor past_move_color = LedColor(0, 0, 255);
+    int past_move_from;
+    int past_move_to;
+    int timeout;
+
+    bool capture_lifted = false;
+
     std::array<LedColor, 64> lightUpDifference(uint64_t, uint64_t, LedColor);
 
-    int timeout;
 public:
-    SetBoard(ExtractSetBoard e) : color(e.color), board(e.board), timeout(e.timeout) {}
-    SetBoard(uint64_t board) : board(board) {}
+    SetBoard(ExtractSetBoard e) : game(e.game), past_move_color(e.past_move_color), past_move_from(e.past_move_from),
+                                  past_move_to(e.past_move_to), timeout(e.timeout) {}
+    SetBoard(ChessGame game, int from, int to) : game(game), past_move_from(from), past_move_to(to) {}
 
     std::string startOnline(const std::atomic<bool>&);
     void startOffline(const std::atomic<bool>&);

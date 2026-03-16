@@ -780,6 +780,211 @@ void test_led_color_not_enough_values()
 }
 
 
+void test_extract_game_board()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "type": "make_move",
+        "board": "RNBQK.NRPPPP.PPP...................Ppb..B.......ppp..ppprn.qkbnr"
+        "past_move": {
+            "color": [0, 0, 255],
+            "from": 52,
+            "to": 36
+        },
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "w",
+        },
+        "timeout_s": 60
+    }
+    )";
+    ChessGame game;
+    try
+    {
+        game = getChessGameBoard(input);
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("No exceptions were expected");
+    }
+    ChessGame expected_game;
+    expected_game.player_turn = Color::White;
+    expected_game.board = std::array<Piece, 64>{
+        Piece{Color::White, PieceType::Rook}, Piece{Color::White, PieceType::Knight}, Piece{Color::White, PieceType::Bishop}, Piece{Color::White, PieceType::Queen}, Piece{Color::White, PieceType::King}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Knight}, Piece{Color::White, PieceType::Rook},
+        Piece{Color::White, PieceType::Pawn}, Piece{Color::White, PieceType::Pawn}, Piece{Color::White, PieceType::Pawn}, Piece{Color::White, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Pawn}, Piece{Color::White, PieceType::Pawn}, Piece{Color::White, PieceType::Pawn},
+        Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::White, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Bishop}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::White, PieceType::Bishop}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil},
+        Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn}, Piece{Color::Black, PieceType::Pawn},
+        Piece{Color::Black, PieceType::Rook}, Piece{Color::Black, PieceType::Knight}, Piece{Color::Nil, PieceType::Nil}, Piece{Color::Black, PieceType::Queen}, Piece{Color::Black, PieceType::King}, Piece{Color::Black, PieceType::Bishop}, Piece{Color::Black, PieceType::Knight}, Piece{Color::Black, PieceType::Rook}
+    },
+
+    TEST_ASSERT_EQUAL_CHESS_GAME(expected_game, game);
+}
+
+
+void test_invalid_color()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "type": "make_move",
+        "board": ".NB.K.NR.PPP.PPPR....Q....B.P.......p...........pppp.ppprnbq.knr"
+        "castling": "K..q",
+        "en_passant": -1,
+        "past_move": {
+            "color": [0, 0, 255],
+            "from": 52,
+            "to": 36
+        },
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "a",
+        },
+        "lifted_square_color": [0, 230, 0],
+        "legal_move_color": [0, 255, 0],
+        "illegal_move_color": [255, 0, 0],
+        "timeout_s": 60
+    }
+    )";
+    try
+    {
+        auto _ = getChessGameBoard(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("error, invalid player color", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_too_many_squares_in_board()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "type": "set_board",
+        "board": ".NB.K.NR.PPP.PPPR....Q....B.P.......p...........pppp.ppprnbq.knr....r...P...Q"
+        "past_move": {
+            "color": [0, 0, 255],
+            "from": 52,
+            "to": 36
+        },
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "w",
+        },
+        "timeout_s": 60
+    }
+    )";
+    try
+    {
+        auto _ = getChessGameBoard(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("error, board must be 64 characters long", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_not_enough_squares_in_board()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "type": "set_board",
+        "board": ".NB.K.NR.PPP.PPPR....Q"
+        "past_move": {
+            "color": [0, 0, 255],
+            "from": 52,
+            "to": 36
+        },
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "b",
+        },
+        "timeout_s": 60
+    }
+    )";
+    try
+    {
+        auto _ = getChessGameBoard(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("error, board must be 64 characters long", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
+void test_invalid_piece()
+{
+    std::string input = R"(
+    {
+        "id": 1,
+        "type": "set_board",
+        "board": ".NA.K.PR.PPP.PPPC....Q....B.P.......p...........pppp.ppprnbq.knr"
+        "past_move": {
+            "color": [0, 0, 255],
+            "from": 52,
+            "to": 36
+        },
+        "clock": {
+            "active": "t",
+            "white_ms": 50000,
+            "black_ms": 60000,
+            "extra_time_ms": 5000,
+            "run_down": "b",
+        },
+        "timeout_s": 60
+    }
+    )";
+    try
+    {
+        auto _ = getChessGameBoard(input);
+        TEST_FAIL_MESSAGE("Expected exception");
+    }
+    catch (const std::runtime_error& e)
+    {
+        TEST_ASSERT_EQUAL_STRING("error, invalid piece", e.what());
+    }
+    catch (...)
+    {
+        TEST_FAIL_MESSAGE("Expected std::runtime_error but caught a different exception type.");
+    }
+}
+
+
 void runTests()
 {
     UNITY_BEGIN();
@@ -800,7 +1005,7 @@ void runTests()
     RUN_TEST(test_timeout_negative_number);
     RUN_TEST(test_timeout_overflow);
 
-    // test setClockSettings
+    // test setClockSettings()
     RUN_TEST(test_valid_clock_settings);
     RUN_TEST(test_inactive_clock_settings);
     RUN_TEST(test_run_down_black_clock_settings);
@@ -820,6 +1025,13 @@ void runTests()
     RUN_TEST(test_led_color_no_brakets);
     RUN_TEST(test_led_color_no_comma);
     RUN_TEST(test_led_color_not_enough_values);
+
+    // test getChessGameBoard()
+    RUN_TEST(test_extract_game_board);
+    RUN_TEST(test_invalid_color);
+    RUN_TEST(test_too_many_squares_in_board);
+    RUN_TEST(test_not_enough_squares_in_board);
+    RUN_TEST(test_invalid_piece);
 
     UNITY_END();
 }

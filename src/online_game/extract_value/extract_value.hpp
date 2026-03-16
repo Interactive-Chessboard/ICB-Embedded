@@ -136,3 +136,22 @@ void setClockSettings(ClockSetting&, const std::string&);
  *       are considered valid; only the first three values are used.
  */
 LedColor getLedColor(const std::string &);
+
+
+/**
+ * @brief Constructs a ChessGame from a serialized request string.
+ *
+ * Parses the player to move and board layout from the given request, then
+ * populates a ChessGame object accordingly. The board is expected as a
+ * 64-character string (one character per square) using standard piece
+ * letters (P/R/N/B/Q/K for White, lowercase for Black) and '.' for empty.
+ *
+ * The active player is read from the request clock section ("w" or "b").
+ *
+ * @param request Serialized input containing board and clock information.
+ * @return ChessGame Initialized game state matching the provided data.
+ *
+ * @throws std::runtime_error If the player color is invalid, the board string
+ *         is not exactly 64 characters, or an unknown piece character is found.
+ */
+ChessGame getChessGameBoard(const std::string&);

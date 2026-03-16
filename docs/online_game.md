@@ -103,8 +103,10 @@ This request is made to request the ESP32 to set up it's board in a certain arra
 
 #### Request
 The set_board request contains the following fields.
-1. Bitboard of the game being played. The user will need to match this board to then proceed with sending a response. Since the ESP32 can't know which piece is where, the bit board will need to match. This bit board is in a uint64_t format. The black rook on square 0 (a1) is the most significant bit. The black rook on square 63 (h8) is the least. Square 1 is b1 and square 8 is a2 for extra reference
-2. An old move color, from and to field to allow the the display of the last move made by an opponent on the web app. The color of the LEDs will also be determined by the web app.
+1. Board of the game being played. The user will need to match this board to then proceed with sending a response. Since the ESP32 can't know which piece is where, the board will beed
+converted to bitboard and will need to match.
+2. The move made on the web app will be sent with an associated color to display. The old move
+needs to be sent in the case of a capture
 Note an old move can be set to -1, -1 if there is no old move to display
 3. White and black clocks values will be sent from the web app. This will overide the current status of the clock on the esp32 which is actively counting down between requests.
 4. The clock run down field is used for the board to determine which is the clock that will be run down following this request.
@@ -113,8 +115,12 @@ Note an old move can be set to -1, -1 if there is no old move to display
 {
     "id": 1,
     "type": "set_board",
-    "board": 18446462598732906495,
-    "color": [0, 0, 255],
+    "board": "RNBQKBNRPPPPPPPP................................pppppppprnbqkbnr",
+    "past_move": {
+        "color": [0, 0, 255],
+        "from": 12,
+        "to": 28
+    },
     "clock": {
         "active": "f",
         "white_ms": 50000,

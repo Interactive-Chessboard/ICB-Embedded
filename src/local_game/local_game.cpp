@@ -30,8 +30,7 @@ ChessGame gameLoopBotsOffline(Color player_color, ClockSetting &clock_settings, 
             if (move.promotion != Piece())
                 displayBotPromotion(move.promotion.piece_type);
 
-            uint64_t bitboard_move = Chess::getGameBitBoard(move.chess_game);
-            SetBoard set_board(bitboard_move);
+            SetBoard set_board(move.chess_game, move.from_square, move.to_square);
             set_board.startOffline(clock_settings.active);
             if (move.promotion != Piece())
                 Hardware::get().reserveScreen(false);
@@ -76,7 +75,7 @@ ChessGame gameLoopMultiplayerOffline(ClockSetting &clock_settings)
 void localGame(Settings game_settings, ClockSetting &clock_settings)
 {
     // ---Init---
-    SetBoard set_starting_pos(0xffff00000000ffffULL);
+    SetBoard set_starting_pos(ChessGame(), -1, -1);
     std::atomic<bool> start_set_board_active{true};
     set_starting_pos.startOffline(start_set_board_active);
 

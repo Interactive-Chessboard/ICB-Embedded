@@ -153,3 +153,72 @@ LedColor getLedColor(const std::string &color_str)
         throw std::runtime_error("error, colors must be positive");
     return LedColor(r, g, b);
 }
+
+
+
+ChessGame getChessGameBoard(const std::string& request)
+{
+    ChessGame game;
+
+    std::string player_turn = extractValue(extractValue(request, "clock"), "run_down");
+    Color color;
+    if (player_turn == "w")
+        color = Color::White;
+    else if (player_turn == "b")
+        color = Color::Black;
+    else
+        throw std::runtime_error("error, invalid player color");
+    game.player_turn = color;
+
+    std::string board_str = extractValue(request, "board");
+    if (board_str.length() != 64) throw std::runtime_error("error, board must be 64 characters long");
+    for (int i = 0 ; i < 64; i++)
+    {
+        switch (board_str.at(i))
+        {
+        case '.':
+            game.board.at(i) = Piece();
+            break;
+        case 'P':
+            game.board.at(i) = Piece(Color::White, PieceType::Pawn);
+            break;
+        case 'p':
+            game.board.at(i) = Piece(Color::Black, PieceType::Pawn);
+            break;
+        case 'R':
+            game.board.at(i) = Piece(Color::White, PieceType::Rook);
+            break;
+        case 'r':
+            game.board.at(i) = Piece(Color::Black, PieceType::Rook);
+            break;
+        case 'N':
+            game.board.at(i) = Piece(Color::White, PieceType::Knight);
+            break;
+        case 'n':
+            game.board.at(i) = Piece(Color::Black, PieceType::Knight);
+            break;
+        case 'B':
+            game.board.at(i) = Piece(Color::White, PieceType::Bishop);
+            break;
+        case 'b':
+            game.board.at(i) = Piece(Color::Black, PieceType::Bishop);
+            break;
+        case 'Q':
+            game.board.at(i) = Piece(Color::White, PieceType::Queen);
+            break;
+        case 'q':
+            game.board.at(i) = Piece(Color::Black, PieceType::Queen);
+            break;
+        case 'K':
+            game.board.at(i) = Piece(Color::White, PieceType::King);
+            break;
+        case 'k':
+            game.board.at(i) = Piece(Color::Black, PieceType::King);
+            break;
+        default:
+            throw std::runtime_error("error, invalid piece");
+        }
+    }
+
+    return game;
+}
